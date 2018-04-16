@@ -24,7 +24,7 @@ public class SprintTest {
 		int teamSize = 3;
 		String startDate = "2018-04-09";
 		String endDate = "2018-04-22";
-		String demoDate = "2018-04-12";
+		String demoDate = "2018-04-22";
 		String demoPlace = "1622";
 		String dailyTime = "10:00";
 		String dailyPlace = "1321";
