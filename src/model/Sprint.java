@@ -1,8 +1,8 @@
 package model;
 
-public class Sprint {
+public class Sprint extends ezScrumDomainModel {
 	
-	private long id;
+	private String sprintId;
 	private String goal;
 	private int interval;
 	private int teamSize;
@@ -12,14 +12,14 @@ public class Sprint {
 	private String demoPlace;
 	private String dailyTime;
 	private String dailyPlace;
-	private long productId;
+	private String productId;
 	private String createTime;
 	private String updateTime;
 	
 	public Sprint() {}
 	
 	public Sprint(String goal, int interval, int teamSize, String startDate,
-			String demoDate, long productId, String createTime) {
+			String demoDate, String productId, String createTime) {
 		this.goal = goal;
 		this.interval = interval;
 		this.teamSize = teamSize;
@@ -29,11 +29,11 @@ public class Sprint {
 		this.createTime = createTime;
 	}
 	
-	public long getId() {
-		return id;
+	public String getSprintId() {
+		return sprintId;
 	}
-	public void setId(long id) {
-		this.id = id;
+	public void setSprintId(String sprintId) {
+		this.sprintId = sprintId;
 	}
 	public String getGoal() {
 		return goal;
@@ -89,10 +89,10 @@ public class Sprint {
 	public void setDailyPlace(String dailyPlace) {
 		this.dailyPlace = dailyPlace;
 	}
-	public long getProductId() {
+	public String getProductId() {
 		return productId;
 	}
-	public void setProductId(long productId) {
+	public void setProductId(String productId) {
 		this.productId = productId;
 	}
 	public String getCreateTime() {

@@ -3,28 +3,39 @@ package unitTest;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import model.CommittedBacklogItem;
-import useCase.CreateBacklogItem;
-import useCase.CreateCommittedBacklogItem;
+import factory.testData.BacklogItemTestDataFactory;
+import factory.testData.SprintTestDataFactory;
+import useCase.ApplicationContext;
+import useCase.AssignBacklogItemToSprint;
 
 public class CommittedBacklogItemTest {
-	CreateBacklogItem newStory;
+	ApplicationContext context;
+	String sprintId;
+	String backlogItemId;
 
 	@Before
 	public void setUp() {
-		newStory = new CreateBacklogItem();
+		context = ApplicationContext.newInstance();
+		//BacklogItemTestDataFactory, SprintTestDataFactory裡面就讓 ProductTestDataFactory 幫我們建立好Product了
+		BacklogItemTestDataFactory backlogItemTestDataFactory = new BacklogItemTestDataFactory(this.context);
+		backlogItemId = backlogItemTestDataFactory.createTestData();
+		SprintTestDataFactory sprintTestDataFactory = new SprintTestDataFactory(this.context);
+		sprintId = sprintTestDataFactory.createTestData();
+	}
+	@After
+	public void tearDown() {
+		context.getProducts().clear();
+		context.getSprints().clear();
+		context.getBacklogItems().clear();
 	}
 	@Test
-	public void assignBacklogItemToSprint() {
-		long productId = 1;
-		String description = "As a ezScrum developer , I want to test addBacklogItem.";
-		long sprintId = 1;
-		CreateCommittedBacklogItem committedBacklogItem = new CreateCommittedBacklogItem();
-		CommittedBacklogItem newCommittedBacklogItem = committedBacklogItem.addCommittedBacklogItem(sprintId,
-				newStory.addBacklogItem(productId, description, 0, 0, null));
-		assertEquals(1,newCommittedBacklogItem.getCommittedBacklogItemId());
+	public void assignBacklogItemToSprintTest() {
+		AssignBacklogItemToSprint assignBacklogItemToSprintUseCase = new AssignBacklogItemToSprint();
+		String committedBacklogItemId = assignBacklogItemToSprintUseCase.execute(context, sprintId, backlogItemId);
+		assertEquals(context.getBacklogItems().get(backlogItemId), context.getCommittedBacklogItems().get(committedBacklogItemId).getBacklogItem());
 	}
 }

@@ -1,24 +1,25 @@
 package model;
 
-public class Product {
-	private long productId;
+public class Product extends ezScrumDomainModel {
+	private String productId;
 	private String name;
 	private String comment;
 	private String create_time;
 	private String update_time;
 	
-	public Product() {}
+	public Product() {
+	}
 	
 	public Product(String name,String create_time) {
 		this.name=name;
 		this.create_time=create_time;
 	}
 
-	public long getProductId() {
+	public String getProductId() {
 		return productId;
 	}
 
-	public void setProductId(long productId) {
+	public void setProductId(String productId) {
 		this.productId = productId;
 	}
 

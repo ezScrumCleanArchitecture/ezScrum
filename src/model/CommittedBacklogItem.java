@@ -1,22 +1,22 @@
 package model;
 
-public class CommittedBacklogItem {
-	private long committedBacklogItemId;
+public class CommittedBacklogItem extends ezScrumDomainModel  {
+	private String committedBacklogItemId;
 	private BacklogItem backlogItem;
-	private long sprintId;
+	private String sprintId;
 	
 	public CommittedBacklogItem() {}
 	
-	public CommittedBacklogItem(long sprintId,BacklogItem backlogItem) {
+	public CommittedBacklogItem(String sprintId,BacklogItem backlogItem) {
 		this.sprintId=sprintId;
 		this.backlogItem=backlogItem;
 	}
 
-	public long getCommittedBacklogItemId() {
+	public String getCommittedBacklogItemId() {
 		return committedBacklogItemId;
 	}
 
-	public void setCommittedBacklogItemId(long committedBacklogItemId) {
+	public void setCommittedBacklogItemId(String committedBacklogItemId) {
 		this.committedBacklogItemId = committedBacklogItemId;
 	}
 
@@ -28,11 +28,11 @@ public class CommittedBacklogItem {
 		this.backlogItem = backlogItem;
 	}
 
-	public long getSprintId() {
+	public String getSprintId() {
 		return sprintId;
 	}
 
-	public void setSprintId(long sprintId) {
+	public void setSprintId(String sprintId) {
 		this.sprintId = sprintId;
 	}
 }

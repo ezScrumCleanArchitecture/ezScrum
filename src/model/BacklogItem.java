@@ -1,30 +1,30 @@
 package model;
 
-public class BacklogItem {
-	private long backlogItemId;
+public class BacklogItem extends ezScrumDomainModel {
+	private String backlogItemId;
 	private String description;
 	private String Status;
 	private int estimate;
 	private int importance;
 	private String notes;
-	private long productId; 
-	private long committedBacklogItemId;
+	private String productId; 
+	private String committedBacklogItemId;
 	private String create_time;
 	private String update_time;
 	
 	public BacklogItem() {}
 	
-	public BacklogItem(long productId,String description,String create_time) {
+	public BacklogItem(String productId,String description,String create_time) {
 		this.productId=productId;
 		this.description=description;
 		this.create_time=create_time;
 	}
 
-	public long getBacklogItemId() {
+	public String getBacklogItemId() {
 		return backlogItemId;
 	}
 
-	public void setBacklogItemId(long backlogItemId) {
+	public void setBacklogItemId(String backlogItemId) {
 		this.backlogItemId = backlogItemId;
 	}
 
@@ -68,19 +68,19 @@ public class BacklogItem {
 		this.notes = notes;
 	}
 
-	public long getProductId() {
+	public String getProductId() {
 		return productId;
 	}
 
-	public void setProductId(long productId) {
+	public void setProductId(String productId) {
 		this.productId = productId;
 	}
 
-	public long getCommittedBacklogItemId() {
+	public String getCommittedBacklogItemId() {
 		return committedBacklogItemId;
 	}
 
-	public void setCommittedBacklogItemId(long sprintId) {
+	public void setCommittedBacklogItemId(String sprintId) {
 		this.committedBacklogItemId = sprintId;
 	}
 

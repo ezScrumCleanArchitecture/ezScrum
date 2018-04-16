@@ -1,21 +1,15 @@
 package useCase;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
+import factory.domainModel.ProductFactory;
 import model.Product;
 
 public class CreateProduct {
-	private static long productId=0;
 	
-	public Product addProduct(String name,String comment) {
-		productId++;
-		Calendar calendar = Calendar.getInstance();
-		String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
-		Product product = new Product(name,time);
-		product.setProductId(productId);
-		product.setComment(comment);
-		return product;
+	public String execute(ApplicationContext context, String name,String comment) {
+		ProductFactory productFactory = new ProductFactory(name, comment);
+		Product product = (Product) productFactory.createDomainModel();
+		context.getProducts().put(product.getProductId(), product);
+		return product.getProductId();
 	}
 
 }
