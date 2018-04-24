@@ -6,33 +6,38 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ntut.csie.ezScrum.factory.testData.CommittedBacklogItemTestDataFactory;
-import ntut.csie.ezScrum.model.BacklogItem;
+import ntut.csie.ezScrum.factory.testData.BacklogItemTestDataFactory;
+import ntut.csie.ezScrum.factory.testData.SprintTestDataFactory;
 import ntut.csie.ezScrum.model.Task;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.AssignBacklogItemToSprint;
 import ntut.csie.ezScrum.useCase.CreateTask;
 
 public class TaskTest {
 	ApplicationContext context;
-	String committedBacklogItemId;
+	String backlogItemId;
+	String sprintId;
 
 	@Before
 	public void setUp() {
 		context = ApplicationContext.newInstance();
-		CommittedBacklogItemTestDataFactory committedBacklogItemTestDataFactory = new CommittedBacklogItemTestDataFactory(this.context);
-		this.committedBacklogItemId = committedBacklogItemTestDataFactory.createTestData();
+		BacklogItemTestDataFactory backlogItemTestDataFactory = new BacklogItemTestDataFactory(this.context);
+		this.backlogItemId = backlogItemTestDataFactory.createTestData();
+		SprintTestDataFactory sprintTestDataFactory = new SprintTestDataFactory(this.context);
+		this.sprintId = sprintTestDataFactory.createTestData();
+		AssignBacklogItemToSprint assignBacklogItemToSprintUseCase = new AssignBacklogItemToSprint();
+		assignBacklogItemToSprintUseCase.execute(context, sprintId, backlogItemId);
 	}
 	
 	@After
 	public void tearDown() {
 		context.getProducts().clear();
 		context.getBacklogItems().clear();
+		context.getSprints().clear();
 	}
 	
 	@Test
 	public void AddTaskToBacklogItemTest() {
-		BacklogItem backlogItem = context.getCommittedBacklogItems().get(committedBacklogItemId).getBacklogItem();
-		String backlogItemId = backlogItem.getBacklogItemId();
 		CreateTask createTaskUseCase = new CreateTask();
 		String[] description = {"Write Unit Test to test adding task.", "Create task use case.", "Fix Bug of adding task."};
 		int[] estimate = {5, 3, 8};

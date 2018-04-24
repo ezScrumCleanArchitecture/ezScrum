@@ -10,20 +10,25 @@ import org.junit.Test;
 
 import ntut.csie.ezScrum.factory.testData.BacklogItemTestDataFactory;
 import ntut.csie.ezScrum.factory.testData.ProductTestDataFactory;
+import ntut.csie.ezScrum.factory.testData.SprintTestDataFactory;
 import ntut.csie.ezScrum.model.BacklogItem;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.AssignBacklogItemToSprint;
 import ntut.csie.ezScrum.useCase.CreateBacklogItem;
 import ntut.csie.ezScrum.useCase.GetAllBacklogItem;
 
 public class BacklogItemTest {
 	ApplicationContext context;
 	String productId;
+	String sprintId;
 
 	@Before
 	public void setUp() {
 		context = ApplicationContext.newInstance();
 		ProductTestDataFactory productTestDataFactory = new ProductTestDataFactory(context);
-		productId = productTestDataFactory.createTestData();
+		this.productId = productTestDataFactory.createTestData();
+		SprintTestDataFactory sprintTestDataFactory = new SprintTestDataFactory(this.context);
+		this.sprintId = sprintTestDataFactory.createTestData();
 	}
 	
 	@After
@@ -60,5 +65,15 @@ public class BacklogItemTest {
 			assertEquals(description[i], backlogItemList.get(i).getDescription());
 		}
 		assertEquals(description.length, backlogItemList.size());
+	}
+	
+	@Test
+	public void assignBacklogItemToSprintTest() {
+		String description = "As a ezScrum developer, I want to assign backlog item to sprint.";
+		BacklogItemTestDataFactory backlogItemTestDataFactory = new BacklogItemTestDataFactory(context, productId, description, 0, 0, null);
+		String backlogItemId = backlogItemTestDataFactory.createTestData();
+		AssignBacklogItemToSprint assignBacklogItemToSprintUseCase = new AssignBacklogItemToSprint();
+		assignBacklogItemToSprintUseCase.execute(context, sprintId, backlogItemId);
+		assertEquals(sprintId, context.getBacklogItems().get(backlogItemId).getSprintId());
 	}
 }

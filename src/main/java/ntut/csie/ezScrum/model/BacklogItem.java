@@ -9,7 +9,7 @@ public class BacklogItem extends ezScrumDomainModel {
 	private int importance;
 	private String notes;
 	private String productId; 
-	private String committedBacklogItemId;
+	private String sprintId;
 	private String create_time;
 	private String update_time;
 	
@@ -85,12 +85,12 @@ public class BacklogItem extends ezScrumDomainModel {
 		this.productId = productId;
 	}
 
-	public String getCommittedBacklogItemId() {
-		return committedBacklogItemId;
+	public String getSprintId() {
+		return sprintId;
 	}
 
-	public void setCommittedBacklogItemId(String sprintId) {
-		this.committedBacklogItemId = sprintId;
+	public void setSprintId(String sprintId) {
+		this.sprintId = sprintId;
 	}
 
 	public String getCreate_time() {
