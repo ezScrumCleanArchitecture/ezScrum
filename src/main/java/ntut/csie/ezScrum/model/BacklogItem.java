@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.model;
 
 public class BacklogItem extends ezScrumDomainModel {
 	private String backlogItemId;
+	private long serialId;
 	private String description;
 	private String Status;
 	private int estimate;
@@ -26,6 +27,14 @@ public class BacklogItem extends ezScrumDomainModel {
 
 	public void setBacklogItemId(String backlogItemId) {
 		this.backlogItemId = backlogItemId;
+	}
+	
+	public long getSerialId() {
+		return serialId;
+	}
+	
+	public void setSerialId(long serialId) {
+		this.serialId = serialId;
 	}
 
 	public String getDescription() {

@@ -9,7 +9,7 @@ public class GetAllBacklogItem {
 	public ArrayList<BacklogItem> execute(ApplicationContext context, String productId) {
 		ArrayList<BacklogItem> backlogItemList = new ArrayList<BacklogItem>();
 		for(BacklogItem backlogItem : context.getBacklogItems().values()) {
-			if(backlogItem.getProductId() == productId) {
+			if(backlogItem.getProductId().equals(productId)) {
 				backlogItemList.add(backlogItem);
 			}
 		}

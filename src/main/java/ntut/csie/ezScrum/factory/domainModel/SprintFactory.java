@@ -10,6 +10,7 @@ import ntut.csie.ezScrum.model.Sprint;
 import ntut.csie.ezScrum.model.ezScrumDomainModel;
 
 public class SprintFactory implements DomainModelFactory{
+	private static long serialId;
 	private String goal;
 	private int interval;
 	private int teamSize;
@@ -52,6 +53,7 @@ public class SprintFactory implements DomainModelFactory{
 		end.add(Calendar.DAY_OF_MONTH, -1);
 		String endDate = new SimpleDateFormat("yyyy-MM-dd").format(end.getTime());
 		sprint.setSprintId(sprintId);
+		sprint.setSerialId(++serialId);
 		sprint.setEndDate(endDate);
 		sprint.setDemoDate(demoDate == endDate ? endDate : demoDate);
 		sprint.setDemoPlace(demoPlace);

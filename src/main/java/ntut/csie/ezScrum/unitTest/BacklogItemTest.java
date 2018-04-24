@@ -54,8 +54,8 @@ public class BacklogItemTest {
 			backlogItemTestDataFactory.createTestData();
 		}
 		
-		GetAllBacklogItem getAllBacklogItem  = new GetAllBacklogItem();
-		ArrayList<BacklogItem> backlogItemList = getAllBacklogItem.execute(context, productId);
+		GetAllBacklogItem getAllBacklogItemUseCase  = new GetAllBacklogItem();
+		ArrayList<BacklogItem> backlogItemList = getAllBacklogItemUseCase.execute(context, productId);
 		for(int i=0; i<backlogItemList.size(); i++) {
 			assertEquals(description[i], backlogItemList.get(i).getDescription());
 		}

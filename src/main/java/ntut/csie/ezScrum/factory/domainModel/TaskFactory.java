@@ -9,6 +9,7 @@ import ntut.csie.ezScrum.model.ezScrumDomainModel;
 
 public class TaskFactory implements DomainModelFactory{
 	
+	private static long serialId;
 	private String description;
 	private int estimate;
 	private String notes;
@@ -28,6 +29,7 @@ public class TaskFactory implements DomainModelFactory{
 		String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
 		Task task = new Task(description, backlogItemId, time);
 		task.setTaskId(taskId);
+		task.setSerialId(++serialId);
 		task.setEstimate(estimate);
 		task.setRemain(estimate);
 		task.setNotes(notes);

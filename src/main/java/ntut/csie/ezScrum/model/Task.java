@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.model;
 public class Task extends ezScrumDomainModel {
 	
 	private String taskId;
+	private long serialId;
 	private String description;
 	private String handlerId;
 	private String status;
@@ -26,6 +27,12 @@ public class Task extends ezScrumDomainModel {
 	}
 	public void setTaskId(String taskId) {
 		this.taskId = taskId;
+	}
+	public long getSerialId() {
+		return serialId;
+	}
+	public void setSerialId(long serialId) {
+		this.serialId = serialId;
 	}
 	public String getDescription() {
 		return description;

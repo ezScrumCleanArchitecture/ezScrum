@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.model;
 public class Sprint extends ezScrumDomainModel {
 	
 	private String sprintId;
+	private long serialId;
 	private String goal;
 	private int interval;
 	private int teamSize;
@@ -34,6 +35,12 @@ public class Sprint extends ezScrumDomainModel {
 	}
 	public void setSprintId(String sprintId) {
 		this.sprintId = sprintId;
+	}
+	public long getSerialId() {
+		return serialId;
+	}
+	public void setSerialId(long serialId) {
+		this.serialId = serialId;
 	}
 	public String getGoal() {
 		return goal;

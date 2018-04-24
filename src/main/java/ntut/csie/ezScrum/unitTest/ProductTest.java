@@ -14,7 +14,7 @@ public class ProductTest {
 
 	@Before
 	public void setUp() {
-		context = new ApplicationContext();
+		context = ApplicationContext.newInstance();
 	}
 	
 	@After

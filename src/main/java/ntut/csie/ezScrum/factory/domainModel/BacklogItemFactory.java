@@ -8,6 +8,7 @@ import ntut.csie.ezScrum.model.BacklogItem;
 import ntut.csie.ezScrum.model.ezScrumDomainModel;
 
 public class BacklogItemFactory implements DomainModelFactory{
+	private static long serialId;
 	private String description;
 	private int estimate;
 	private int importance;
@@ -30,6 +31,7 @@ public class BacklogItemFactory implements DomainModelFactory{
 		String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
 		BacklogItem backlogItem = new BacklogItem(productId,description,time);
 		backlogItem.setBacklogItemId(backlogItemId);
+		backlogItem.setSerialId(++serialId);
 		backlogItem.setEstimate(estimate);
 		backlogItem.setImportance(importance);
 		backlogItem.setNotes(notes);
