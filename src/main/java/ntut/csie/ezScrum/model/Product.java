@@ -13,6 +13,7 @@ public class Product extends ezScrumDomainModel {
 	public Product(String name,String create_time) {
 		this.name=name;
 		this.create_time=create_time;
+		this.update_time=create_time;
 	}
 
 	public String getProductId() {

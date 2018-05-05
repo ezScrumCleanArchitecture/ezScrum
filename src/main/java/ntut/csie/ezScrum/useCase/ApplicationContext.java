@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.useCase;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.LinkedHashMap;
@@ -22,23 +23,74 @@ public class ApplicationContext {
 		sprints = Collections.synchronizedMap(new LinkedHashMap<String, Sprint>());
 		tasks = Collections.synchronizedMap(new LinkedHashMap<String, Task>());
 	}
-	public static ApplicationContext newInstance() {
+	public static ApplicationContext getInstance() {
 		if(instance == null) {
 			instance = new ApplicationContext();
 		}
 		return instance;
 	}
-	public Map<String, Product> getProducts() {
-		return products;
-	}
-	public Map<String, BacklogItem> getBacklogItems() {
-		return backlogItems;
-	}
-	public Map<String, Sprint> getSprints() {
-		return sprints;
+	
+	public void addProduct(Product product) {
+		products.put(product.getProductId(), product);
 	}
 	
-	public Map<String, Task> getTasks(){
-		return tasks;
+	public void addBacklogItem(BacklogItem backlogItem) {
+		backlogItems.put(backlogItem.getBacklogItemId(), backlogItem);
+	}
+	
+	public void addSprint(Sprint sprint) {
+		sprints.put(sprint.getSprintId(), sprint);
+	}
+	
+	public void addTask(Task task) {
+		tasks.put(task.getTaskId(), task);
+	}
+	
+	public Collection<Product> getProducts() {
+		return products.values();
+	}
+	
+	public Product getProduct(String productId) {
+		return products.get(productId);
+	}
+	
+	public Collection<BacklogItem> getBacklogItems() {
+		return backlogItems.values();
+	}
+	
+	public BacklogItem getBacklogItem(String backlogItemId) {
+		return backlogItems.get(backlogItemId);
+	}
+	
+	public Collection<Sprint> getSprints() {
+		return sprints.values();
+	}
+	
+	public Sprint getSprint(String sprintId) {
+		return sprints.get(sprintId);
+	}
+	
+	public Collection<Task> getTasks(){
+		return tasks.values();
+	}
+	
+	public Task getTask(String taskId) {
+		return tasks.get(taskId);
+	}
+	
+	public void clearProducts() {
+		products.clear();
+	}
+	
+	public void clearBacklogItems() {
+		backlogItems.clear();
+	}
+	
+	public void clearSprints() {
+		sprints.clear();
+	}
+	
+	public void clearTasks() {
+		tasks.clear();
 	}
 }

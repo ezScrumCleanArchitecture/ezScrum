@@ -6,53 +6,137 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ntut.csie.ezScrum.factory.testData.ProductTestDataFactory;
+import ntut.csie.ezScrum.model.Product;
 import ntut.csie.ezScrum.model.Sprint;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
-import ntut.csie.ezScrum.useCase.CreateSprint;
+import ntut.csie.ezScrum.useCase.Product.ProductBuilder;
+import ntut.csie.ezScrum.useCase.Product.ProductManagerUseCase;
+import ntut.csie.ezScrum.useCase.Sprint.SprintBuilder;
+import ntut.csie.ezScrum.useCase.Sprint.SprintManagerUseCase;
 
 public class SprintTest {
 	
-	ApplicationContext context;
-	String productId;
+	private ApplicationContext context;
+	private String productId;
 
 	@Before
 	public void setUp() {
-		context = ApplicationContext.newInstance();
-		ProductTestDataFactory productTestDataFactory = new ProductTestDataFactory(context);
-		productId = productTestDataFactory.createTestData();
+		context = ApplicationContext.getInstance();
+		ProductManagerUseCase productManagerUseCase = new ProductManagerUseCase(context);
+		Product product = null;
+		try {
+			product = ProductBuilder.newInstance().
+					name("ezScrum").
+					comment("This is the comment for ezScrum Product.").
+					build();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		productId = productManagerUseCase.addProduct(product);
 	}
 	
 	@After
 	public void tearDown() {
-		context.getProducts().clear();
-		context.getSprints().clear();
+		context.clearProducts();
+		context.clearSprints();
+	}
+	
+	@Test
+	public void Should_RequiredDataInsertIntoSprint_When_AddSprintWithRequiredParamemter() {
+		SprintManagerUseCase sprintManagerUseCase = new SprintManagerUseCase(context);
+		String goal = "Implement the function of creating sprint.";
+		String startDate = "2018-04-09";
+		String endDate = "2018-04-22";
+		int interval = 2;
+		String demoDate = "2018-04-22";
+		Sprint sprint = null;
+		try {
+			sprint = SprintBuilder.newIntance().
+					goal(goal).
+					interval(interval).
+					startDate(startDate).
+					demoDate(demoDate).
+					productId(productId).
+					build();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		String sprintId = sprintManagerUseCase.addSprint(sprint);
+		Sprint testedSprint = context.getSprint(sprintId);
+		assertEquals(sprintId, testedSprint.getSprintId());
+		assertEquals(goal, testedSprint.getGoal());
+		assertEquals(interval, testedSprint.getInterval());
+		assertEquals(0, testedSprint.getTeamSize());
+		assertEquals(startDate, testedSprint.getStartDate());
+		assertEquals(endDate, testedSprint.getEndDate());
+		assertEquals(demoDate, testedSprint.getDemoDate());
+		assertEquals(null, testedSprint.getDemoPlace());
+		assertEquals(null, testedSprint.getDailyTime());
+		assertEquals(null, testedSprint.getDailyPlace());
+		assertEquals(productId, testedSprint.getProductId());
 	}
 
 	@Test
-	public void addSprintTest() {
-		CreateSprint createSprintUseCase = new CreateSprint();
+	public void Should_AllDataInsertIntoSprint_When_AddSprintWithAllParamemter() {
+		SprintManagerUseCase sprintManagerUseCase = new SprintManagerUseCase(context);
 		String goal = "Implement the function of creating sprint.";
-		int interval = 2;
 		int teamSize = 3;
 		String startDate = "2018-04-09";
+		int interval = 2;
 		String endDate = "2018-04-22";
 		String demoDate = "2018-04-22";
 		String demoPlace = "1622";
 		String dailyTime = "10:00";
 		String dailyPlace = "1321";
-		String sprintId = createSprintUseCase.execute(context, goal, interval, teamSize, startDate, demoDate, demoPlace, dailyTime, dailyPlace, productId);
-		Sprint sprint = context.getSprints().get(sprintId);
-		assertEquals(sprintId, sprint.getSprintId());
-		assertEquals(goal, sprint.getGoal());
-		assertEquals(interval, sprint.getInterval());
-		assertEquals(teamSize, sprint.getTeamSize());
-		assertEquals(startDate, sprint.getStartDate());
-		assertEquals(endDate, sprint.getEndDate());
-		assertEquals(demoDate, sprint.getDemoDate());
-		assertEquals(demoPlace, sprint.getDemoPlace());
-		assertEquals(dailyTime, sprint.getDailyTime());
-		assertEquals(dailyPlace, sprint.getDailyPlace());
-		assertEquals(productId, sprint.getProductId());
+		Sprint sprint = null;
+		try {
+			sprint = SprintBuilder.newIntance().
+					goal(goal).
+					interval(interval).
+					teamSize(teamSize).
+					startDate(startDate).
+					endDate(endDate).
+					demoDate(demoDate).
+					demoPlace(demoPlace).
+					dailyTime(dailyTime).
+					dailyPlace(dailyPlace).
+					productId(productId).
+					build();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		String sprintId = sprintManagerUseCase.addSprint(sprint);
+		Sprint testedSprint = context.getSprint(sprintId);
+		assertEquals(sprintId, testedSprint.getSprintId());
+		assertEquals(goal, testedSprint.getGoal());
+		assertEquals(interval, testedSprint.getInterval());
+		assertEquals(teamSize, testedSprint.getTeamSize());
+		assertEquals(startDate, testedSprint.getStartDate());
+		assertEquals(endDate, testedSprint.getEndDate());
+		assertEquals(demoDate, testedSprint.getDemoDate());
+		assertEquals(demoPlace, testedSprint.getDemoPlace());
+		assertEquals(dailyTime, testedSprint.getDailyTime());
+		assertEquals(dailyPlace, testedSprint.getDailyPlace());
+		assertEquals(productId, testedSprint.getProductId());
+	}
+	
+	@Test
+	public void Should_ThrowException_When_AddSprintWithEmptyParamemter() {
+		String exceptionMessage = "The goal of the sprint should not be null.\n" +
+				"The interval of the sprint should not be zero.\n" +
+				"The start date of the sprint should not be null.\n" +
+				"The demo date of the sprint should not be null.\n";
+		try {
+			SprintBuilder.newIntance().
+				goal(null).
+				interval(0).
+				startDate(null).
+				demoDate(null).
+				build();
+		} catch (Exception e) {
+			assertEquals(exceptionMessage, e.getMessage());
+		}
 	}
 }

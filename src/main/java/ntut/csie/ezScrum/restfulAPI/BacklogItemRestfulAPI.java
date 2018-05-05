@@ -17,14 +17,15 @@ import org.json.JSONObject;
 
 import ntut.csie.ezScrum.model.BacklogItem;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
-import ntut.csie.ezScrum.useCase.CreateBacklogItem;
-import ntut.csie.ezScrum.useCase.GetAllBacklogItem;
+import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemBuilder;
+import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemDTO;
+import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemManagerUseCase;
 
 @Path("/product/{productId}/backlogItem")
 @Singleton
 public class BacklogItemRestfulAPI {
 	
-	public ApplicationContext context = ApplicationContext.newInstance();
+	ApplicationContext context = ApplicationContext.getInstance();
 	
 	@POST
 	@Path("/addBacklogItem")
@@ -43,20 +44,31 @@ public class BacklogItemRestfulAPI {
 			importance = backlogItem.getInt("importance");
 			notes = backlogItem.getString("notes");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		CreateBacklogItem createBacklogItemUseCase = new CreateBacklogItem();
-		String backlogItemId = createBacklogItemUseCase.execute(context, productId, description, estimate, importance, notes);
+		BacklogItemManagerUseCase backlogItemUseCase = new BacklogItemManagerUseCase(context);
+		BacklogItem backlogItem = null;
+		try {
+			backlogItem = BacklogItemBuilder.newInstance().
+					productId(productId).
+					description(description).
+					estimate(estimate).
+					importance(importance).
+					notes(notes).
+					build();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String backlogItemId = backlogItemUseCase.addBacklogItem(backlogItem);
 		return backlogItemId;
 	}
 	
 	@GET
 	@Path("/getAllBacklogItem")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ArrayList<BacklogItem> getAllBacklogItem(@PathParam("productId") String productId) {
-		GetAllBacklogItem getAllBacklogItemUseCase = new GetAllBacklogItem();
-		ArrayList<BacklogItem> backlogItemList = getAllBacklogItemUseCase.execute(context, productId);
+	public ArrayList<BacklogItemDTO> getAllBacklogItem(@PathParam("productId") String productId) {
+		BacklogItemManagerUseCase backlogItemManagerUseCase = new BacklogItemManagerUseCase(context);
+		ArrayList<BacklogItemDTO> backlogItemList = backlogItemManagerUseCase.getBacklogItemsForUI(productId);
 		return backlogItemList;
 	}
 	

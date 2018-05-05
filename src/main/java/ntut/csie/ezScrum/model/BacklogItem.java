@@ -19,6 +19,7 @@ public class BacklogItem extends ezScrumDomainModel {
 		this.productId=productId;
 		this.description=description;
 		this.create_time=create_time;
+		this.update_time=create_time;
 	}
 
 	public String getBacklogItemId() {

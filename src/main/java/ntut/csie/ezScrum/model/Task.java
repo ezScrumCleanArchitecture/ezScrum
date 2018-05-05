@@ -20,6 +20,7 @@ public class Task extends ezScrumDomainModel {
 		this.description = description;
 		this.backlogItemId = backlogItemId;
 		this.createTime = createTime;
+		this.updateTime = createTime;
 	}
 	
 	public String getTaskId() {

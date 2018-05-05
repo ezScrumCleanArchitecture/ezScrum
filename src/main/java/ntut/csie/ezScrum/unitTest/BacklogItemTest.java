@@ -8,59 +8,145 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ntut.csie.ezScrum.factory.testData.BacklogItemTestDataFactory;
-import ntut.csie.ezScrum.factory.testData.ProductTestDataFactory;
-import ntut.csie.ezScrum.factory.testData.SprintTestDataFactory;
 import ntut.csie.ezScrum.model.BacklogItem;
+import ntut.csie.ezScrum.model.Product;
+import ntut.csie.ezScrum.model.Sprint;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
-import ntut.csie.ezScrum.useCase.AssignBacklogItemToSprint;
-import ntut.csie.ezScrum.useCase.CreateBacklogItem;
-import ntut.csie.ezScrum.useCase.GetAllBacklogItem;
+import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemBuilder;
+import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemManagerUseCase;
+import ntut.csie.ezScrum.useCase.Product.ProductBuilder;
+import ntut.csie.ezScrum.useCase.Product.ProductManagerUseCase;
+import ntut.csie.ezScrum.useCase.Sprint.SprintBuilder;
+import ntut.csie.ezScrum.useCase.Sprint.SprintManagerUseCase;
 
 public class BacklogItemTest {
-	ApplicationContext context;
-	String productId;
-	String sprintId;
+	private ApplicationContext context;
+	private String productId;
+	private String sprintId;
 
 	@Before
 	public void setUp() {
-		context = ApplicationContext.newInstance();
-		ProductTestDataFactory productTestDataFactory = new ProductTestDataFactory(context);
-		this.productId = productTestDataFactory.createTestData();
-		SprintTestDataFactory sprintTestDataFactory = new SprintTestDataFactory(this.context);
-		this.sprintId = sprintTestDataFactory.createTestData();
+		context = ApplicationContext.getInstance();
+		ProductManagerUseCase productManagerUseCase = new ProductManagerUseCase(context);
+		SprintManagerUseCase sprintManagerUseCase = new SprintManagerUseCase(context);
+		Product product = null;
+		try {
+			product = ProductBuilder.newInstance().
+					name("ezScrum").
+					comment("This is the comment for ezScrum Product.").
+					build();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		productId = productManagerUseCase.addProduct(product);
+		Sprint sprint = null;
+		try {
+			sprint = SprintBuilder.newIntance().
+					goal("The goal of ezScrum.").
+					interval(2).
+					startDate("2018-05-05").
+					demoDate("2018-05-19").
+					demoPlace("The place for demo ezScrum").
+					productId(productId).
+					build();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		sprintId = sprintManagerUseCase.addSprint(sprint);
 	}
 	
 	@After
 	public void tearDown() {
-		context.getProducts().clear();
-		context.getBacklogItems().clear();
+		context.clearProducts();
+		context.clearSprints();
+		context.clearBacklogItems();
 	}
 
 	@Test
-	public void addBacklogItemTest() {
-		CreateBacklogItem createBacklogItemUseCase = new CreateBacklogItem();
-		String description = "As a ezScrum developer , I want to test addBacklogItem.";
-		String backlogItemId1 = createBacklogItemUseCase.execute(context, productId, description, 0, 0, null);
-		assertEquals(description, context.getBacklogItems().get(backlogItemId1).getDescription());
-		assertEquals(backlogItemId1, context.getBacklogItems().get(backlogItemId1).getBacklogItemId());
-		String backlogItemId2 = createBacklogItemUseCase.execute(context, productId, description, 0, 0, null);
-		assertEquals(backlogItemId2, context.getBacklogItems().get(backlogItemId2).getBacklogItemId());
+	public void Should_RequiredDataInsertIntoBacklogItem_When_AddBacklogItemWithRequiredParamemter() {
+		BacklogItemManagerUseCase createBacklogItemUseCase = new BacklogItemManagerUseCase(context);
+		String description = "As a ezScrum developer, I want to test addBacklogItem.";
+		
+		BacklogItem backlogItem = null;
+		try {
+			backlogItem = BacklogItemBuilder.newInstance().
+					productId(productId).
+					description(description).
+					build();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String backlogItemId = createBacklogItemUseCase.addBacklogItem(backlogItem);
+		BacklogItem testedBacklogItem = context.getBacklogItem(backlogItemId);
+		assertEquals(backlogItemId, testedBacklogItem.getBacklogItemId());
+		assertEquals(description, testedBacklogItem.getDescription());
+		assertEquals(0, testedBacklogItem.getEstimate());
+		assertEquals(0, testedBacklogItem.getImportance());
+		assertEquals(null, testedBacklogItem.getNotes());
+	}
+	
+	@Test
+	public void Should_AllDataInsertIntoBacklogItem_When_AddBacklogItemWithAllParamemter() {
+		BacklogItemManagerUseCase createBacklogItemUseCase = new BacklogItemManagerUseCase(context);
+		String description = "As a ezScrum developer, I want to test addBacklogItem.";
+		int estimate = 13;
+		int importance = 90;
+		String notes = "This is the notes for this backlog item.";
+		
+		BacklogItem backlogItem = null;
+		try {
+			backlogItem = BacklogItemBuilder.newInstance().
+					productId(productId).
+					description(description).
+					estimate(estimate).
+					importance(importance).
+					notes(notes).
+					build();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String backlogItemId = createBacklogItemUseCase.addBacklogItem(backlogItem);
+		BacklogItem testedBacklogItem = context.getBacklogItem(backlogItemId);
+		assertEquals(backlogItemId, testedBacklogItem.getBacklogItemId());
+		assertEquals(description, testedBacklogItem.getDescription());
+		assertEquals(estimate, testedBacklogItem.getEstimate());
+		assertEquals(importance, testedBacklogItem.getImportance());
+		assertEquals(notes, testedBacklogItem.getNotes());
+	}
+	
+	@Test
+	public void Should_ThrowExcpetion_When_AddBacklogItemWithEmptyParamemter() {
+		try {
+			BacklogItemBuilder.newInstance().
+					productId(productId).
+					description(null).
+					build();
+		} catch (Exception e) {
+			assertEquals("The description of the backlog item should not be null.", e.getMessage());
+		}
 	}
 
 	@Test
-	public void getBacklogItemTest() {
+	public void Should_ReturnBacklogItemList_When_GetAllBacklogItem() {
+		BacklogItemManagerUseCase backlogItemManagerUseCase  = new BacklogItemManagerUseCase(context);
 		String[] description = {"As a ezScrum developer, I want to get the first backlog item.",
 				"As a ezScrum developer, I want to get the second backlog item.",
 				"As a ezScrum developer, I want to get the third backlog item."
 		};
 		for(int i=0; i<description.length; i++) {
-			BacklogItemTestDataFactory backlogItemTestDataFactory = new BacklogItemTestDataFactory(context, productId, description[i], 0, 0, null);
-			backlogItemTestDataFactory.createTestData();
+			BacklogItem backlogItem = null;
+			try {
+				backlogItem = BacklogItemBuilder.newInstance().
+						productId(productId).
+						description(description[i]).
+						build();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			backlogItemManagerUseCase.addBacklogItem(backlogItem);
 		}
 		
-		GetAllBacklogItem getAllBacklogItemUseCase  = new GetAllBacklogItem();
-		ArrayList<BacklogItem> backlogItemList = getAllBacklogItemUseCase.execute(context, productId);
+		ArrayList<BacklogItem> backlogItemList = backlogItemManagerUseCase.getBacklogItems(productId);
 		for(int i=0; i<backlogItemList.size(); i++) {
 			assertEquals(description[i], backlogItemList.get(i).getDescription());
 		}
@@ -68,12 +154,21 @@ public class BacklogItemTest {
 	}
 	
 	@Test
-	public void assignBacklogItemToSprintTest() {
-		String description = "As a ezScrum developer, I want to assign backlog item to sprint.";
-		BacklogItemTestDataFactory backlogItemTestDataFactory = new BacklogItemTestDataFactory(context, productId, description, 0, 0, null);
-		String backlogItemId = backlogItemTestDataFactory.createTestData();
-		AssignBacklogItemToSprint assignBacklogItemToSprintUseCase = new AssignBacklogItemToSprint();
-		assignBacklogItemToSprintUseCase.execute(context, sprintId, backlogItemId);
-		assertEquals(sprintId, context.getBacklogItems().get(backlogItemId).getSprintId());
+	public void Should_SetSprintIdForBacklogItem_When_AssignBacklogItemToSprint() {
+		BacklogItem backlogItem = null;
+		try {
+			backlogItem = BacklogItemBuilder.newInstance().
+					productId(productId).
+					description("The description of ezScrum.").
+					build();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		BacklogItemManagerUseCase backlogItemManagerUseCase = new BacklogItemManagerUseCase(context);
+		backlogItemManagerUseCase.addBacklogItem(backlogItem);
+		String backlogItemId = backlogItem.getBacklogItemId();
+		backlogItemManagerUseCase.assignBacklogItemToSprint(sprintId, backlogItemId);
+		assertEquals(sprintId, context.getBacklogItem(backlogItemId).getSprintId());
 	}
 }

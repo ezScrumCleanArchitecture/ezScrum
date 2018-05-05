@@ -28,6 +28,7 @@ public class Sprint extends ezScrumDomainModel {
 		this.demoDate = demoDate;
 		this.productId = productId;
 		this.createTime = createTime;
+		this.updateTime = createTime;
 	}
 	
 	public String getSprintId() {
