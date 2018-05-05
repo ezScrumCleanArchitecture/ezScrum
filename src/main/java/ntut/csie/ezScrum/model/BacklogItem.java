@@ -1,6 +1,6 @@
 package ntut.csie.ezScrum.model;
 
-public class BacklogItem extends ezScrumDomainModel {
+public class BacklogItem {
 	private String backlogItemId;
 	private long serialId;
 	private String description;

@@ -1,6 +1,6 @@
 package ntut.csie.ezScrum.model;
 
-public class Task extends ezScrumDomainModel {
+public class Task {
 	
 	private String taskId;
 	private long serialId;

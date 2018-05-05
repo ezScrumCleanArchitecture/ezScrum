@@ -1,6 +1,6 @@
 package ntut.csie.ezScrum.model;
 
-public class Product extends ezScrumDomainModel {
+public class Product{
 	private String productId;
 	private String name;
 	private String comment;

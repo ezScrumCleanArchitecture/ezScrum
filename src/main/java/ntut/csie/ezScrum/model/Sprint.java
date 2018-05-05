@@ -1,6 +1,6 @@
 package ntut.csie.ezScrum.model;
 
-public class Sprint extends ezScrumDomainModel {
+public class Sprint {
 	
 	private String sprintId;
 	private long serialId;
