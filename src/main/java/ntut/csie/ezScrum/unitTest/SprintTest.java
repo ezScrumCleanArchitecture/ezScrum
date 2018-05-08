@@ -51,7 +51,7 @@ public class SprintTest {
 		String demoDate = "2018-04-22";
 		Sprint sprint = null;
 		try {
-			sprint = SprintBuilder.newIntance().
+			sprint = SprintBuilder.newInstance().
 					goal(goal).
 					interval(interval).
 					startDate(startDate).
@@ -91,7 +91,7 @@ public class SprintTest {
 		String dailyPlace = "1321";
 		Sprint sprint = null;
 		try {
-			sprint = SprintBuilder.newIntance().
+			sprint = SprintBuilder.newInstance().
 					goal(goal).
 					interval(interval).
 					teamSize(teamSize).
@@ -129,7 +129,7 @@ public class SprintTest {
 				"The start date of the sprint should not be null.\n" +
 				"The demo date of the sprint should not be null.\n";
 		try {
-			SprintBuilder.newIntance().
+			SprintBuilder.newInstance().
 				goal(null).
 				interval(0).
 				startDate(null).

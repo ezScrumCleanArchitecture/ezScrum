@@ -57,7 +57,7 @@ public class TaskTest {
 		backlogItemId = backlogItemManagerUseCase.addBacklogItem(backlogItem);
 		Sprint sprint = null;
 		try {
-			sprint = SprintBuilder.newIntance().
+			sprint = SprintBuilder.newInstance().
 					goal("The goal of ezScrum.").
 					interval(2).
 					startDate("2018-05-05").

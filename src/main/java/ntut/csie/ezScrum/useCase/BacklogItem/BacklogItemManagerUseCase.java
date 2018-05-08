@@ -40,6 +40,7 @@ public class BacklogItemManagerUseCase {
 	
 	private BacklogItemDTO covertBacklogItemToDTO(BacklogItem backlogItem) {
 		BacklogItemDTO backlogItemDTO = new BacklogItemDTO();
+		backlogItemDTO.setBacklogItemId(backlogItem.getBacklogItemId());
 		backlogItemDTO.setSerialId(backlogItem.getSerialId());
 		backlogItemDTO.setDescription(backlogItem.getDescription());
 		backlogItemDTO.setEstimate(backlogItem.getEstimate());
@@ -59,5 +60,19 @@ public class BacklogItemManagerUseCase {
 		BacklogItem backlogItem = context.getBacklogItem(backlogItemId);
 		backlogItem.setSprintId(sprintId);
 	}
-
+	
+	public String editBacklogItem(String backlogItemId, BacklogItemDTO backlogItemDTO) {
+		BacklogItem backlogItem = context.getBacklogItem(backlogItemId);
+		backlogItem.setDescription(backlogItemDTO.getDescription());
+		backlogItem.setEstimate(backlogItemDTO.getEstimate());
+		backlogItem.setImportance(backlogItemDTO.getImportance());
+		backlogItem.setNotes(backlogItemDTO.getNotes());
+		context.editBacklogItem(backlogItemId, backlogItem);
+		return backlogItemId;
+	}
+	
+	public String deleteBacklogItem(String backlogItemId) {
+		context.deleteBacklogItem(backlogItemId);
+		return backlogItemId;
+	}
 }

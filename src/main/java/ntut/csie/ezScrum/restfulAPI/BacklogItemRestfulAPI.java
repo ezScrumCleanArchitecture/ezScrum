@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -26,6 +27,7 @@ import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemManagerUseCase;
 public class BacklogItemRestfulAPI {
 	
 	ApplicationContext context = ApplicationContext.getInstance();
+	BacklogItemManagerUseCase backlogItemManagerUseCase = new BacklogItemManagerUseCase(context);
 	
 	@POST
 	@Path("/addBacklogItem")
@@ -38,15 +40,14 @@ public class BacklogItemRestfulAPI {
 		int importance = 0;
 		String notes = "";
 		try {
-			JSONObject backlogItem = new JSONObject(backlogItemInfo);
-			description = backlogItem.getString("description");
-			estimate = backlogItem.getInt("estimate");
-			importance = backlogItem.getInt("importance");
-			notes = backlogItem.getString("notes");
+			JSONObject backlogItemJSON = new JSONObject(backlogItemInfo);
+			description = backlogItemJSON.getString("description");
+			estimate = backlogItemJSON.getInt("estimate");
+			importance = backlogItemJSON.getInt("importance");
+			notes = backlogItemJSON.getString("notes");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		BacklogItemManagerUseCase backlogItemUseCase = new BacklogItemManagerUseCase(context);
 		BacklogItem backlogItem = null;
 		try {
 			backlogItem = BacklogItemBuilder.newInstance().
@@ -59,7 +60,7 @@ public class BacklogItemRestfulAPI {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String backlogItemId = backlogItemUseCase.addBacklogItem(backlogItem);
+		String backlogItemId = backlogItemManagerUseCase.addBacklogItem(backlogItem);
 		return backlogItemId;
 	}
 	
@@ -67,9 +68,46 @@ public class BacklogItemRestfulAPI {
 	@Path("/getAllBacklogItem")
 	@Produces(MediaType.APPLICATION_JSON)
 	public ArrayList<BacklogItemDTO> getAllBacklogItem(@PathParam("productId") String productId) {
-		BacklogItemManagerUseCase backlogItemManagerUseCase = new BacklogItemManagerUseCase(context);
 		ArrayList<BacklogItemDTO> backlogItemList = backlogItemManagerUseCase.getBacklogItemsForUI(productId);
 		return backlogItemList;
 	}
 	
+	@POST
+	@Path("/editBacklogItem")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String editBacklogItem(@PathParam("productId") String productId, 
+			String backlogItemInfo) {
+		String backlogItemId = "";
+		String description = "";
+		int estimate = 0;
+		int importance = 0;
+		String notes = "";
+		try {
+			JSONObject backlogItemJSON = new JSONObject(backlogItemInfo);
+			backlogItemId = backlogItemJSON.getString("backlogItemId");
+			description = backlogItemJSON.getString("description");
+			estimate = backlogItemJSON.getInt("estimate");
+			importance = backlogItemJSON.getInt("importance");
+			notes = backlogItemJSON.getString("notes");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		BacklogItemDTO backlogItemDTO = new BacklogItemDTO();
+		backlogItemDTO.setBacklogItemId(backlogItemId);
+		backlogItemDTO.setDescription(description);
+		backlogItemDTO.setEstimate(estimate);
+		backlogItemDTO.setImportance(importance);
+		backlogItemDTO.setNotes(notes);
+		backlogItemManagerUseCase.editBacklogItem(backlogItemId, backlogItemDTO);
+		return backlogItemId;
+	}
+	
+	@POST
+	@Path("/deleteBacklogItem/{backlogItemId}")
+	public String deleteBacklogItem(@PathParam("productId") String productId,
+			@PathParam("backlogItemId") String backlogItemId) {
+		backlogItemManagerUseCase.deleteBacklogItem(backlogItemId);
+		return backlogItemId;
+	}
 }

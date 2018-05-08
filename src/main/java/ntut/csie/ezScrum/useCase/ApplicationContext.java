@@ -11,7 +11,7 @@ import ntut.csie.ezScrum.model.Sprint;
 import ntut.csie.ezScrum.model.Task;
 
 public class ApplicationContext {
-	private static ApplicationContext instance=null;
+	private static ApplicationContext instance = null;
 	private Map<String, Product> products;
 	private Map<String, BacklogItem> backlogItems;
 	private Map<String, Sprint> sprints;
@@ -92,5 +92,37 @@ public class ApplicationContext {
 	
 	public void clearTasks() {
 		tasks.clear();
+	}
+	
+	public void editProduct(Product product) {
+		products.replace(product.getProductId(), product);
+	}
+	
+	public void editBacklogItem(String backlogItemId, BacklogItem backlogItem) {
+		backlogItems.replace(backlogItemId, backlogItem);
+	}
+	
+	public void editSprint(Sprint sprint) {
+		sprints.replace(sprint.getSprintId(), sprint);
+	}
+	
+	public void editTask(Task task) {
+		tasks.replace(task.getTaskId(), task);
+	}
+	
+	public void deleteProduct(String productId) {
+		products.remove(productId);
+	}
+	
+	public void deleteBacklogItem(String backlogItemId) {
+		backlogItems.remove(backlogItemId);
+	}
+	
+	public void deleteSprint(String sprintId) {
+		sprints.remove(sprintId);
+	}
+	
+	public void deleteTask(String taskId) {
+		tasks.remove(taskId);
 	}
 }

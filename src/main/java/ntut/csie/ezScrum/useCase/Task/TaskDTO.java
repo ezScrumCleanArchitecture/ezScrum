@@ -1,22 +1,15 @@
-package ntut.csie.ezScrum.useCase.BacklogItem;
+package ntut.csie.ezScrum.useCase.Task;
 
-public class BacklogItemDTO {
-
-	private String backlogItemId;
+public class TaskDTO {
 	private long serialId;
 	private String description;
-	private String Status;
+	private String handlerId;
+	private String status;
 	private int estimate;
-	private int importance;
-	private long sprintSerialId;
+	private int remain;
 	private String notes;
+	private long backlogItemSerialId;
 	
-	public String getBacklogItemId() {
-		return backlogItemId;
-	}
-	public void setBacklogItemId(String backlogItemId) {
-		this.backlogItemId = backlogItemId;
-	}
 	public long getSerialId() {
 		return serialId;
 	}
@@ -29,11 +22,17 @@ public class BacklogItemDTO {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	public String getHandlerId() {
+		return handlerId;
+	}
+	public void setHandlerId(String handlerId) {
+		this.handlerId = handlerId;
+	}
 	public String getStatus() {
-		return Status;
+		return status;
 	}
 	public void setStatus(String status) {
-		Status = status;
+		this.status = status;
 	}
 	public int getEstimate() {
 		return estimate;
@@ -41,23 +40,23 @@ public class BacklogItemDTO {
 	public void setEstimate(int estimate) {
 		this.estimate = estimate;
 	}
-	public int getImportance() {
-		return importance;
+	public int getRemain() {
+		return remain;
 	}
-	public void setImportance(int importance) {
-		this.importance = importance;
-	}
-	public long getSprintSerialId() {
-		return sprintSerialId;
-	}
-	public void setSprintSerialId(long sprintSerialId) {
-		this.sprintSerialId = sprintSerialId;
+	public void setRemain(int remain) {
+		this.remain = remain;
 	}
 	public String getNotes() {
 		return notes;
 	}
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+	public long getBacklogItemSerialId() {
+		return backlogItemSerialId;
+	}
+	public void setBacklogItemSerialId(long backlogItemSerialId) {
+		this.backlogItemSerialId = backlogItemSerialId;
 	}
 	
 }

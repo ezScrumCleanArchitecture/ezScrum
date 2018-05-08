@@ -23,7 +23,7 @@ public class SprintBuilder {
 	private String productId;
 	private String createTime;
 	
-	public static SprintBuilder newIntance() {
+	public static SprintBuilder newInstance() {
 		return new SprintBuilder();
 	}
 	
