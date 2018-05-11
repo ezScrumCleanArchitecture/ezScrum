@@ -102,8 +102,8 @@ public class ApplicationContext {
 		backlogItems.replace(backlogItemId, backlogItem);
 	}
 	
-	public void editSprint(Sprint sprint) {
-		sprints.replace(sprint.getSprintId(), sprint);
+	public void editSprint(String sprintId, Sprint sprint) {
+		sprints.replace(sprintId, sprint);
 	}
 	
 	public void editTask(Task task) {

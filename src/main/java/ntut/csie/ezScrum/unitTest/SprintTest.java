@@ -55,6 +55,7 @@ public class SprintTest {
 					goal(goal).
 					interval(interval).
 					startDate(startDate).
+					endDate(endDate).
 					demoDate(demoDate).
 					productId(productId).
 					build();
@@ -72,8 +73,7 @@ public class SprintTest {
 		assertEquals(endDate, testedSprint.getEndDate());
 		assertEquals(demoDate, testedSprint.getDemoDate());
 		assertEquals(null, testedSprint.getDemoPlace());
-		assertEquals(null, testedSprint.getDailyTime());
-		assertEquals(null, testedSprint.getDailyPlace());
+		assertEquals(null, testedSprint.getDaily());
 		assertEquals(productId, testedSprint.getProductId());
 	}
 
@@ -87,8 +87,7 @@ public class SprintTest {
 		String endDate = "2018-04-22";
 		String demoDate = "2018-04-22";
 		String demoPlace = "1622";
-		String dailyTime = "10:00";
-		String dailyPlace = "1321";
+		String daily = "10:00 1321";
 		Sprint sprint = null;
 		try {
 			sprint = SprintBuilder.newInstance().
@@ -99,8 +98,7 @@ public class SprintTest {
 					endDate(endDate).
 					demoDate(demoDate).
 					demoPlace(demoPlace).
-					dailyTime(dailyTime).
-					dailyPlace(dailyPlace).
+					daily(daily).
 					productId(productId).
 					build();
 		} catch (Exception e) {
@@ -117,8 +115,7 @@ public class SprintTest {
 		assertEquals(endDate, testedSprint.getEndDate());
 		assertEquals(demoDate, testedSprint.getDemoDate());
 		assertEquals(demoPlace, testedSprint.getDemoPlace());
-		assertEquals(dailyTime, testedSprint.getDailyTime());
-		assertEquals(dailyPlace, testedSprint.getDailyPlace());
+		assertEquals(daily, testedSprint.getDaily());
 		assertEquals(productId, testedSprint.getProductId());
 	}
 	

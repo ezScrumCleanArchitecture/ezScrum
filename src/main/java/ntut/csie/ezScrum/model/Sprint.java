@@ -11,8 +11,7 @@ public class Sprint {
 	private String endDate;
 	private String demoDate;
 	private String demoPlace;
-	private String dailyTime;
-	private String dailyPlace;
+	private String daily;
 	private String productId;
 	private String createTime;
 	private String updateTime;
@@ -85,17 +84,11 @@ public class Sprint {
 	public void setDemoPlace(String demoPlace) {
 		this.demoPlace = demoPlace;
 	}
-	public String getDailyTime() {
-		return dailyTime;
+	public String getDaily() {
+		return daily;
 	}
-	public void setDailyTime(String dailyTime) {
-		this.dailyTime = dailyTime;
-	}
-	public String getDailyPlace() {
-		return dailyPlace;
-	}
-	public void setDailyPlace(String dailyPlace) {
-		this.dailyPlace = dailyPlace;
+	public void setDaily(String daily) {
+		this.daily = daily;
 	}
 	public String getProductId() {
 		return productId;
@@ -115,7 +108,5 @@ public class Sprint {
 	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
 	}
-	
-	
 
 }

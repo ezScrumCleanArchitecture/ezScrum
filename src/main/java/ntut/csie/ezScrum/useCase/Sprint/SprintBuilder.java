@@ -1,16 +1,14 @@
 package ntut.csie.ezScrum.useCase.Sprint;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.UUID;
 
 import ntut.csie.ezScrum.model.Sprint;
 
 public class SprintBuilder {
 	private String sprintId;
-	private long serialId;
+	private static long serialId;
 	private String goal;
 	private int interval;
 	private int teamSize;
@@ -18,8 +16,7 @@ public class SprintBuilder {
 	private String endDate;
 	private String demoDate;
 	private String demoPlace;
-	private String dailyTime;
-	private String dailyPlace;
+	private String daily;
 	private String productId;
 	private String createTime;
 	
@@ -62,13 +59,8 @@ public class SprintBuilder {
 		return this;
 	}
 	
-	public SprintBuilder dailyTime(String dailyTime) {
-		this.dailyTime = dailyTime;
-		return this;
-	}
-	
-	public SprintBuilder dailyPlace(String dailyPlace) {
-		this.dailyPlace = dailyPlace;
+	public SprintBuilder daily(String daily) {
+		this.daily = daily;
 		return this;
 	}
 	
@@ -98,24 +90,12 @@ public class SprintBuilder {
 		Calendar calendar = Calendar.getInstance();
 		createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
 		Sprint sprint = new Sprint(goal, interval, teamSize, startDate, demoDate, productId, createTime);
-		Date startTime = null;
-		try {
-			startTime = new SimpleDateFormat("yyyy-MM-dd").parse(startDate);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		Calendar end = Calendar.getInstance();
-		end.setTime(startTime);
-		end.add(Calendar.DAY_OF_MONTH, interval * 7);
-		end.add(Calendar.DAY_OF_MONTH, -1);
-		endDate = new SimpleDateFormat("yyyy-MM-dd").format(end.getTime());
 		sprint.setSprintId(sprintId);
 		sprint.setSerialId(++serialId);
 		sprint.setEndDate(endDate);
-		sprint.setDemoDate(demoDate == endDate ? endDate : demoDate);
+		sprint.setDemoDate(demoDate);
 		sprint.setDemoPlace(demoPlace);
-		sprint.setDailyTime(dailyTime);
-		sprint.setDailyPlace(dailyPlace);
+		sprint.setDaily(daily);
 		return sprint;
 	}
 }

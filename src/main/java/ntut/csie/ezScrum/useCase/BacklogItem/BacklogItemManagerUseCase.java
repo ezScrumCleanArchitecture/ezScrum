@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.useCase.BacklogItem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ntut.csie.ezScrum.model.BacklogItem;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
@@ -18,18 +19,8 @@ public class BacklogItemManagerUseCase {
 		return backlogItem.getBacklogItemId();
 	}
 	
-	public ArrayList<BacklogItem> getBacklogItems(String productId) {
-		ArrayList<BacklogItem> backlogItemList = new ArrayList<BacklogItem>();
-		for(BacklogItem backlogItem : context.getBacklogItems()) {
-			if(backlogItem.getProductId().equals(productId)) {
-				backlogItemList.add(backlogItem);
-			}
-		}
-		return backlogItemList;
-	}
-	
-	public ArrayList<BacklogItemDTO> getBacklogItemsForUI(String productId) {
-		ArrayList<BacklogItemDTO> backlogItemList = new ArrayList<BacklogItemDTO>();
+	public List<BacklogItemDTO> getBacklogItems(String productId) {
+		List<BacklogItemDTO> backlogItemList = new ArrayList<>();
 		for(BacklogItem backlogItem : context.getBacklogItems()) {
 			if(backlogItem.getProductId().equals(productId)) {
 				backlogItemList.add(covertBacklogItemToDTO(backlogItem));
@@ -45,20 +36,12 @@ public class BacklogItemManagerUseCase {
 		backlogItemDTO.setDescription(backlogItem.getDescription());
 		backlogItemDTO.setEstimate(backlogItem.getEstimate());
 		backlogItemDTO.setImportance(backlogItem.getImportance());
-		String sprintId = backlogItem.getSprintId();
-		if(sprintId == null) {
-			backlogItemDTO.setSprintSerialId(0);
-		}else {
-			backlogItemDTO.setSprintSerialId(context.getSprint(sprintId).getSerialId());
-		}
+		backlogItemDTO.setSprintId(backlogItem.getSprintId());
 		backlogItemDTO.setStatus(backlogItem.getStatus());
 		backlogItemDTO.setNotes(backlogItem.getNotes());
+		backlogItemDTO.setCreate_time(backlogItem.getCreate_time());
+		backlogItemDTO.setUpdate_time(backlogItem.getUpdate_time());
 		return backlogItemDTO;
-	}
-	
-	public void assignBacklogItemToSprint(String sprintId, String backlogItemId) {
-		BacklogItem backlogItem = context.getBacklogItem(backlogItemId);
-		backlogItem.setSprintId(sprintId);
 	}
 	
 	public String editBacklogItem(String backlogItemId, BacklogItemDTO backlogItemDTO) {
@@ -75,4 +58,33 @@ public class BacklogItemManagerUseCase {
 		context.deleteBacklogItem(backlogItemId);
 		return backlogItemId;
 	}
+	
+	public void assignBacklogItemToSprint(String sprintId, String backlogItemId) {
+		BacklogItem backlogItem = context.getBacklogItem(backlogItemId);
+		backlogItem.setSprintId(sprintId);
+		context.editBacklogItem(backlogItemId, backlogItem);
+	}
+	
+	public List<BacklogItemDTO> getCommittedBacklogItems(String productId, String sprintId){
+		List<BacklogItemDTO> committedBacklogItemList = new ArrayList<>();
+		for(BacklogItemDTO backlogItemDTO : getBacklogItems(productId)) {
+			if(backlogItemDTO.getSprintId() != null) {
+				if(backlogItemDTO.getSprintId().equals(sprintId)) {
+					committedBacklogItemList.add(backlogItemDTO);
+				}
+			}
+		}
+		return committedBacklogItemList;
+	}
+	
+	public List<BacklogItemDTO> getNotYetCommittedBacklogItems(String productId){
+		List<BacklogItemDTO> notYetCommittedBacklogItemList = new ArrayList<>();
+		for(BacklogItemDTO backlogItemDTO : getBacklogItems(productId)) {
+			if(backlogItemDTO.getSprintId() == null) {
+				notYetCommittedBacklogItemList.add(backlogItemDTO);
+			}
+		}
+		return notYetCommittedBacklogItemList;
+	}
+	
 }

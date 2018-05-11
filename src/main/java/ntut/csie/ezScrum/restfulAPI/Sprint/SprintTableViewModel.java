@@ -1,6 +1,6 @@
-package ntut.csie.ezScrum.useCase.Sprint;
+package ntut.csie.ezScrum.restfulAPI.Sprint;
 
-public class SprintDTO {
+public class SprintTableViewModel {
 	
 	private String sprintId;
 	private long serialId;
@@ -13,21 +13,17 @@ public class SprintDTO {
 	private String demoPlace;
 	private String daily;
 	private String productId;
-	private String createTime;
-	private String updateTime;
 	
-	public SprintDTO() {}
+	public SprintTableViewModel() {}
 	
-	public SprintDTO(String goal, int interval, int teamSize, String startDate,
-			String demoDate, String productId, String createTime) {
+	public SprintTableViewModel(String goal, int interval, int teamSize, String startDate,
+			String demoDate, String productId) {
 		this.goal = goal;
 		this.interval = interval;
 		this.teamSize = teamSize;
 		this.startDate = startDate;
 		this.demoDate = demoDate;
 		this.productId = productId;
-		this.createTime = createTime;
-		this.updateTime = createTime;
 	}
 	
 	public String getSprintId() {
@@ -95,18 +91,6 @@ public class SprintDTO {
 	}
 	public void setProductId(String productId) {
 		this.productId = productId;
-	}
-	public String getCreateTime() {
-		return createTime;
-	}
-	public void setCreateTime(String createTime) {
-		this.createTime = createTime;
-	}
-	public String getUpdateTime() {
-		return updateTime;
-	}
-	public void setUpdateTime(String updateTime) {
-		this.updateTime = updateTime;
 	}
 
 }
