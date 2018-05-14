@@ -14,13 +14,29 @@ public class SprintManagerUseCase {
 		this.context = context;
 	}
 	
-	public String addSprint(Sprint sprint) {
+	public String addSprint(SprintInputDTO sprintInputDTO) {
+		Sprint sprint = null;
+		try {
+			sprint = SprintBuilder.newInstance().
+					goal(sprintInputDTO.getGoal()).
+					interval(sprintInputDTO.getInterval()).
+					teamSize(sprintInputDTO.getTeamSize()).
+					startDate(sprintInputDTO.getStartDate()).
+					endDate(sprintInputDTO.getEndDate()).
+					demoDate(sprintInputDTO.getDemoDate()).
+					demoPlace(sprintInputDTO.getDemoPlace()).
+					daily(sprintInputDTO.getDaily()).
+					productId(sprintInputDTO.getProductId()).
+					build();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		context.addSprint(sprint);
 		return sprint.getSprintId();
 	}
 	
-	public List<SprintDTO> getSprints(String productId) {
-		List<SprintDTO> sprintList = new ArrayList<>();
+	public List<SprintOutputDTO> getSprints(String productId) {
+		List<SprintOutputDTO> sprintList = new ArrayList<>();
 		for(Sprint sprint : context.getSprints()) {
 			if(sprint.getProductId().equals(productId)) {
 				sprintList.add(covertSprintToDTO(sprint));
@@ -29,8 +45,8 @@ public class SprintManagerUseCase {
 		return sprintList;
 	}
 	
-	private SprintDTO covertSprintToDTO(Sprint sprint) {
-		SprintDTO sprintDTO = new SprintDTO();
+	private SprintOutputDTO covertSprintToDTO(Sprint sprint) {
+		SprintOutputDTO sprintDTO = new SprintOutputDTO();
 		sprintDTO.setSprintId(sprint.getSprintId());
 		sprintDTO.setSerialId(sprint.getSerialId());
 		sprintDTO.setGoal(sprint.getGoal());
@@ -46,16 +62,16 @@ public class SprintManagerUseCase {
 		return sprintDTO;
 	}
 	
-	public String editSprint(String sprintId, SprintDTO sprintDTO) {
+	public String editSprint(String sprintId, SprintInputDTO sprintInputDTO) {
 		Sprint sprint = context.getSprint(sprintId);
-		sprint.setGoal(sprintDTO.getGoal());
-		sprint.setInterval(sprintDTO.getInterval());
-		sprint.setTeamSize(sprintDTO.getTeamSize());
-		sprint.setStartDate(sprintDTO.getStartDate());
-		sprint.setEndDate(sprintDTO.getEndDate());
-		sprint.setDemoDate(sprintDTO.getDemoDate());
-		sprint.setDemoPlace(sprintDTO.getDemoPlace());
-		sprint.setDaily(sprintDTO.getDaily());
+		sprint.setGoal(sprintInputDTO.getGoal());
+		sprint.setInterval(sprintInputDTO.getInterval());
+		sprint.setTeamSize(sprintInputDTO.getTeamSize());
+		sprint.setStartDate(sprintInputDTO.getStartDate());
+		sprint.setEndDate(sprintInputDTO.getEndDate());
+		sprint.setDemoDate(sprintInputDTO.getDemoDate());
+		sprint.setDemoPlace(sprintInputDTO.getDemoPlace());
+		sprint.setDaily(sprintInputDTO.getDaily());
 		context.editSprint(sprintId, sprint);
 		return sprint.getSprintId();
 	}

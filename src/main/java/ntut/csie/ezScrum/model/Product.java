@@ -4,16 +4,16 @@ public class Product{
 	private String productId;
 	private String name;
 	private String comment;
-	private String create_time;
-	private String update_time;
+	private String createTime;
+	private String updateTime;
 	
 	public Product() {
 	}
 	
-	public Product(String name,String create_time) {
+	public Product(String name,String createTime) {
 		this.name=name;
-		this.create_time=create_time;
-		this.update_time=create_time;
+		this.createTime=createTime;
+		this.updateTime=createTime;
 	}
 
 	public String getProductId() {
@@ -40,20 +40,20 @@ public class Product{
 		this.comment = comment;
 	}
 
-	public String getCreate_time() {
-		return create_time;
+	public String getCreateTime() {
+		return createTime;
 	}
 
-	public void setCreate_time(String create_time) {
-		this.create_time = create_time;
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
 	}
 
-	public String getUpdate_time() {
-		return update_time;
+	public String getUpdateTime() {
+		return updateTime;
 	}
 
-	public void setUpdate_time(String update_time) {
-		this.update_time = update_time;
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
 	}
 	
 }

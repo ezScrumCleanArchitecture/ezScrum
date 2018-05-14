@@ -10,14 +10,14 @@ import org.junit.Test;
 
 import ntut.csie.ezScrum.model.BacklogItem;
 import ntut.csie.ezScrum.model.Product;
-import ntut.csie.ezScrum.model.Sprint;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
 import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemBuilder;
-import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemDTO;
+import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemInputDTO;
+import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemOutputDTO;
 import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemManagerUseCase;
 import ntut.csie.ezScrum.useCase.Product.ProductBuilder;
 import ntut.csie.ezScrum.useCase.Product.ProductManagerUseCase;
-import ntut.csie.ezScrum.useCase.Sprint.SprintBuilder;
+import ntut.csie.ezScrum.useCase.Sprint.SprintInputDTO;
 import ntut.csie.ezScrum.useCase.Sprint.SprintManagerUseCase;
 
 public class BacklogItemTest {
@@ -40,20 +40,16 @@ public class BacklogItemTest {
 			e.printStackTrace();
 		}
 		productId = productManagerUseCase.addProduct(product);
-		Sprint sprint = null;
-		try {
-			sprint = SprintBuilder.newInstance().
-					goal("The goal of ezScrum.").
-					interval(2).
-					startDate("2018-05-05").
-					demoDate("2018-05-19").
-					demoPlace("The place for demo ezScrum").
-					productId(productId).
-					build();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		sprintId = sprintManagerUseCase.addSprint(sprint);
+		
+		SprintInputDTO sprintInputDTO = new SprintInputDTO();
+		sprintInputDTO.setGoal("The goal of ezScrum.");
+		sprintInputDTO.setInterval(2);
+		sprintInputDTO.setStartDate("2018-05-05");
+		sprintInputDTO.setDemoDate("2018-05-19");
+		sprintInputDTO.setDemoPlace("The place for demo ezScrum");
+		sprintInputDTO.setProductId(productId);
+		
+		sprintId = sprintManagerUseCase.addSprint(sprintInputDTO);
 	}
 	
 	@After
@@ -68,16 +64,10 @@ public class BacklogItemTest {
 		BacklogItemManagerUseCase backlogItemManagerUseCase = new BacklogItemManagerUseCase(context);
 		String description = "As a ezScrum developer, I want to test addBacklogItem.";
 		
-		BacklogItem backlogItem = null;
-		try {
-			backlogItem = BacklogItemBuilder.newInstance().
-					productId(productId).
-					description(description).
-					build();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		String backlogItemId = backlogItemManagerUseCase.addBacklogItem(backlogItem);
+		BacklogItemInputDTO backlogItemInputDTO = new BacklogItemInputDTO();
+		backlogItemInputDTO.setDescription(description);
+		
+		String backlogItemId = backlogItemManagerUseCase.addBacklogItem(backlogItemInputDTO);
 		BacklogItem testedBacklogItem = context.getBacklogItem(backlogItemId);
 		assertEquals(backlogItemId, testedBacklogItem.getBacklogItemId());
 		assertEquals(description, testedBacklogItem.getDescription());
@@ -94,19 +84,13 @@ public class BacklogItemTest {
 		int importance = 90;
 		String notes = "This is the notes for this backlog item.";
 		
-		BacklogItem backlogItem = null;
-		try {
-			backlogItem = BacklogItemBuilder.newInstance().
-					productId(productId).
-					description(description).
-					estimate(estimate).
-					importance(importance).
-					notes(notes).
-					build();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		String backlogItemId = backlogItemManagerUseCase.addBacklogItem(backlogItem);
+		BacklogItemInputDTO backlogItemInputDTO = new BacklogItemInputDTO();
+		backlogItemInputDTO.setDescription(description);
+		backlogItemInputDTO.setEstimate(estimate);
+		backlogItemInputDTO.setImportance(importance);
+		backlogItemInputDTO.setNotes(notes);
+		
+		String backlogItemId = backlogItemManagerUseCase.addBacklogItem(backlogItemInputDTO);
 		BacklogItem testedBacklogItem = context.getBacklogItem(backlogItemId);
 		assertEquals(backlogItemId, testedBacklogItem.getBacklogItemId());
 		assertEquals(description, testedBacklogItem.getDescription());
@@ -135,19 +119,13 @@ public class BacklogItemTest {
 				"As a ezScrum developer, I want to get the third backlog item."
 		};
 		for(int i=0; i<description.length; i++) {
-			BacklogItem backlogItem = null;
-			try {
-				backlogItem = BacklogItemBuilder.newInstance().
-						productId(productId).
-						description(description[i]).
-						build();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			backlogItemManagerUseCase.addBacklogItem(backlogItem);
+			BacklogItemInputDTO backlogItemInputDTO = new BacklogItemInputDTO();
+			backlogItemInputDTO.setDescription(description[i]);
+			backlogItemInputDTO.setProductId(productId);
+			backlogItemManagerUseCase.addBacklogItem(backlogItemInputDTO);
 		}
 		
-		List<BacklogItemDTO> backlogItemList = backlogItemManagerUseCase.getBacklogItems(productId);
+		List<BacklogItemOutputDTO> backlogItemList = backlogItemManagerUseCase.getBacklogItems(productId);
 		for(int i=0; i<backlogItemList.size(); i++) {
 			assertEquals(description[i], backlogItemList.get(i).getDescription());
 		}
@@ -156,19 +134,12 @@ public class BacklogItemTest {
 	
 	@Test
 	public void Should_SetSprintIdForBacklogItem_When_AssignBacklogItemToSprint() {
-		BacklogItem backlogItem = null;
-		try {
-			backlogItem = BacklogItemBuilder.newInstance().
-					productId(productId).
-					description("The description of ezScrum.").
-					build();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		BacklogItemInputDTO backlogItemInputDTO = new BacklogItemInputDTO();
+		backlogItemInputDTO.setProductId(productId);
+		backlogItemInputDTO.setDescription("The description of ezScrum.");
 		
 		BacklogItemManagerUseCase backlogItemManagerUseCase = new BacklogItemManagerUseCase(context);
-		backlogItemManagerUseCase.addBacklogItem(backlogItem);
-		String backlogItemId = backlogItem.getBacklogItemId();
+		String backlogItemId = backlogItemManagerUseCase.addBacklogItem(backlogItemInputDTO);
 		backlogItemManagerUseCase.assignBacklogItemToSprint(sprintId, backlogItemId);
 		assertEquals(sprintId, context.getBacklogItem(backlogItemId).getSprintId());
 	}
@@ -181,33 +152,28 @@ public class BacklogItemTest {
 		int importance = 90;
 		String notes = "This is the notes for this backlog item.";
 		
-		BacklogItem backlogItem = null;
-		try {
-			backlogItem = BacklogItemBuilder.newInstance().
-					productId(productId).
-					description(description).
-					estimate(estimate).
-					importance(importance).
-					notes(notes).
-					build();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		String backlogItemId = backlogItemManagerUseCase.addBacklogItem(backlogItem);
+		BacklogItemInputDTO backlogItemInputDTO = new BacklogItemInputDTO();
+		backlogItemInputDTO.setDescription(description);
+		backlogItemInputDTO.setEstimate(estimate);
+		backlogItemInputDTO.setImportance(importance);
+		backlogItemInputDTO.setNotes(notes);
+		backlogItemInputDTO.setProductId(productId);
+		
+		String backlogItemId = backlogItemManagerUseCase.addBacklogItem(backlogItemInputDTO);
 		
 		String editedDescription = "As a user, I want to edit backlog item.";
 		int editedEstimate = 8;
 		int editedImportance = 95;
 		String editedNotes = "This is the notes about editing backlog item.";
 		
-		BacklogItemDTO backlogItemDTO = new BacklogItemDTO();
+		BacklogItemInputDTO editedBacklogItemDTO = new BacklogItemInputDTO();
 		
-		backlogItemDTO.setDescription(editedDescription);
-		backlogItemDTO.setEstimate(editedEstimate);
-		backlogItemDTO.setImportance(editedImportance);
-		backlogItemDTO.setNotes(editedNotes);
+		editedBacklogItemDTO.setDescription(editedDescription);
+		editedBacklogItemDTO.setEstimate(editedEstimate);
+		editedBacklogItemDTO.setImportance(editedImportance);
+		editedBacklogItemDTO.setNotes(editedNotes);
 		
-		String editedBacklogItemId = backlogItemManagerUseCase.editBacklogItem(backlogItemId, backlogItemDTO);
+		String editedBacklogItemId = backlogItemManagerUseCase.editBacklogItem(backlogItemId, editedBacklogItemDTO);
 		
 		BacklogItem testedBacklogItem = context.getBacklogItem(editedBacklogItemId);
 		
@@ -226,26 +192,21 @@ public class BacklogItemTest {
 		int importance = 90;
 		String notes = "This is the notes for this backlog item.";
 		
-		BacklogItem backlogItem = null;
-		try {
-			backlogItem = BacklogItemBuilder.newInstance().
-					productId(productId).
-					description(description).
-					estimate(estimate).
-					importance(importance).
-					notes(notes).
-					build();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		String backlogItemId = backlogItemManagerUseCase.addBacklogItem(backlogItem);
+		BacklogItemInputDTO backlogItemInputDTO = new BacklogItemInputDTO();
+		backlogItemInputDTO.setDescription(description);
+		backlogItemInputDTO.setEstimate(estimate);
+		backlogItemInputDTO.setImportance(importance);
+		backlogItemInputDTO.setNotes(notes);
+		backlogItemInputDTO.setProductId(productId);
+		
+		String backlogItemId = backlogItemManagerUseCase.addBacklogItem(backlogItemInputDTO);
 		
 		String deletedBacklogItemId = backlogItemManagerUseCase.deleteBacklogItem(backlogItemId);
 		
-		List<BacklogItemDTO> backlogItems = backlogItemManagerUseCase.getBacklogItems(productId);
+		List<BacklogItemOutputDTO> backlogItems = backlogItemManagerUseCase.getBacklogItems(productId);
 		
 		boolean isFound = false;
-		for(BacklogItemDTO backlogItemDTO : backlogItems) {
+		for(BacklogItemOutputDTO backlogItemDTO : backlogItems) {
 			if(backlogItemDTO.getBacklogItemId().equals(deletedBacklogItemId)) {
 				isFound = true;
 				break;
@@ -263,24 +224,19 @@ public class BacklogItemTest {
 		};
 		String[] backlogItemId = new String[description.length];
 		for(int i=0; i<description.length; i++) {
-			BacklogItem backlogItem = null;
-			try {
-				backlogItem = BacklogItemBuilder.newInstance().
-						productId(productId).
-						description(description[i]).
-						build();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			backlogItemId[i] = backlogItemManagerUseCase.addBacklogItem(backlogItem);
+			BacklogItemInputDTO backlogItemInputDTO = new BacklogItemInputDTO();
+			backlogItemInputDTO.setDescription(description[i]);
+			backlogItemInputDTO.setProductId(productId);
+			
+			backlogItemId[i] = backlogItemManagerUseCase.addBacklogItem(backlogItemInputDTO);
 		}
 		
 		for(int i=1; i<description.length; i++) {
 			backlogItemManagerUseCase.assignBacklogItemToSprint(sprintId, backlogItemId[i]);
 		}
 		
-		List<BacklogItemDTO> notYetCommittedBacklogItemList = backlogItemManagerUseCase.getNotYetCommittedBacklogItems(productId);
-		List<BacklogItemDTO> committedBacklogItemList = backlogItemManagerUseCase.getCommittedBacklogItems(productId, sprintId);
+		List<BacklogItemOutputDTO> notYetCommittedBacklogItemList = backlogItemManagerUseCase.getNotYetCommittedBacklogItems(productId);
+		List<BacklogItemOutputDTO> committedBacklogItemList = backlogItemManagerUseCase.getCommittedBacklogItems(productId, sprintId);
 		for(int i=0; i<notYetCommittedBacklogItemList.size(); i++) {
 			assertEquals(description[i], notYetCommittedBacklogItemList.get(i).getDescription());
 		}

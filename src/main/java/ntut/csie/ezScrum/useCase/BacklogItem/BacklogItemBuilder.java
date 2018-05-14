@@ -15,7 +15,7 @@ public class BacklogItemBuilder {
 	private int importance;
 	private String notes;
 	private String productId; 
-	private String create_time;
+	private String createTime;
 	
 	public static BacklogItemBuilder newInstance() {
 		return new BacklogItemBuilder();
@@ -52,8 +52,8 @@ public class BacklogItemBuilder {
 			throw new Exception("The description of the backlog item should not be null.");
 		}
 		Calendar calendar = Calendar.getInstance();
-		create_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
-		BacklogItem backlogItem = new BacklogItem(productId,description,create_time);
+		createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
+		BacklogItem backlogItem = new BacklogItem(productId,description,createTime);
 		backlogItem.setBacklogItemId(backlogItemId);
 		backlogItem.setSerialId(++serialId);
 		backlogItem.setEstimate(estimate);

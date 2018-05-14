@@ -14,13 +14,25 @@ public class BacklogItemManagerUseCase {
 		this.context = context;
 	}
 
-	public String addBacklogItem(BacklogItem backlogItem) {
+	public String addBacklogItem(BacklogItemInputDTO backlogItemInputDTO) {
+		BacklogItem backlogItem = null;
+		try {
+			backlogItem = BacklogItemBuilder.newInstance().
+					productId(backlogItemInputDTO.getProductId()).
+					description(backlogItemInputDTO.getDescription()).
+					estimate(backlogItemInputDTO.getEstimate()).
+					importance(backlogItemInputDTO.getImportance()).
+					notes(backlogItemInputDTO.getNotes()).
+					build();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		context.addBacklogItem(backlogItem);
 		return backlogItem.getBacklogItemId();
 	}
 	
-	public List<BacklogItemDTO> getBacklogItems(String productId) {
-		List<BacklogItemDTO> backlogItemList = new ArrayList<>();
+	public List<BacklogItemOutputDTO> getBacklogItems(String productId) {
+		List<BacklogItemOutputDTO> backlogItemList = new ArrayList<>();
 		for(BacklogItem backlogItem : context.getBacklogItems()) {
 			if(backlogItem.getProductId().equals(productId)) {
 				backlogItemList.add(covertBacklogItemToDTO(backlogItem));
@@ -29,8 +41,8 @@ public class BacklogItemManagerUseCase {
 		return backlogItemList;
 	}
 	
-	private BacklogItemDTO covertBacklogItemToDTO(BacklogItem backlogItem) {
-		BacklogItemDTO backlogItemDTO = new BacklogItemDTO();
+	private BacklogItemOutputDTO covertBacklogItemToDTO(BacklogItem backlogItem) {
+		BacklogItemOutputDTO backlogItemDTO = new BacklogItemOutputDTO();
 		backlogItemDTO.setBacklogItemId(backlogItem.getBacklogItemId());
 		backlogItemDTO.setSerialId(backlogItem.getSerialId());
 		backlogItemDTO.setDescription(backlogItem.getDescription());
@@ -39,17 +51,17 @@ public class BacklogItemManagerUseCase {
 		backlogItemDTO.setSprintId(backlogItem.getSprintId());
 		backlogItemDTO.setStatus(backlogItem.getStatus());
 		backlogItemDTO.setNotes(backlogItem.getNotes());
-		backlogItemDTO.setCreate_time(backlogItem.getCreate_time());
-		backlogItemDTO.setUpdate_time(backlogItem.getUpdate_time());
+		backlogItemDTO.setCreateTime(backlogItem.getCreateTime());
+		backlogItemDTO.setUpdateTime(backlogItem.getUpdateTime());
 		return backlogItemDTO;
 	}
 	
-	public String editBacklogItem(String backlogItemId, BacklogItemDTO backlogItemDTO) {
+	public String editBacklogItem(String backlogItemId, BacklogItemInputDTO backlogItemInputDTO) {
 		BacklogItem backlogItem = context.getBacklogItem(backlogItemId);
-		backlogItem.setDescription(backlogItemDTO.getDescription());
-		backlogItem.setEstimate(backlogItemDTO.getEstimate());
-		backlogItem.setImportance(backlogItemDTO.getImportance());
-		backlogItem.setNotes(backlogItemDTO.getNotes());
+		backlogItem.setDescription(backlogItemInputDTO.getDescription());
+		backlogItem.setEstimate(backlogItemInputDTO.getEstimate());
+		backlogItem.setImportance(backlogItemInputDTO.getImportance());
+		backlogItem.setNotes(backlogItemInputDTO.getNotes());
 		context.editBacklogItem(backlogItemId, backlogItem);
 		return backlogItemId;
 	}
@@ -65,9 +77,9 @@ public class BacklogItemManagerUseCase {
 		context.editBacklogItem(backlogItemId, backlogItem);
 	}
 	
-	public List<BacklogItemDTO> getCommittedBacklogItems(String productId, String sprintId){
-		List<BacklogItemDTO> committedBacklogItemList = new ArrayList<>();
-		for(BacklogItemDTO backlogItemDTO : getBacklogItems(productId)) {
+	public List<BacklogItemOutputDTO> getCommittedBacklogItems(String productId, String sprintId){
+		List<BacklogItemOutputDTO> committedBacklogItemList = new ArrayList<>();
+		for(BacklogItemOutputDTO backlogItemDTO : getBacklogItems(productId)) {
 			if(backlogItemDTO.getSprintId() != null) {
 				if(backlogItemDTO.getSprintId().equals(sprintId)) {
 					committedBacklogItemList.add(backlogItemDTO);
@@ -77,9 +89,9 @@ public class BacklogItemManagerUseCase {
 		return committedBacklogItemList;
 	}
 	
-	public List<BacklogItemDTO> getNotYetCommittedBacklogItems(String productId){
-		List<BacklogItemDTO> notYetCommittedBacklogItemList = new ArrayList<>();
-		for(BacklogItemDTO backlogItemDTO : getBacklogItems(productId)) {
+	public List<BacklogItemOutputDTO> getNotYetCommittedBacklogItems(String productId){
+		List<BacklogItemOutputDTO> notYetCommittedBacklogItemList = new ArrayList<>();
+		for(BacklogItemOutputDTO backlogItemDTO : getBacklogItems(productId)) {
 			if(backlogItemDTO.getSprintId() == null) {
 				notYetCommittedBacklogItemList.add(backlogItemDTO);
 			}

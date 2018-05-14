@@ -17,10 +17,9 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.model.BacklogItem;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
-import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemBuilder;
-import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemDTO;
+import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemInputDTO;
+import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemOutputDTO;
 import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemManagerUseCase;
 
 @Path("/product/{productId}/backlogItem")
@@ -49,19 +48,13 @@ public class BacklogItemRestfulAPI {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		BacklogItem backlogItem = null;
-		try {
-			backlogItem = BacklogItemBuilder.newInstance().
-					productId(productId).
-					description(description).
-					estimate(estimate).
-					importance(importance).
-					notes(notes).
-					build();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		String backlogItemId = backlogItemManagerUseCase.addBacklogItem(backlogItem);
+		BacklogItemInputDTO backlogItemInputDTO = new BacklogItemInputDTO();
+		backlogItemInputDTO.setDescription(description);
+		backlogItemInputDTO.setEstimate(estimate);
+		backlogItemInputDTO.setImportance(importance);
+		backlogItemInputDTO.setNotes(notes);
+		backlogItemInputDTO.setProductId(productId);
+		String backlogItemId = backlogItemManagerUseCase.addBacklogItem(backlogItemInputDTO);
 		return backlogItemId;
 	}
 	
@@ -70,9 +63,9 @@ public class BacklogItemRestfulAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<CommittedBacklogItemTableViewModel> getCommittedBacklogItems(@PathParam("productId") String productId, 
 			@PathParam("sprintId") String sprintId) {
-		List<BacklogItemDTO> backlogItemDTOList = backlogItemManagerUseCase.getCommittedBacklogItems(productId, sprintId);
+		List<BacklogItemOutputDTO> backlogItemDTOList = backlogItemManagerUseCase.getCommittedBacklogItems(productId, sprintId);
 		List<CommittedBacklogItemTableViewModel> backlogItemList = new ArrayList<>();
-		for(BacklogItemDTO backlogItemDTO : backlogItemDTOList) {
+		for(BacklogItemOutputDTO backlogItemDTO : backlogItemDTOList) {
 			CommittedBacklogItemTableViewModel committedBacklogItemTableViewModel = new CommittedBacklogItemTableViewModel();
 			committedBacklogItemTableViewModel.setBacklogItemId(backlogItemDTO.getBacklogItemId());
 			committedBacklogItemTableViewModel.setSerialId(backlogItemDTO.getSerialId());
@@ -89,9 +82,9 @@ public class BacklogItemRestfulAPI {
 	@Path("/getNotYetCommittedBacklogItems")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<NotYetCommittedBacklogItemTableViewModel> getNotYetCommittedBacklogItems(@PathParam("productId") String productId) {
-		List<BacklogItemDTO> backlogItemDTOList = backlogItemManagerUseCase.getNotYetCommittedBacklogItems(productId);
+		List<BacklogItemOutputDTO> backlogItemDTOList = backlogItemManagerUseCase.getNotYetCommittedBacklogItems(productId);
 		List<NotYetCommittedBacklogItemTableViewModel> backlogItemList = new ArrayList<>();
-		for(BacklogItemDTO backlogItemDTO : backlogItemDTOList) {
+		for(BacklogItemOutputDTO backlogItemDTO : backlogItemDTOList) {
 			NotYetCommittedBacklogItemTableViewModel notYetCommittedBacklogItemTableViewModel = new NotYetCommittedBacklogItemTableViewModel();
 			notYetCommittedBacklogItemTableViewModel.setBacklogItemId(backlogItemDTO.getBacklogItemId());
 			notYetCommittedBacklogItemTableViewModel.setSerialId(backlogItemDTO.getSerialId());
@@ -107,9 +100,9 @@ public class BacklogItemRestfulAPI {
 	@Path("/getAllBacklogItem")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<BacklogItemTableViewModel> getAllBacklogItem(@PathParam("productId") String productId) {
-		List<BacklogItemDTO> backlogItemDTOList = backlogItemManagerUseCase.getBacklogItems(productId);
+		List<BacklogItemOutputDTO> backlogItemDTOList = backlogItemManagerUseCase.getBacklogItems(productId);
 		List<BacklogItemTableViewModel> backlogItemList = new ArrayList<>();
-		for(BacklogItemDTO backlogItemDTO : backlogItemDTOList) {
+		for(BacklogItemOutputDTO backlogItemDTO : backlogItemDTOList) {
 			BacklogItemTableViewModel backlogItemTableViewModel = new BacklogItemTableViewModel();
 			backlogItemTableViewModel.setBacklogItemId(backlogItemDTO.getBacklogItemId());
 			backlogItemTableViewModel.setSerialId(backlogItemDTO.getSerialId());
@@ -150,13 +143,12 @@ public class BacklogItemRestfulAPI {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		BacklogItemDTO backlogItemDTO = new BacklogItemDTO();
-		backlogItemDTO.setBacklogItemId(backlogItemId);
-		backlogItemDTO.setDescription(description);
-		backlogItemDTO.setEstimate(estimate);
-		backlogItemDTO.setImportance(importance);
-		backlogItemDTO.setNotes(notes);
-		backlogItemManagerUseCase.editBacklogItem(backlogItemId, backlogItemDTO);
+		BacklogItemInputDTO backlogItemInputDTO = new BacklogItemInputDTO();
+		backlogItemInputDTO.setDescription(description);
+		backlogItemInputDTO.setEstimate(estimate);
+		backlogItemInputDTO.setImportance(importance);
+		backlogItemInputDTO.setNotes(notes);
+		backlogItemManagerUseCase.editBacklogItem(backlogItemId, backlogItemInputDTO);
 		return backlogItemId;
 	}
 	

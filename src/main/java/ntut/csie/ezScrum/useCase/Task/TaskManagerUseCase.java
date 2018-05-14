@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.useCase.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ntut.csie.ezScrum.model.Task;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
@@ -13,13 +14,24 @@ public class TaskManagerUseCase {
 		this.context = context;
 	}
 	
-	public String addTask(Task task) {
+	public String addTask(TaskInputDTO taskInputDTO) {
+		Task task = null;
+		try {
+			task = TaskBuilder.newInstance().
+					description(taskInputDTO.getDescription()).
+					estimate(taskInputDTO.getEstimate()).
+					notes(taskInputDTO.getNotes()).
+					backlogItemId(taskInputDTO.getBacklogItemId()).
+					build();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		context.addTask(task);
 		return task.getTaskId();
 	}
 	
-	public ArrayList<Task> getTasks(String backlogItemId){
-		ArrayList<Task> taskList = new ArrayList<Task>();
+	public List<Task> getTasks(String backlogItemId){
+		List<Task> taskList = new ArrayList<Task>();
 		for(Task task : context.getTasks()) {
 			if(task.getBacklogItemId().equals(backlogItemId)) {
 				taskList.add(task);
@@ -28,8 +40,8 @@ public class TaskManagerUseCase {
 		return taskList;
 	}
 	
-	public ArrayList<TaskDTO> getTasksForUI(String backlogItemId){
-		ArrayList<TaskDTO> taskList = new ArrayList<TaskDTO>();
+	public List<TaskOutputDTO> getTasksForUI(String backlogItemId){
+		List<TaskOutputDTO> taskList = new ArrayList<TaskOutputDTO>();
 		for(Task task : context.getTasks()) {
 			if(task.getBacklogItemId().equals(backlogItemId)) {
 				taskList.add(covertTaskToDTO(task));
@@ -38,8 +50,8 @@ public class TaskManagerUseCase {
 		return taskList;
 	}
 	
-	private TaskDTO covertTaskToDTO(Task task) {
-		TaskDTO taskDTO = new TaskDTO();
+	private TaskOutputDTO covertTaskToDTO(Task task) {
+		TaskOutputDTO taskDTO = new TaskOutputDTO();
 		taskDTO.setSerialId(task.getSerialId());
 		taskDTO.setDescription(task.getDescription());
 		taskDTO.setHandlerId(task.getHandlerId());
@@ -52,7 +64,11 @@ public class TaskManagerUseCase {
 		return taskDTO;
 	}
 	
-	public String editTask(Task task) {
+	public String editTask(String taskId, TaskInputDTO taskInputDTO) {
+		Task task = context.getTask(taskId);
+		task.setDescription(taskInputDTO.getDescription());
+		task.setEstimate(taskInputDTO.getEstimate());
+		task.setNotes(taskInputDTO.getNotes());
 		context.editTask(task);
 		return task.getTaskId();
 	}

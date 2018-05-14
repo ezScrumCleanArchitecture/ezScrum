@@ -10,7 +10,7 @@ public class ProductBuilder {
 	private String productId;
 	private String name;
 	private String comment;
-	private String create_time;
+	private String createTime;
 	
 	public static ProductBuilder newInstance() {
 		return new ProductBuilder();
@@ -32,8 +32,8 @@ public class ProductBuilder {
 			throw new Exception("The name of product should not be null.");
 		}
 		Calendar calendar = Calendar.getInstance();
-		create_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
-		Product product = new Product(name,create_time);
+		createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
+		Product product = new Product(name,createTime);
 		product.setProductId(productId);
 		product.setComment(comment);
 		return product;

@@ -1,6 +1,6 @@
 package ntut.csie.ezScrum.useCase.Task;
 
-public class TaskDTO {
+public class TaskOutputDTO {
 	private long serialId;
 	private String description;
 	private String handlerId;

@@ -17,10 +17,9 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.model.Sprint;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
-import ntut.csie.ezScrum.useCase.Sprint.SprintBuilder;
-import ntut.csie.ezScrum.useCase.Sprint.SprintDTO;
+import ntut.csie.ezScrum.useCase.Sprint.SprintInputDTO;
+import ntut.csie.ezScrum.useCase.Sprint.SprintOutputDTO;
 import ntut.csie.ezScrum.useCase.Sprint.SprintManagerUseCase;
 
 @Path("/product/{productId}/sprint")
@@ -57,23 +56,19 @@ public class SprintRestfulAPI {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		Sprint sprint = null;
-		try {
-			sprint = SprintBuilder.newInstance().
-					goal(goal).
-					interval(interval).
-					teamSize(teamSize).
-					startDate(startDate).
-					endDate(endDate).
-					demoDate(demoDate).
-					demoPlace(demoPlace).
-					daily(daily).
-					productId(productId).
-					build();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		String sprintId = sprintManagerUseCase.addSprint(sprint);
+		
+		SprintInputDTO sprintInputDTO = new SprintInputDTO();
+		sprintInputDTO.setGoal(goal);
+		sprintInputDTO.setInterval(interval);
+		sprintInputDTO.setTeamSize(teamSize);
+		sprintInputDTO.setStartDate(startDate);
+		sprintInputDTO.setEndDate(endDate);
+		sprintInputDTO.setDemoDate(demoDate);
+		sprintInputDTO.setDemoPlace(demoPlace);
+		sprintInputDTO.setDaily(daily);
+		sprintInputDTO.setProductId(productId);
+		
+		String sprintId = sprintManagerUseCase.addSprint(sprintInputDTO);
 		return sprintId;
 	}
 	
@@ -81,9 +76,9 @@ public class SprintRestfulAPI {
 	@Path("/getAllSprint")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<SprintTableViewModel> getAllSprint(@PathParam("productId") String productId) {
-		List<SprintDTO> sprintDTOList = sprintManagerUseCase.getSprints(productId);
+		List<SprintOutputDTO> sprintDTOList = sprintManagerUseCase.getSprints(productId);
 		List<SprintTableViewModel> sprintList = new ArrayList<>();
-		for(SprintDTO sprintDTO : sprintDTOList) {
+		for(SprintOutputDTO sprintDTO : sprintDTOList) {
 			SprintTableViewModel sprintTableViewModel = new SprintTableViewModel();
 			sprintTableViewModel.setSprintId(sprintDTO.getSprintId());
 			sprintTableViewModel.setSerialId(sprintDTO.getSerialId());
@@ -104,9 +99,9 @@ public class SprintRestfulAPI {
 	@Path("/getAllSprintList")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<SprintListViewModel> getSprintList(@PathParam("productId") String productId) {
-		List<SprintDTO> sprintDTOList = sprintManagerUseCase.getSprints(productId);
+		List<SprintOutputDTO> sprintDTOList = sprintManagerUseCase.getSprints(productId);
 		List<SprintListViewModel> sprintList = new ArrayList<>();
-		for(SprintDTO sprintDTO : sprintDTOList) {
+		for(SprintOutputDTO sprintDTO : sprintDTOList) {
 			SprintListViewModel sprintViewModel = new SprintListViewModel();
 			sprintViewModel.setSprintId(sprintDTO.getSprintId());
 			sprintViewModel.setDisplayName("Sprint#" + sprintDTO.getSerialId());
@@ -144,17 +139,17 @@ public class SprintRestfulAPI {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		SprintDTO sprintDTO = new SprintDTO();
-		sprintDTO.setGoal(goal);
-		sprintDTO.setInterval(interval);
-		sprintDTO.setTeamSize(teamSize);
-		sprintDTO.setStartDate(startDate);
-		sprintDTO.setEndDate(endDate);
-		sprintDTO.setDemoDate(demoDate);
-		sprintDTO.setDemoPlace(demoPlace);
-		sprintDTO.setDemoPlace(demoPlace);
-		sprintDTO.setDaily(daily);
-		sprintManagerUseCase.editSprint(sprintId, sprintDTO);
+		SprintInputDTO sprintInputDTO = new SprintInputDTO();
+		sprintInputDTO.setGoal(goal);
+		sprintInputDTO.setInterval(interval);
+		sprintInputDTO.setTeamSize(teamSize);
+		sprintInputDTO.setStartDate(startDate);
+		sprintInputDTO.setEndDate(endDate);
+		sprintInputDTO.setDemoDate(demoDate);
+		sprintInputDTO.setDemoPlace(demoPlace);
+		sprintInputDTO.setDemoPlace(demoPlace);
+		sprintInputDTO.setDaily(daily);
+		sprintManagerUseCase.editSprint(sprintId, sprintInputDTO);
 		return sprintId;
 	}
 	

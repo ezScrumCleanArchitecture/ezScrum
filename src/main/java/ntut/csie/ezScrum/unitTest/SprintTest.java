@@ -12,6 +12,7 @@ import ntut.csie.ezScrum.useCase.ApplicationContext;
 import ntut.csie.ezScrum.useCase.Product.ProductBuilder;
 import ntut.csie.ezScrum.useCase.Product.ProductManagerUseCase;
 import ntut.csie.ezScrum.useCase.Sprint.SprintBuilder;
+import ntut.csie.ezScrum.useCase.Sprint.SprintInputDTO;
 import ntut.csie.ezScrum.useCase.Sprint.SprintManagerUseCase;
 
 public class SprintTest {
@@ -49,21 +50,16 @@ public class SprintTest {
 		String endDate = "2018-04-22";
 		int interval = 2;
 		String demoDate = "2018-04-22";
-		Sprint sprint = null;
-		try {
-			sprint = SprintBuilder.newInstance().
-					goal(goal).
-					interval(interval).
-					startDate(startDate).
-					endDate(endDate).
-					demoDate(demoDate).
-					productId(productId).
-					build();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
-		String sprintId = sprintManagerUseCase.addSprint(sprint);
+		SprintInputDTO sprintInputDTO = new SprintInputDTO();
+		sprintInputDTO.setGoal(goal);
+		sprintInputDTO.setInterval(interval);
+		sprintInputDTO.setStartDate(startDate);
+		sprintInputDTO.setEndDate(endDate);
+		sprintInputDTO.setDemoDate(demoDate);
+		sprintInputDTO.setProductId(productId);
+		
+		String sprintId = sprintManagerUseCase.addSprint(sprintInputDTO);
 		Sprint testedSprint = context.getSprint(sprintId);
 		assertEquals(sprintId, testedSprint.getSprintId());
 		assertEquals(goal, testedSprint.getGoal());
@@ -88,24 +84,19 @@ public class SprintTest {
 		String demoDate = "2018-04-22";
 		String demoPlace = "1622";
 		String daily = "10:00 1321";
-		Sprint sprint = null;
-		try {
-			sprint = SprintBuilder.newInstance().
-					goal(goal).
-					interval(interval).
-					teamSize(teamSize).
-					startDate(startDate).
-					endDate(endDate).
-					demoDate(demoDate).
-					demoPlace(demoPlace).
-					daily(daily).
-					productId(productId).
-					build();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
-		String sprintId = sprintManagerUseCase.addSprint(sprint);
+		SprintInputDTO sprintInputDTO = new SprintInputDTO();
+		sprintInputDTO.setGoal(goal);
+		sprintInputDTO.setInterval(interval);
+		sprintInputDTO.setTeamSize(teamSize);
+		sprintInputDTO.setStartDate(startDate);
+		sprintInputDTO.setEndDate(endDate);
+		sprintInputDTO.setDemoDate(demoDate);
+		sprintInputDTO.setDemoPlace(demoPlace);
+		sprintInputDTO.setDaily(daily);
+		sprintInputDTO.setProductId(productId);
+		
+		String sprintId = sprintManagerUseCase.addSprint(sprintInputDTO);
 		Sprint testedSprint = context.getSprint(sprintId);
 		assertEquals(sprintId, testedSprint.getSprintId());
 		assertEquals(goal, testedSprint.getGoal());
