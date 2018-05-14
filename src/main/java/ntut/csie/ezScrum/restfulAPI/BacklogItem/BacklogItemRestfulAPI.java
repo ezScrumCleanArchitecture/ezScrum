@@ -189,7 +189,7 @@ public class BacklogItemRestfulAPI {
 			backlogItemId = backlogItemJSON.getString("backlogItemId");
 		} catch (JSONException e) {
 			e.printStackTrace();
-		}System.out.println(backlogItemId + "->" + sprintId);
+		}
 		backlogItemManagerUseCase.assignBacklogItemToSprint(sprintId, backlogItemId);
 	}
 }
