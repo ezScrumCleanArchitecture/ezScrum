@@ -216,6 +216,30 @@ public class BacklogItemTest {
 	}
 	
 	@Test
+	public void Should_OrderIdUpdated_When_DeleteBacklogItem() {
+		BacklogItemManagerUseCase backlogItemManagerUseCase  = new BacklogItemManagerUseCase(context);
+		String[] description = {"As a ezScrum developer, I want to get the first backlog item.",
+				"As a ezScrum developer, I want to get the second backlog item.",
+				"As a ezScrum developer, I want to get the third backlog item."
+		};
+		String[] backlogItemIds = new String[description.length];
+		for(int i=0; i<description.length; i++) {
+			BacklogItemInputDTO backlogItemInputDTO = new BacklogItemInputDTO();
+			backlogItemInputDTO.setDescription(description[i]);
+			backlogItemInputDTO.setProductId(productId);
+			backlogItemIds[i] = backlogItemManagerUseCase.addBacklogItem(backlogItemInputDTO);
+		}
+		
+		backlogItemManagerUseCase.deleteBacklogItem(backlogItemIds[1]);
+		
+		List<BacklogItemOutputDTO> backlogItemList = backlogItemManagerUseCase.getBacklogItems(productId);
+		
+		for(int i=0; i<backlogItemList.size(); i++) {
+			assertEquals(i+1, backlogItemList.get(i).getOrderId());
+		}
+	}
+	
+	@Test
 	public void Should_IdentifyBacklogItemCommittedOrNot_When_GetBacklogItems() {
 		BacklogItemManagerUseCase backlogItemManagerUseCase  = new BacklogItemManagerUseCase(context);
 		String[] description = {"As a ezScrum developer, I want to get the first backlog item.",

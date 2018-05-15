@@ -3,7 +3,7 @@ package ntut.csie.ezScrum.restfulAPI.Sprint;
 public class SprintTableViewModel {
 	
 	private String sprintId;
-	private long serialId;
+	private int orderId;
 	private String goal;
 	private int interval;
 	private int teamSize;
@@ -32,11 +32,11 @@ public class SprintTableViewModel {
 	public void setSprintId(String sprintId) {
 		this.sprintId = sprintId;
 	}
-	public long getSerialId() {
-		return serialId;
+	public int getOrderId() {
+		return orderId;
 	}
-	public void setSerialId(long serialId) {
-		this.serialId = serialId;
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
 	}
 	public String getGoal() {
 		return goal;

@@ -68,7 +68,7 @@ public class BacklogItemRestfulAPI {
 		for(BacklogItemOutputDTO backlogItemDTO : backlogItemDTOList) {
 			CommittedBacklogItemTableViewModel committedBacklogItemTableViewModel = new CommittedBacklogItemTableViewModel();
 			committedBacklogItemTableViewModel.setBacklogItemId(backlogItemDTO.getBacklogItemId());
-			committedBacklogItemTableViewModel.setSerialId(backlogItemDTO.getSerialId());
+			committedBacklogItemTableViewModel.setOrderId(backlogItemDTO.getOrderId());
 			committedBacklogItemTableViewModel.setDescription(backlogItemDTO.getDescription());
 			committedBacklogItemTableViewModel.setStatus(backlogItemDTO.getStatus());
 			committedBacklogItemTableViewModel.setEstimate(backlogItemDTO.getEstimate());
@@ -87,7 +87,7 @@ public class BacklogItemRestfulAPI {
 		for(BacklogItemOutputDTO backlogItemDTO : backlogItemDTOList) {
 			NotYetCommittedBacklogItemTableViewModel notYetCommittedBacklogItemTableViewModel = new NotYetCommittedBacklogItemTableViewModel();
 			notYetCommittedBacklogItemTableViewModel.setBacklogItemId(backlogItemDTO.getBacklogItemId());
-			notYetCommittedBacklogItemTableViewModel.setSerialId(backlogItemDTO.getSerialId());
+			notYetCommittedBacklogItemTableViewModel.setOrderId(backlogItemDTO.getOrderId());
 			notYetCommittedBacklogItemTableViewModel.setDescription(backlogItemDTO.getDescription());
 			notYetCommittedBacklogItemTableViewModel.setEstimate(backlogItemDTO.getEstimate());
 			notYetCommittedBacklogItemTableViewModel.setImportance(backlogItemDTO.getImportance());
@@ -105,15 +105,15 @@ public class BacklogItemRestfulAPI {
 		for(BacklogItemOutputDTO backlogItemDTO : backlogItemDTOList) {
 			BacklogItemTableViewModel backlogItemTableViewModel = new BacklogItemTableViewModel();
 			backlogItemTableViewModel.setBacklogItemId(backlogItemDTO.getBacklogItemId());
-			backlogItemTableViewModel.setSerialId(backlogItemDTO.getSerialId());
+			backlogItemTableViewModel.setOrderId(backlogItemDTO.getOrderId());
 			backlogItemTableViewModel.setDescription(backlogItemDTO.getDescription());
 			backlogItemTableViewModel.setEstimate(backlogItemDTO.getEstimate());
 			backlogItemTableViewModel.setImportance(backlogItemDTO.getImportance());
 			String sprintId = backlogItemDTO.getSprintId();
 			if(sprintId == null) {
-				backlogItemTableViewModel.setSprintSerialId(0);
+				backlogItemTableViewModel.setSprintOrderId(0);
 			}else {
-				backlogItemTableViewModel.setSprintSerialId(context.getSprint(sprintId).getSerialId());
+				backlogItemTableViewModel.setSprintOrderId(context.getSprint(sprintId).getOrderId());
 			}
 			backlogItemTableViewModel.setStatus(backlogItemDTO.getStatus());
 			backlogItemTableViewModel.setNotes(backlogItemDTO.getNotes());

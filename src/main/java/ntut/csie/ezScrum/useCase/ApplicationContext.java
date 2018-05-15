@@ -30,6 +30,22 @@ public class ApplicationContext {
 		return instance;
 	}
 	
+	public int getNumberOfProduct() {
+		return products.size();
+	}
+	
+	public int getNumberOfBacklogItems() {
+		return backlogItems.size();
+	}
+	
+	public int getNumberOfSprints() {
+		return sprints.size();
+	}
+	
+	public int getNumberOfTasks() {
+		return tasks.size();
+	}
+	
 	public void addProduct(Product product) {
 		products.put(product.getProductId(), product);
 	}
@@ -106,8 +122,8 @@ public class ApplicationContext {
 		sprints.replace(sprintId, sprint);
 	}
 	
-	public void editTask(Task task) {
-		tasks.replace(task.getTaskId(), task);
+	public void editTask(String taskId, Task task) {
+		tasks.replace(taskId, task);
 	}
 	
 	public void deleteProduct(String productId) {

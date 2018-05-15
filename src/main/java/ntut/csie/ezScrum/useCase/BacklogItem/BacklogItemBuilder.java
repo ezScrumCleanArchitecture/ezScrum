@@ -9,7 +9,7 @@ import ntut.csie.ezScrum.model.BacklogItem;
 public class BacklogItemBuilder {
 	
 	private String backlogItemId;
-	private static long serialId;
+	private int orderId;
 	private String description;
 	private int estimate;
 	private int importance;
@@ -19,6 +19,11 @@ public class BacklogItemBuilder {
 	
 	public static BacklogItemBuilder newInstance() {
 		return new BacklogItemBuilder();
+	}
+	
+	public BacklogItemBuilder orderId(int orderId) {
+		this.orderId = orderId;
+		return this;
 	}
 	
 	public BacklogItemBuilder description(String description) {
@@ -55,7 +60,7 @@ public class BacklogItemBuilder {
 		createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
 		BacklogItem backlogItem = new BacklogItem(productId,description,createTime);
 		backlogItem.setBacklogItemId(backlogItemId);
-		backlogItem.setSerialId(++serialId);
+		backlogItem.setOrderId(orderId);
 		backlogItem.setEstimate(estimate);
 		backlogItem.setImportance(importance);
 		backlogItem.setNotes(notes);

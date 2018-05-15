@@ -3,12 +3,12 @@ package ntut.csie.ezScrum.restfulAPI.BacklogItem;
 public class BacklogItemTableViewModel {
 
 	private String backlogItemId;
-	private long serialId;
+	private long orderId;
 	private String description;
-	private String Status;
+	private String status;
 	private int estimate;
 	private int importance;
-	private long sprintSerialId;
+	private int sprintOrderId;
 	private String notes;
 	
 	public String getBacklogItemId() {
@@ -17,11 +17,11 @@ public class BacklogItemTableViewModel {
 	public void setBacklogItemId(String backlogItemId) {
 		this.backlogItemId = backlogItemId;
 	}
-	public long getSerialId() {
-		return serialId;
+	public long getOrderId() {
+		return orderId;
 	}
-	public void setSerialId(long serialId) {
-		this.serialId = serialId;
+	public void setOrderId(long orderId) {
+		this.orderId = orderId;
 	}
 	public String getDescription() {
 		return description;
@@ -30,10 +30,10 @@ public class BacklogItemTableViewModel {
 		this.description = description;
 	}
 	public String getStatus() {
-		return Status;
+		return status;
 	}
 	public void setStatus(String status) {
-		Status = status;
+		this.status = status;
 	}
 	public int getEstimate() {
 		return estimate;
@@ -47,11 +47,11 @@ public class BacklogItemTableViewModel {
 	public void setImportance(int importance) {
 		this.importance = importance;
 	}
-	public long getSprintSerialId() {
-		return sprintSerialId;
+	public int getSprintOrderId() {
+		return sprintOrderId;
 	}
-	public void setSprintSerialId(long sprintSerialId) {
-		this.sprintSerialId = sprintSerialId;
+	public void setSprintOrderId(int sprintOrderId) {
+		this.sprintOrderId = sprintOrderId;
 	}
 	public String getNotes() {
 		return notes;

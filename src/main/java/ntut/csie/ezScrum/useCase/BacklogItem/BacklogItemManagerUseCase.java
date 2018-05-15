@@ -15,9 +15,11 @@ public class BacklogItemManagerUseCase {
 	}
 
 	public String addBacklogItem(BacklogItemInputDTO backlogItemInputDTO) {
+		int orderId =context.getNumberOfBacklogItems()+1;
 		BacklogItem backlogItem = null;
 		try {
 			backlogItem = BacklogItemBuilder.newInstance().
+					orderId(orderId).
 					productId(backlogItemInputDTO.getProductId()).
 					description(backlogItemInputDTO.getDescription()).
 					estimate(backlogItemInputDTO.getEstimate()).
@@ -44,7 +46,7 @@ public class BacklogItemManagerUseCase {
 	private BacklogItemOutputDTO covertBacklogItemToDTO(BacklogItem backlogItem) {
 		BacklogItemOutputDTO backlogItemDTO = new BacklogItemOutputDTO();
 		backlogItemDTO.setBacklogItemId(backlogItem.getBacklogItemId());
-		backlogItemDTO.setSerialId(backlogItem.getSerialId());
+		backlogItemDTO.setOrderId(backlogItem.getOrderId());
 		backlogItemDTO.setDescription(backlogItem.getDescription());
 		backlogItemDTO.setEstimate(backlogItem.getEstimate());
 		backlogItemDTO.setImportance(backlogItem.getImportance());
@@ -67,6 +69,13 @@ public class BacklogItemManagerUseCase {
 	}
 	
 	public String deleteBacklogItem(String backlogItemId) {
+		int orderId = context.getBacklogItem(backlogItemId).getOrderId();
+		int numberOfBacklogItems = context.getNumberOfBacklogItems();
+		BacklogItem[] backlogItems = context.getBacklogItems().toArray(new BacklogItem[numberOfBacklogItems]);
+		for(int i = orderId; i < numberOfBacklogItems; i++) {
+			backlogItems[i].setOrderId(i);
+			context.editBacklogItem(backlogItems[i].getBacklogItemId(), backlogItems[i]);
+		}
 		context.deleteBacklogItem(backlogItemId);
 		return backlogItemId;
 	}

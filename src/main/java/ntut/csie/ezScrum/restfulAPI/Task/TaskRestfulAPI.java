@@ -60,7 +60,7 @@ public class TaskRestfulAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<TaskOutputDTO> getAllBacklogItem(@PathParam("backlogItemId") String backlogItemId) {
 		TaskManagerUseCase taskManagerUseCase = new TaskManagerUseCase(context);
-		List<TaskOutputDTO> taskList = taskManagerUseCase.getTasksForUI(backlogItemId);
+		List<TaskOutputDTO> taskList = taskManagerUseCase.getTasks(backlogItemId);
 		return taskList;
 	}
 	

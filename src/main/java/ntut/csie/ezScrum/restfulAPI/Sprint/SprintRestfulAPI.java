@@ -81,7 +81,7 @@ public class SprintRestfulAPI {
 		for(SprintOutputDTO sprintDTO : sprintDTOList) {
 			SprintTableViewModel sprintTableViewModel = new SprintTableViewModel();
 			sprintTableViewModel.setSprintId(sprintDTO.getSprintId());
-			sprintTableViewModel.setSerialId(sprintDTO.getSerialId());
+			sprintTableViewModel.setOrderId(sprintDTO.getOrderId());
 			sprintTableViewModel.setGoal(sprintDTO.getGoal());
 			sprintTableViewModel.setStartDate(sprintDTO.getStartDate());
 			sprintTableViewModel.setInterval(sprintDTO.getInterval());
@@ -104,7 +104,7 @@ public class SprintRestfulAPI {
 		for(SprintOutputDTO sprintDTO : sprintDTOList) {
 			SprintListViewModel sprintViewModel = new SprintListViewModel();
 			sprintViewModel.setSprintId(sprintDTO.getSprintId());
-			sprintViewModel.setDisplayName("Sprint#" + sprintDTO.getSerialId());
+			sprintViewModel.setDisplayName("Sprint#" + sprintDTO.getOrderId());
 			sprintList.add(sprintViewModel);
 		}
 		return sprintList;

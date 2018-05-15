@@ -3,7 +3,7 @@ package ntut.csie.ezScrum.restfulAPI.BacklogItem;
 public class NotYetCommittedBacklogItemTableViewModel {
 
 	private String backlogItemId;
-	private long serialId;
+	private int orderId;
 	private String description;
 	private int estimate;
 	private int importance;
@@ -15,11 +15,11 @@ public class NotYetCommittedBacklogItemTableViewModel {
 	public void setBacklogItemId(String backlogItemId) {
 		this.backlogItemId = backlogItemId;
 	}
-	public long getSerialId() {
-		return serialId;
+	public int getOrderId() {
+		return orderId;
 	}
-	public void setSerialId(long serialId) {
-		this.serialId = serialId;
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
 	}
 	public String getDescription() {
 		return description;

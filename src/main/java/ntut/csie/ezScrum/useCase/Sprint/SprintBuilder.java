@@ -8,7 +8,7 @@ import ntut.csie.ezScrum.model.Sprint;
 
 public class SprintBuilder {
 	private String sprintId;
-	private static long serialId;
+	private int orderId;
 	private String goal;
 	private int interval;
 	private int teamSize;
@@ -22,6 +22,11 @@ public class SprintBuilder {
 	
 	public static SprintBuilder newInstance() {
 		return new SprintBuilder();
+	}
+	
+	public SprintBuilder orderId(int orderId) {
+		this.orderId = orderId;
+		return this;
 	}
 	
 	public SprintBuilder goal(String goal) {
@@ -91,7 +96,7 @@ public class SprintBuilder {
 		createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
 		Sprint sprint = new Sprint(goal, interval, teamSize, startDate, demoDate, productId, createTime);
 		sprint.setSprintId(sprintId);
-		sprint.setSerialId(++serialId);
+		sprint.setOrderId(orderId);
 		sprint.setEndDate(endDate);
 		sprint.setDemoDate(demoDate);
 		sprint.setDemoPlace(demoPlace);

@@ -15,9 +15,11 @@ public class SprintManagerUseCase {
 	}
 	
 	public String addSprint(SprintInputDTO sprintInputDTO) {
+		int orderId = context.getNumberOfSprints() + 1;
 		Sprint sprint = null;
 		try {
 			sprint = SprintBuilder.newInstance().
+					orderId(orderId).
 					goal(sprintInputDTO.getGoal()).
 					interval(sprintInputDTO.getInterval()).
 					teamSize(sprintInputDTO.getTeamSize()).
@@ -48,7 +50,7 @@ public class SprintManagerUseCase {
 	private SprintOutputDTO covertSprintToDTO(Sprint sprint) {
 		SprintOutputDTO sprintDTO = new SprintOutputDTO();
 		sprintDTO.setSprintId(sprint.getSprintId());
-		sprintDTO.setSerialId(sprint.getSerialId());
+		sprintDTO.setOrderId(sprint.getOrderId());
 		sprintDTO.setGoal(sprint.getGoal());
 		sprintDTO.setStartDate(sprint.getStartDate());
 		sprintDTO.setInterval(sprint.getInterval());
@@ -77,6 +79,13 @@ public class SprintManagerUseCase {
 	}
 	
 	public String deleteSprint(String sprintId) {
+		int orderId = context.getSprint(sprintId).getOrderId();
+		int numberOfSprints = context.getNumberOfSprints();
+		Sprint[] sprints = context.getSprints().toArray(new Sprint[numberOfSprints]);
+		for(int i = orderId; i < numberOfSprints; i++) {
+			sprints[i].setOrderId(i);
+			context.editSprint(sprints[i].getSprintId(), sprints[i]);
+		}
 		context.deleteSprint(sprintId);
 		return sprintId;
 	}

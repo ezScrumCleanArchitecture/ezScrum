@@ -1,7 +1,8 @@
 package ntut.csie.ezScrum.useCase.Task;
 
 public class TaskOutputDTO {
-	private long serialId;
+	private String taskId;
+	private int orderId;
 	private String description;
 	private String handlerId;
 	private String status;
@@ -10,11 +11,19 @@ public class TaskOutputDTO {
 	private String notes;
 	private long backlogItemSerialId;
 	
-	public long getSerialId() {
-		return serialId;
+	public String getTaskId() {
+		return taskId;
 	}
-	public void setSerialId(long serialId) {
-		this.serialId = serialId;
+	
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
+	}
+	
+	public int getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
 	}
 	public String getDescription() {
 		return description;

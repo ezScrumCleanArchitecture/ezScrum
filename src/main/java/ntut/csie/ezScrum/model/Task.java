@@ -3,7 +3,7 @@ package ntut.csie.ezScrum.model;
 public class Task {
 	
 	private String taskId;
-	private long serialId;
+	private int orderId;
 	private String description;
 	private String handlerId;
 	private String status;
@@ -29,11 +29,11 @@ public class Task {
 	public void setTaskId(String taskId) {
 		this.taskId = taskId;
 	}
-	public long getSerialId() {
-		return serialId;
+	public int getOrderId() {
+		return orderId;
 	}
-	public void setSerialId(long serialId) {
-		this.serialId = serialId;
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
 	}
 	public String getDescription() {
 		return description;

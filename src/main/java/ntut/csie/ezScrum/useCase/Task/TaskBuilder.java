@@ -8,7 +8,7 @@ import ntut.csie.ezScrum.model.Task;
 
 public class TaskBuilder {
 	private String taskId;
-	private long serialId;
+	private int orderId;
 	private String description;
 	private int estimate;
 	private String notes;
@@ -17,6 +17,11 @@ public class TaskBuilder {
 	
 	public static TaskBuilder newInstance() {
 		return new TaskBuilder();
+	}
+	
+	public TaskBuilder orderId(int orderId) {
+		this.orderId = orderId;
+		return this;
 	}
 	
 	public TaskBuilder description(String description) {
@@ -48,7 +53,7 @@ public class TaskBuilder {
 		createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
 		Task task = new Task(description, backlogItemId, createTime);
 		task.setTaskId(taskId);
-		task.setSerialId(++serialId);
+		task.setOrderId(orderId);
 		task.setEstimate(estimate);
 		task.setRemain(estimate);
 		task.setNotes(notes);

@@ -2,7 +2,7 @@ package ntut.csie.ezScrum.model;
 
 public class BacklogItem {
 	private String backlogItemId;
-	private long serialId;
+	private int orderId;
 	private String description;
 	private String status;
 	private int estimate;
@@ -30,12 +30,12 @@ public class BacklogItem {
 		this.backlogItemId = backlogItemId;
 	}
 	
-	public long getSerialId() {
-		return serialId;
+	public int getOrderId() {
+		return orderId;
 	}
 	
-	public void setSerialId(long serialId) {
-		this.serialId = serialId;
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
 	}
 
 	public String getDescription() {
