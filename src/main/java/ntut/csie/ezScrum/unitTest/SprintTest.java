@@ -264,7 +264,7 @@ public class SprintTest {
 	}
 	
 	@Test
-	public void Should_OrderIdUpdated_When_DeleteBacklogItem() {
+	public void Should_OrderIdUpdated_When_DeleteSpint() {
 		SprintManagerUseCase sprintManagerUseCase  = new SprintManagerUseCase(context);
 		String[] goal = {
 				"This is the goal of Sprint#1",

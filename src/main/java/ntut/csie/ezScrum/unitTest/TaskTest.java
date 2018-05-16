@@ -164,7 +164,7 @@ public class TaskTest {
 	}
 	
 	@Test
-	public void Should_UpdateData_When_EditBacklogItem() {
+	public void Should_UpdateData_When_EditTask() {
 		TaskManagerUseCase taskManagerUseCase = new TaskManagerUseCase(context);
 		String[] description = {"Write Unit Test to test adding task.", "Create task use case.", "Fix Bug of adding task."};
 		int[] estimate = {5, 3, 8};
@@ -203,7 +203,7 @@ public class TaskTest {
 	}
 	
 	@Test
-	public void Should_DeleteData_When_DeleteBacklogItem() {
+	public void Should_DeleteData_When_DeleteTask() {
 		TaskManagerUseCase taskManagerUseCase = new TaskManagerUseCase(context);
 		String[] description = {"Write Unit Test to test adding task.", "Create task use case.", "Fix Bug of adding task."};
 		int[] estimate = {5, 3, 8};
