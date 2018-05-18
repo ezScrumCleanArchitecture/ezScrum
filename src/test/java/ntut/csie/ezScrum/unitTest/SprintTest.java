@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.unitTest;
 
 import static org.junit.Assert.assertEquals;
 
+import java.text.ParseException;
 import java.util.List;
 
 import org.junit.After;
@@ -295,5 +296,63 @@ public class SprintTest {
 			assertEquals(i+1, sprintList.get(i).getOrderId());
 		}
 	
+	}
+	
+	@Test
+	public void Should_ReturnTrue_When_SprintIsOverlap() {
+		SprintManagerUseCase sprintManagerUseCase = new SprintManagerUseCase(context);
+		String goal = "Implement the function of creating sprint.";
+		String startDate = "2018-04-09";
+		String endDate = "2018-04-22";
+		int interval = 2;
+		String demoDate = "2018-04-22";
+		
+		SprintInputDTO sprintInputDTO = new SprintInputDTO();
+		sprintInputDTO.setGoal(goal);
+		sprintInputDTO.setInterval(interval);
+		sprintInputDTO.setStartDate(startDate);
+		sprintInputDTO.setEndDate(endDate);
+		sprintInputDTO.setDemoDate(demoDate);
+		sprintInputDTO.setProductId(productId);
+		
+		sprintManagerUseCase.addSprint(sprintInputDTO);
+		
+		try {
+			assertEquals(true, sprintManagerUseCase.isSprintOverlap(productId, "2018-04-10", "2018-04-23"));
+			assertEquals(true, sprintManagerUseCase.isSprintOverlap(productId, "2018-04-07", "2018-04-20"));
+			assertEquals(true, sprintManagerUseCase.isSprintOverlap(productId, "2018-04-09", "2018-04-22"));
+			assertEquals(true, sprintManagerUseCase.isSprintOverlap(productId, "2018-04-15", "2018-04-20"));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void Should_ReturnFalse_When_SprintIsNotOverlap() {
+		SprintManagerUseCase sprintManagerUseCase = new SprintManagerUseCase(context);
+		String goal = "Implement the function of creating sprint.";
+		String startDate = "2018-04-09";
+		String endDate = "2018-04-22";
+		int interval = 2;
+		String demoDate = "2018-04-22";
+		
+		SprintInputDTO sprintInputDTO = new SprintInputDTO();
+		sprintInputDTO.setGoal(goal);
+		sprintInputDTO.setInterval(interval);
+		sprintInputDTO.setStartDate(startDate);
+		sprintInputDTO.setEndDate(endDate);
+		sprintInputDTO.setDemoDate(demoDate);
+		sprintInputDTO.setProductId(productId);
+		
+		sprintManagerUseCase.addSprint(sprintInputDTO);
+		
+		try {
+			assertEquals(false, sprintManagerUseCase.isSprintOverlap(productId, "2018-04-01", "2018-04-08"));
+			assertEquals(false, sprintManagerUseCase.isSprintOverlap(productId, "2018-04-23", "2018-04-30"));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

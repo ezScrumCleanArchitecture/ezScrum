@@ -1,5 +1,7 @@
 package ntut.csie.ezScrum.useCase.Sprint;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,5 +90,26 @@ public class SprintManagerUseCase {
 		}
 		context.deleteSprint(sprintId);
 		return sprintId;
+	}
+	
+	public boolean isSprintOverlap(String productId, String startDate, String endDate) throws ParseException {
+		List<Sprint> sprintList = new ArrayList<>();
+		for(Sprint sprint : context.getSprints()) {
+			if(sprint.getProductId().equals(productId)) {
+				sprintList.add(sprint);
+			}
+		}
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		long thisSprintStartDate = simpleDateFormat.parse(startDate).getTime();
+		long thisSprintEndDate = simpleDateFormat.parse(endDate).getTime();
+		for(Sprint sprint : sprintList) {
+			long otherSprintStartDate = simpleDateFormat.parse(sprint.getStartDate()).getTime();
+			long otherSprintEndDate = simpleDateFormat.parse(sprint.getEndDate()).getTime();
+			if((thisSprintStartDate >= otherSprintStartDate && thisSprintStartDate <= otherSprintEndDate) ||
+				(thisSprintEndDate >= otherSprintStartDate	&& thisSprintEndDate <= otherSprintEndDate)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

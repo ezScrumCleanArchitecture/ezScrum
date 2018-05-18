@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.restfulAPI.Sprint;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,7 +148,6 @@ public class SprintRestfulAPI {
 		sprintInputDTO.setEndDate(endDate);
 		sprintInputDTO.setDemoDate(demoDate);
 		sprintInputDTO.setDemoPlace(demoPlace);
-		sprintInputDTO.setDemoPlace(demoPlace);
 		sprintInputDTO.setDaily(daily);
 		sprintManagerUseCase.editSprint(sprintId, sprintInputDTO);
 		return sprintId;
@@ -166,5 +166,28 @@ public class SprintRestfulAPI {
 		}
 		sprintManagerUseCase.deleteSprint(sprintId);
 		return sprintId;
+	}
+	
+	@POST
+	@Path("/checkSprintOverlap")
+	public boolean checkSprintOverlap(@PathParam("productId") String productId,
+			String sprintInfo) {
+		String startDate = "";
+		String endDate = "";
+		try {
+			JSONObject sprintJSON = new JSONObject(sprintInfo);
+			startDate = sprintJSON.getString("startDate");
+			endDate = sprintJSON.getString("endDate");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		boolean isOverlap = false;
+		try {
+			isOverlap = sprintManagerUseCase.isSprintOverlap(productId, startDate, endDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return isOverlap;
 	}
 }
