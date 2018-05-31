@@ -8,19 +8,28 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ntut.csie.ezScrum.model.Product;
-import ntut.csie.ezScrum.model.Task;
+import ntut.csie.ezScrum.model.product.Product;
+import ntut.csie.ezScrum.model.product.ProductBuilder;
+import ntut.csie.ezScrum.model.task.Task;
+import ntut.csie.ezScrum.model.task.TaskBuilder;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
-import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemInputDTO;
-import ntut.csie.ezScrum.useCase.BacklogItem.BacklogItemManagerUseCase;
-import ntut.csie.ezScrum.useCase.Product.ProductBuilder;
-import ntut.csie.ezScrum.useCase.Product.ProductManagerUseCase;
-import ntut.csie.ezScrum.useCase.Sprint.SprintInputDTO;
-import ntut.csie.ezScrum.useCase.Sprint.SprintManagerUseCase;
-import ntut.csie.ezScrum.useCase.Task.TaskBuilder;
-import ntut.csie.ezScrum.useCase.Task.TaskInputDTO;
-import ntut.csie.ezScrum.useCase.Task.TaskManagerUseCase;
-import ntut.csie.ezScrum.useCase.Task.TaskOutputDTO;
+import ntut.csie.ezScrum.useCase.backlogItem.BacklogItemManagerUseCase;
+import ntut.csie.ezScrum.useCase.backlogItem.io.AddBacklogItemInput;
+import ntut.csie.ezScrum.useCase.backlogItem.io.AddBacklogItemOutput;
+import ntut.csie.ezScrum.useCase.backlogItem.io.AssignBacklogItemInput;
+import ntut.csie.ezScrum.useCase.product.ProductManagerUseCase;
+import ntut.csie.ezScrum.useCase.sprint.SprintManagerUseCase;
+import ntut.csie.ezScrum.useCase.sprint.io.AddSprintInput;
+import ntut.csie.ezScrum.useCase.sprint.io.AddSprintOutput;
+import ntut.csie.ezScrum.useCase.task.TaskManagerUseCase;
+import ntut.csie.ezScrum.useCase.task.io.AddTaskInput;
+import ntut.csie.ezScrum.useCase.task.io.AddTaskOutput;
+import ntut.csie.ezScrum.useCase.task.io.DeleteTaskInput;
+import ntut.csie.ezScrum.useCase.task.io.DeleteTaskOutput;
+import ntut.csie.ezScrum.useCase.task.io.EditTaskInput;
+import ntut.csie.ezScrum.useCase.task.io.EditTaskOutput;
+import ntut.csie.ezScrum.useCase.task.io.GetTaskInput;
+import ntut.csie.ezScrum.useCase.task.io.TaskDTO;
 
 public class TaskTest {
 	private ApplicationContext context;
@@ -45,25 +54,32 @@ public class TaskTest {
 		}
 		productId = productManagerUseCase.addProduct(product);
 
-		BacklogItemInputDTO backlogItemInputDTO = new BacklogItemInputDTO();
+		AddBacklogItemInput backlogItemInputDTO = new AddBacklogItemInput();
 		backlogItemInputDTO.setDescription("The description of the ezScrum.");
 		backlogItemInputDTO.setEstimate(3);
 		backlogItemInputDTO.setImportance(70);
 		backlogItemInputDTO.setNotes("This is the note for this backlog item.");
 		backlogItemInputDTO.setProductId(productId);
 		
-		backlogItemId = backlogItemManagerUseCase.addBacklogItem(backlogItemInputDTO);
+		AddBacklogItemOutput addBacklogItemOutput = backlogItemManagerUseCase.addBacklogItem(backlogItemInputDTO);
+		backlogItemId = addBacklogItemOutput.getBacklogItemId();
 		
-		SprintInputDTO sprintInputDTO = new SprintInputDTO();
-		sprintInputDTO.setGoal("The goal of ezScrum.");
-		sprintInputDTO.setInterval(2);
-		sprintInputDTO.setStartDate("2018-05-05");
-		sprintInputDTO.setDemoDate("2018-05-19");
-		sprintInputDTO.setDemoPlace("The place for demo ezScrum");
-		sprintInputDTO.setProductId(productId);
+		AddSprintInput addSprintInput = new AddSprintInput();
+		addSprintInput.setGoal("The goal of ezScrum.");
+		addSprintInput.setInterval(2);
+		addSprintInput.setStartDate("2018-05-05");
+		addSprintInput.setDemoDate("2018-05-19");
+		addSprintInput.setDemoPlace("The place for demo ezScrum");
+		addSprintInput.setProductId(productId);
 		
-		sprintId = sprintManagerUseCase.addSprint(sprintInputDTO);
-		backlogItemManagerUseCase.assignBacklogItemToSprint(sprintId, backlogItemId);
+		AddSprintOutput sprintAddOutput = sprintManagerUseCase.addSprint(addSprintInput);
+		sprintId = sprintAddOutput.getSprintId();
+		
+		AssignBacklogItemInput assignBacklogItemInput = new AssignBacklogItemInput();
+		assignBacklogItemInput.setSprintId(sprintId);
+		assignBacklogItemInput.setBacklogItemId(backlogItemId);
+		
+		backlogItemManagerUseCase.assignBacklogItemToSprint(assignBacklogItemInput);
 	}
 	
 	@After
@@ -81,10 +97,12 @@ public class TaskTest {
 		String[] taskId = new String[description.length];
 		
 		for(int i=0; i<taskId.length ;i++) {
-			TaskInputDTO taskInputDTO = new TaskInputDTO();
+			AddTaskInput taskInputDTO = new AddTaskInput();
 			taskInputDTO.setDescription(description[i]);
 			taskInputDTO.setBacklogItemId(backlogItemId);
-			taskId[i] = taskManagerUseCase.addTask(taskInputDTO);
+			
+			AddTaskOutput addTaskOutput = taskManagerUseCase.addTask(taskInputDTO);
+			taskId[i] = addTaskOutput.getTaskId();
 			
 			Task testedTask = context.getTask(taskId[i]);
 			
@@ -110,12 +128,14 @@ public class TaskTest {
 		String[] taskId = new String[description.length];
 		
 		for(int i=0; i<taskId.length ;i++) {
-			TaskInputDTO taskInputDTO = new TaskInputDTO();
+			AddTaskInput taskInputDTO = new AddTaskInput();
 			taskInputDTO.setDescription(description[i]);
 			taskInputDTO.setEstimate(estimate[i]);
 			taskInputDTO.setNotes(notes[i]);
 			taskInputDTO.setBacklogItemId(backlogItemId);
-			taskId[i] = taskManagerUseCase.addTask(taskInputDTO);
+			
+			AddTaskOutput addTaskOutput = taskManagerUseCase.addTask(taskInputDTO);
+			taskId[i] = addTaskOutput.getTaskId();
 			
 			Task testedTask = context.getTask(taskId[i]);
 			
@@ -150,13 +170,17 @@ public class TaskTest {
 		String[] description = {"Write Unit Test to test adding task.", "Create task use case.", "Fix Bug of adding task."};
 		
 		for(int i=0; i<description.length; i++) {
-			TaskInputDTO taskInputDTO = new TaskInputDTO();
+			AddTaskInput taskInputDTO = new AddTaskInput();
 			taskInputDTO.setDescription(description[i]);
 			taskInputDTO.setBacklogItemId(backlogItemId);
 			taskManagerUseCase.addTask(taskInputDTO);
 		}
 		
-		List<TaskOutputDTO> taskList = taskManagerUseCase.getTasks(backlogItemId);
+		GetTaskInput getTaskInput = new GetTaskInput();
+		getTaskInput.setBacklogItemId(backlogItemId);
+		
+		List<TaskDTO> taskList = taskManagerUseCase.getTasks(getTaskInput);
+		
 		for(int i=0; i<taskList.size(); i++) {
 			assertEquals(description[i], taskList.get(i).getDescription());
 		}
@@ -172,30 +196,35 @@ public class TaskTest {
 		String[] taskId = new String[description.length];
 		
 		for(int i=0; i<description.length ;i++) {
-			TaskInputDTO taskInputDTO = new TaskInputDTO();
+			AddTaskInput taskInputDTO = new AddTaskInput();
 			taskInputDTO.setDescription(description[i]);
 			taskInputDTO.setEstimate(estimate[i]);
 			taskInputDTO.setNotes(notes[i]);
 			taskInputDTO.setBacklogItemId(backlogItemId);
-			taskId[i] = taskManagerUseCase.addTask(taskInputDTO);
+			
+			AddTaskOutput addTaskOutput = taskManagerUseCase.addTask(taskInputDTO);
+			taskId[i] = addTaskOutput.getTaskId();
 		}
 		String[] editedDescription = {"Write Unit Test to test editing task.", "Update task use case.", "Fix Bug of editing task."};
 		int[] editedEstimate = {8, 5, 3};
 		String[] editedNotes = {"Please use factory pattern to edit task test data.", "Use task factory to edit use case.", "You can edit unit test first."};
-		String[] editedTaskId = new String[description.length];
+		boolean[] isEditSuccess = new boolean[description.length];
 		
 		for(int i=0; i<editedDescription.length ;i++) {
-			TaskInputDTO editedTaskInputDTO = new TaskInputDTO();
-			editedTaskInputDTO.setDescription(editedDescription[i]);
-			editedTaskInputDTO.setEstimate(editedEstimate[i]);
-			editedTaskInputDTO.setNotes(editedNotes[i]);
-			editedTaskInputDTO.setBacklogItemId(backlogItemId);
-			editedTaskId[i] = taskManagerUseCase.editTask(taskId[i], editedTaskInputDTO);
+			EditTaskInput editTaskInput = new EditTaskInput();
+			editTaskInput.setTaskId(taskId[i]);
+			editTaskInput.setDescription(editedDescription[i]);
+			editTaskInput.setEstimate(editedEstimate[i]);
+			editTaskInput.setNotes(editedNotes[i]);
+			editTaskInput.setBacklogItemId(backlogItemId);
+			
+			EditTaskOutput editTaskOutput = taskManagerUseCase.editTask(editTaskInput);
+			isEditSuccess[i] = editTaskOutput.isEditSuccess();
 		}
 		
-		for(int i=0; i<editedTaskId.length; i++) {
-			Task testedTask = context.getTask(editedTaskId[i]);
-			assertEquals(editedTaskId[i], testedTask.getTaskId());
+		for(int i=0; i<editedDescription.length; i++) {
+			Task testedTask = context.getTask(taskId[i]);
+			assertEquals(true, isEditSuccess[i]);
 			assertEquals(editedDescription[i], testedTask.getDescription());
 			assertEquals(editedEstimate[i], testedTask.getEstimate());
 			assertEquals(editedNotes[i], testedTask.getNotes());
@@ -211,21 +240,30 @@ public class TaskTest {
 		String[] taskId = new String[description.length];
 		
 		for(int i=0; i<taskId.length ;i++) {
-			TaskInputDTO taskInputDTO = new TaskInputDTO();
+			AddTaskInput taskInputDTO = new AddTaskInput();
 			taskInputDTO.setDescription(description[i]);
 			taskInputDTO.setEstimate(estimate[i]);
 			taskInputDTO.setNotes(notes[i]);
 			taskInputDTO.setBacklogItemId(backlogItemId);
-			taskId[i] = taskManagerUseCase.addTask(taskInputDTO);
+			
+			AddTaskOutput addTaskOutput = taskManagerUseCase.addTask(taskInputDTO);
+			taskId[i] = addTaskOutput.getTaskId();
 		}
 		
-		String deletedTaskId = taskManagerUseCase.deleteTask(taskId[1]);
+		DeleteTaskInput deleteTaskInput = new DeleteTaskInput();
+		deleteTaskInput.setTaskId(taskId[1]);
 		
-		List<TaskOutputDTO> taskList = taskManagerUseCase.getTasks(backlogItemId);
+		DeleteTaskOutput deleteTaskOutput = taskManagerUseCase.deleteTask(deleteTaskInput);
 		
+		GetTaskInput getTaskInput = new GetTaskInput();
+		getTaskInput.setBacklogItemId(backlogItemId);
+		
+		List<TaskDTO> taskList = taskManagerUseCase.getTasks(getTaskInput);
+		
+		assertEquals(true, deleteTaskOutput.isDeleteSuccess());
 		boolean isFound = false;
-		for(TaskOutputDTO taskOutputDTO : taskList) {
-			if(taskOutputDTO.getTaskId().equals(deletedTaskId)) {
+		for(TaskDTO taskOutputDTO : taskList) {
+			if(taskOutputDTO.getTaskId().equals(taskId)) {
 				isFound = true;
 				break;
 			}
@@ -242,17 +280,25 @@ public class TaskTest {
 		String[] taskId = new String[description.length];
 		
 		for(int i=0; i<taskId.length ;i++) {
-			TaskInputDTO taskInputDTO = new TaskInputDTO();
+			AddTaskInput taskInputDTO = new AddTaskInput();
 			taskInputDTO.setDescription(description[i]);
 			taskInputDTO.setEstimate(estimate[i]);
 			taskInputDTO.setNotes(notes[i]);
 			taskInputDTO.setBacklogItemId(backlogItemId);
-			taskId[i] = taskManagerUseCase.addTask(taskInputDTO);
+			
+			AddTaskOutput addTaskOutput = taskManagerUseCase.addTask(taskInputDTO);
+			taskId[i] = addTaskOutput.getTaskId();
 		}
 		
-		taskManagerUseCase.deleteTask(taskId[1]);
+		DeleteTaskInput deleteTaskInput = new DeleteTaskInput();
+		deleteTaskInput.setTaskId(taskId[1]);
 		
-		List<TaskOutputDTO> tasks = taskManagerUseCase.getTasks(backlogItemId);
+		taskManagerUseCase.deleteTask(deleteTaskInput);
+		
+		GetTaskInput getTaskInput = new GetTaskInput();
+		getTaskInput.setBacklogItemId(backlogItemId);
+		
+		List<TaskDTO> tasks = taskManagerUseCase.getTasks(getTaskInput);
 		
 		for(int i=0; i<tasks.size(); i++) {
 			assertEquals(i+1, tasks.get(i).getOrderId());

@@ -9,15 +9,23 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ntut.csie.ezScrum.model.Product;
-import ntut.csie.ezScrum.model.Sprint;
+import ntut.csie.ezScrum.model.product.Product;
+import ntut.csie.ezScrum.model.product.ProductBuilder;
+import ntut.csie.ezScrum.model.sprint.Sprint;
+import ntut.csie.ezScrum.model.sprint.SprintBuilder;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
-import ntut.csie.ezScrum.useCase.Product.ProductBuilder;
-import ntut.csie.ezScrum.useCase.Product.ProductManagerUseCase;
-import ntut.csie.ezScrum.useCase.Sprint.SprintBuilder;
-import ntut.csie.ezScrum.useCase.Sprint.SprintInputDTO;
-import ntut.csie.ezScrum.useCase.Sprint.SprintManagerUseCase;
-import ntut.csie.ezScrum.useCase.Sprint.SprintOutputDTO;
+import ntut.csie.ezScrum.useCase.product.ProductManagerUseCase;
+import ntut.csie.ezScrum.useCase.sprint.SprintManagerUseCase;
+import ntut.csie.ezScrum.useCase.sprint.io.AddSprintInput;
+import ntut.csie.ezScrum.useCase.sprint.io.AddSprintOutput;
+import ntut.csie.ezScrum.useCase.sprint.io.DeleteSprintInput;
+import ntut.csie.ezScrum.useCase.sprint.io.DeleteSprintOutput;
+import ntut.csie.ezScrum.useCase.sprint.io.EditSprintInput;
+import ntut.csie.ezScrum.useCase.sprint.io.EditSprintOutput;
+import ntut.csie.ezScrum.useCase.sprint.io.GetSprintInput;
+import ntut.csie.ezScrum.useCase.sprint.io.SprintDTO;
+import ntut.csie.ezScrum.useCase.sprint.io.IsSprintOverlapInput;
+import ntut.csie.ezScrum.useCase.sprint.io.IsSprintOverlapOutput;
 
 public class SprintTest {
 	
@@ -55,15 +63,16 @@ public class SprintTest {
 		int interval = 2;
 		String demoDate = "2018-04-22";
 		
-		SprintInputDTO sprintInputDTO = new SprintInputDTO();
-		sprintInputDTO.setGoal(goal);
-		sprintInputDTO.setInterval(interval);
-		sprintInputDTO.setStartDate(startDate);
-		sprintInputDTO.setEndDate(endDate);
-		sprintInputDTO.setDemoDate(demoDate);
-		sprintInputDTO.setProductId(productId);
+		AddSprintInput sprintAddInput = new AddSprintInput();
+		sprintAddInput.setGoal(goal);
+		sprintAddInput.setInterval(interval);
+		sprintAddInput.setStartDate(startDate);
+		sprintAddInput.setEndDate(endDate);
+		sprintAddInput.setDemoDate(demoDate);
+		sprintAddInput.setProductId(productId);
 		
-		String sprintId = sprintManagerUseCase.addSprint(sprintInputDTO);
+		AddSprintOutput sprintAddOutput = sprintManagerUseCase.addSprint(sprintAddInput);
+		String sprintId = sprintAddOutput.getSprintId();
 		Sprint testedSprint = context.getSprint(sprintId);
 		assertEquals(sprintId, testedSprint.getSprintId());
 		assertEquals(goal, testedSprint.getGoal());
@@ -89,18 +98,20 @@ public class SprintTest {
 		String demoPlace = "1622";
 		String daily = "10:00 1321";
 		
-		SprintInputDTO sprintInputDTO = new SprintInputDTO();
-		sprintInputDTO.setGoal(goal);
-		sprintInputDTO.setInterval(interval);
-		sprintInputDTO.setTeamSize(teamSize);
-		sprintInputDTO.setStartDate(startDate);
-		sprintInputDTO.setEndDate(endDate);
-		sprintInputDTO.setDemoDate(demoDate);
-		sprintInputDTO.setDemoPlace(demoPlace);
-		sprintInputDTO.setDaily(daily);
-		sprintInputDTO.setProductId(productId);
+		AddSprintInput sprintAddInput = new AddSprintInput();
+		sprintAddInput.setGoal(goal);
+		sprintAddInput.setInterval(interval);
+		sprintAddInput.setTeamSize(teamSize);
+		sprintAddInput.setStartDate(startDate);
+		sprintAddInput.setEndDate(endDate);
+		sprintAddInput.setDemoDate(demoDate);
+		sprintAddInput.setDemoPlace(demoPlace);
+		sprintAddInput.setDaily(daily);
+		sprintAddInput.setProductId(productId);
 		
-		String sprintId = sprintManagerUseCase.addSprint(sprintInputDTO);
+		AddSprintOutput sprintAddOutput = sprintManagerUseCase.addSprint(sprintAddInput);
+		String sprintId = sprintAddOutput.getSprintId();
+		
 		Sprint testedSprint = context.getSprint(sprintId);
 		assertEquals(sprintId, testedSprint.getSprintId());
 		assertEquals(goal, testedSprint.getGoal());
@@ -144,7 +155,7 @@ public class SprintTest {
 		String[] endDate = {"2018-05-28", "2018-06-14", "2018-06-28"};
 		String[] demoDate = {"2018-05-28", "2018-06-14", "2018-06-28"};
 		for(int i=0; i<goal.length; i++) {
-			SprintInputDTO sprintInputDTO = new SprintInputDTO();
+			AddSprintInput sprintInputDTO = new AddSprintInput();
 			sprintInputDTO.setGoal(goal[i]);
 			sprintInputDTO.setStartDate(startDate[i]);
 			sprintInputDTO.setEndDate(endDate[i]);
@@ -154,7 +165,11 @@ public class SprintTest {
 			sprintManagerUseCase.addSprint(sprintInputDTO);
 		}
 		
-		List<SprintOutputDTO> sprintList = sprintManagerUseCase.getSprints(productId);
+		GetSprintInput sprintGetInput = new GetSprintInput();
+		sprintGetInput.setProductId(productId);
+		
+		List<SprintDTO> sprintList = sprintManagerUseCase.getSprints(sprintGetInput);
+		
 		for(int i=0; i<sprintList.size(); i++) {
 			assertEquals(goal[i], sprintList.get(i).getGoal());
 			assertEquals(startDate[i], sprintList.get(i).getStartDate());
@@ -177,18 +192,19 @@ public class SprintTest {
 		String demoPlace = "1622";
 		String daily = "10:00 1321";
 		
-		SprintInputDTO sprintInputDTO = new SprintInputDTO();
-		sprintInputDTO.setGoal(goal);
-		sprintInputDTO.setInterval(interval);
-		sprintInputDTO.setTeamSize(teamSize);
-		sprintInputDTO.setStartDate(startDate);
-		sprintInputDTO.setEndDate(endDate);
-		sprintInputDTO.setDemoDate(demoDate);
-		sprintInputDTO.setDemoPlace(demoPlace);
-		sprintInputDTO.setDaily(daily);
-		sprintInputDTO.setProductId(productId);
+		AddSprintInput sprintAddInput = new AddSprintInput();
+		sprintAddInput.setGoal(goal);
+		sprintAddInput.setInterval(interval);
+		sprintAddInput.setTeamSize(teamSize);
+		sprintAddInput.setStartDate(startDate);
+		sprintAddInput.setEndDate(endDate);
+		sprintAddInput.setDemoDate(demoDate);
+		sprintAddInput.setDemoPlace(demoPlace);
+		sprintAddInput.setDaily(daily);
+		sprintAddInput.setProductId(productId);
 		
-		String sprintId = sprintManagerUseCase.addSprint(sprintInputDTO);
+		AddSprintOutput sprintAddOutput = sprintManagerUseCase.addSprint(sprintAddInput);
+		String sprintId = sprintAddOutput.getSprintId();
 		
 		String editedGoal = "Implement the function of editing sprint.";
 		int editedTeamSize = 2;
@@ -199,22 +215,23 @@ public class SprintTest {
 		String editedDemoPlace = "03F Room";
 		String editedDaily = "15:00 1323";
 		
-		SprintInputDTO editedSprintInputDTO = new SprintInputDTO();
+		EditSprintInput sprintEditInput = new EditSprintInput();
 		
-		editedSprintInputDTO.setGoal(editedGoal);
-		editedSprintInputDTO.setTeamSize(editedTeamSize);
-		editedSprintInputDTO.setStartDate(editedStartDate);
-		editedSprintInputDTO.setInterval(editedInterval);
-		editedSprintInputDTO.setEndDate(editedEndDate);
-		editedSprintInputDTO.setDemoDate(editedDemoDate);
-		editedSprintInputDTO.setDemoPlace(editedDemoPlace);
-		editedSprintInputDTO.setDaily(editedDaily);
+		sprintEditInput.setSprintId(sprintId);
+		sprintEditInput.setGoal(editedGoal);
+		sprintEditInput.setTeamSize(editedTeamSize);
+		sprintEditInput.setStartDate(editedStartDate);
+		sprintEditInput.setInterval(editedInterval);
+		sprintEditInput.setEndDate(editedEndDate);
+		sprintEditInput.setDemoDate(editedDemoDate);
+		sprintEditInput.setDemoPlace(editedDemoPlace);
+		sprintEditInput.setDaily(editedDaily);
 		
-		String editedSprintId = sprintManagerUseCase.editSprint(sprintId, editedSprintInputDTO);
+		EditSprintOutput editedSprintOutput = sprintManagerUseCase.editSprint(sprintEditInput);
 		
-		Sprint testedSprint = context.getSprint(editedSprintId);
+		Sprint testedSprint = context.getSprint(sprintId);
 		
-		assertEquals(editedSprintId, testedSprint.getSprintId());
+		assertEquals(true, editedSprintOutput.isEditSuccess());
 		assertEquals(editedGoal, testedSprint.getGoal());
 		assertEquals(editedTeamSize, testedSprint.getTeamSize());
 		assertEquals(editedStartDate, testedSprint.getStartDate());
@@ -237,26 +254,33 @@ public class SprintTest {
 		String demoPlace = "1622";
 		String daily = "10:00 1321";
 		
-		SprintInputDTO sprintInputDTO = new SprintInputDTO();
-		sprintInputDTO.setGoal(goal);
-		sprintInputDTO.setInterval(interval);
-		sprintInputDTO.setTeamSize(teamSize);
-		sprintInputDTO.setStartDate(startDate);
-		sprintInputDTO.setEndDate(endDate);
-		sprintInputDTO.setDemoDate(demoDate);
-		sprintInputDTO.setDemoPlace(demoPlace);
-		sprintInputDTO.setDaily(daily);
-		sprintInputDTO.setProductId(productId);
+		AddSprintInput sprintAddInput = new AddSprintInput();
+		sprintAddInput.setGoal(goal);
+		sprintAddInput.setInterval(interval);
+		sprintAddInput.setTeamSize(teamSize);
+		sprintAddInput.setStartDate(startDate);
+		sprintAddInput.setEndDate(endDate);
+		sprintAddInput.setDemoDate(demoDate);
+		sprintAddInput.setDemoPlace(demoPlace);
+		sprintAddInput.setDaily(daily);
+		sprintAddInput.setProductId(productId);
 		
-		String sprintId = sprintManagerUseCase.addSprint(sprintInputDTO);
+		AddSprintOutput sprintAddOutput = sprintManagerUseCase.addSprint(sprintAddInput);
+		String sprintId = sprintAddOutput.getSprintId();
 		
-		String deletedBacklogItemId = sprintManagerUseCase.deleteSprint(sprintId);
+		DeleteSprintInput sprintDeleteInput = new DeleteSprintInput();
+		sprintDeleteInput.setSprintId(sprintId);
+		DeleteSprintOutput sprintDeleteOutput = sprintManagerUseCase.deleteSprint(sprintDeleteInput);
 		
-		List<SprintOutputDTO> sprintList = sprintManagerUseCase.getSprints(productId);
+		GetSprintInput sprintGetInput = new GetSprintInput();
+		sprintGetInput.setProductId(productId);
 		
+		List<SprintDTO> sprintList = sprintManagerUseCase.getSprints(sprintGetInput);
+		
+		assertEquals(true, sprintDeleteOutput.isDeleteSuccess());
 		boolean isFound = false;
-		for(SprintOutputDTO sprintOutputDTO : sprintList) {
-			if(sprintOutputDTO.getSprintId().equals(deletedBacklogItemId)) {
+		for(SprintDTO sprintOutputDTO : sprintList) {
+			if(sprintOutputDTO.getSprintId().equals(sprintId)) {
 				isFound = true;
 				break;
 			}
@@ -278,19 +302,25 @@ public class SprintTest {
 		String[] sprintIds = new String[goal.length];
 		
 		for(int i=0; i<goal.length; i++) {
-			SprintInputDTO sprintInputDTO = new SprintInputDTO();
-			sprintInputDTO.setGoal(goal[i]);
-			sprintInputDTO.setStartDate(startDate[i]);
-			sprintInputDTO.setEndDate(endDate[i]);
-			sprintInputDTO.setInterval(2);
-			sprintInputDTO.setDemoDate(demoDate[i]);
-			sprintInputDTO.setProductId(productId);
-			sprintIds[i] = sprintManagerUseCase.addSprint(sprintInputDTO);
+			AddSprintInput sprintAddInput = new AddSprintInput();
+			sprintAddInput.setGoal(goal[i]);
+			sprintAddInput.setStartDate(startDate[i]);
+			sprintAddInput.setEndDate(endDate[i]);
+			sprintAddInput.setInterval(2);
+			sprintAddInput.setDemoDate(demoDate[i]);
+			sprintAddInput.setProductId(productId);
+			AddSprintOutput sprintAddOutput = sprintManagerUseCase.addSprint(sprintAddInput);
+			sprintIds[i] = sprintAddOutput.getSprintId();
 		}
 		
-		sprintManagerUseCase.deleteSprint(sprintIds[1]);
+		DeleteSprintInput sprintDeleteInput = new DeleteSprintInput();
+		sprintDeleteInput.setSprintId(sprintIds[1]);
+		sprintManagerUseCase.deleteSprint(sprintDeleteInput);
 		
-		List<SprintOutputDTO> sprintList = sprintManagerUseCase.getSprints(productId);
+		GetSprintInput sprintGetInput = new GetSprintInput();
+		sprintGetInput.setProductId(productId);
+		
+		List<SprintDTO> sprintList = sprintManagerUseCase.getSprints(sprintGetInput);
 		
 		for(int i=0; i<sprintList.size(); i++) {
 			assertEquals(i+1, sprintList.get(i).getOrderId());
@@ -307,7 +337,7 @@ public class SprintTest {
 		int interval = 2;
 		String demoDate = "2018-04-22";
 		
-		SprintInputDTO sprintInputDTO = new SprintInputDTO();
+		AddSprintInput sprintInputDTO = new AddSprintInput();
 		sprintInputDTO.setGoal(goal);
 		sprintInputDTO.setInterval(interval);
 		sprintInputDTO.setStartDate(startDate);
@@ -317,13 +347,31 @@ public class SprintTest {
 		
 		sprintManagerUseCase.addSprint(sprintInputDTO);
 		
+		IsSprintOverlapInput[] isSprintOverlapInputs = new IsSprintOverlapInput[4];
+		for(int i = 0; i < isSprintOverlapInputs.length; i++) {
+			isSprintOverlapInputs[i] = new IsSprintOverlapInput();
+			isSprintOverlapInputs[i].setProductId(productId);
+		}
+		
+		isSprintOverlapInputs[0].setStartDate("2018-04-10");
+		isSprintOverlapInputs[0].setEndDate("2018-04-23");
+		
+		isSprintOverlapInputs[1].setStartDate("2018-04-07");
+		isSprintOverlapInputs[1].setEndDate("2018-04-20");
+		
+		isSprintOverlapInputs[2].setStartDate("2018-04-09");
+		isSprintOverlapInputs[2].setEndDate("2018-04-22");
+		
+		isSprintOverlapInputs[3].setStartDate("2018-04-15");
+		isSprintOverlapInputs[3].setEndDate("2018-04-20");
+		
 		try {
-			assertEquals(true, sprintManagerUseCase.isSprintOverlap(productId, "2018-04-10", "2018-04-23"));
-			assertEquals(true, sprintManagerUseCase.isSprintOverlap(productId, "2018-04-07", "2018-04-20"));
-			assertEquals(true, sprintManagerUseCase.isSprintOverlap(productId, "2018-04-09", "2018-04-22"));
-			assertEquals(true, sprintManagerUseCase.isSprintOverlap(productId, "2018-04-15", "2018-04-20"));
+			for(int i = 0; i < isSprintOverlapInputs.length; i++) {
+				IsSprintOverlapOutput isSprintOverlapOutput = sprintManagerUseCase.isSprintOverlap(isSprintOverlapInputs[i]);
+				boolean isSprintOverlap = isSprintOverlapOutput.isSprintOverlap();
+				assertEquals(true, isSprintOverlap);
+			}
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -337,7 +385,7 @@ public class SprintTest {
 		int interval = 2;
 		String demoDate = "2018-04-22";
 		
-		SprintInputDTO sprintInputDTO = new SprintInputDTO();
+		AddSprintInput sprintInputDTO = new AddSprintInput();
 		sprintInputDTO.setGoal(goal);
 		sprintInputDTO.setInterval(interval);
 		sprintInputDTO.setStartDate(startDate);
@@ -347,11 +395,25 @@ public class SprintTest {
 		
 		sprintManagerUseCase.addSprint(sprintInputDTO);
 		
+		IsSprintOverlapInput[] isSprintOverlapInputs = new IsSprintOverlapInput[2];
+		for(int i = 0; i < isSprintOverlapInputs.length; i++) {
+			isSprintOverlapInputs[i] = new IsSprintOverlapInput();
+			isSprintOverlapInputs[i].setProductId(productId);
+		}
+		
+		isSprintOverlapInputs[0].setStartDate("2018-04-01");
+		isSprintOverlapInputs[0].setEndDate("2018-04-08");
+		
+		isSprintOverlapInputs[1].setStartDate("2018-04-23");
+		isSprintOverlapInputs[1].setEndDate("2018-04-30");
+		
 		try {
-			assertEquals(false, sprintManagerUseCase.isSprintOverlap(productId, "2018-04-01", "2018-04-08"));
-			assertEquals(false, sprintManagerUseCase.isSprintOverlap(productId, "2018-04-23", "2018-04-30"));
+			for(int i = 0; i < isSprintOverlapInputs.length; i++) {
+				IsSprintOverlapOutput isSprintOverlapOutput = sprintManagerUseCase.isSprintOverlap(isSprintOverlapInputs[i]);
+				boolean isSprintOverlap = isSprintOverlapOutput.isSprintOverlap();
+				assertEquals(false, isSprintOverlap);
+			}
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

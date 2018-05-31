@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.LinkedHashMap;
 
-import ntut.csie.ezScrum.model.BacklogItem;
-import ntut.csie.ezScrum.model.Product;
-import ntut.csie.ezScrum.model.Sprint;
-import ntut.csie.ezScrum.model.Task;
+import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
+import ntut.csie.ezScrum.model.product.Product;
+import ntut.csie.ezScrum.model.sprint.Sprint;
+import ntut.csie.ezScrum.model.task.Task;
 
 public class ApplicationContext {
 	private static ApplicationContext instance = null;

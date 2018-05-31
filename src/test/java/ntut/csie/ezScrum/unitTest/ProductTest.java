@@ -6,10 +6,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ntut.csie.ezScrum.model.Product;
+import ntut.csie.ezScrum.model.product.Product;
+import ntut.csie.ezScrum.model.product.ProductBuilder;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
-import ntut.csie.ezScrum.useCase.Product.ProductBuilder;
-import ntut.csie.ezScrum.useCase.Product.ProductManagerUseCase;
+import ntut.csie.ezScrum.useCase.product.ProductManagerUseCase;
 
 public class ProductTest {
 	private ApplicationContext context;
