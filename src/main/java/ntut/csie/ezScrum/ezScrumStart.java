@@ -1,7 +1,9 @@
-package ntut.csie.ezScrum.useCase;
+package ntut.csie.ezScrum;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+
+import ntut.csie.ezScrum.useCase.ApplicationContext;
 
 @SuppressWarnings("serial")
 public class ezScrumStart extends HttpServlet{

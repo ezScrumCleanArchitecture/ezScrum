@@ -36,7 +36,7 @@
 	<display-name>ezScrumStart</display-name>
 	<servlet>
 		<servlet-name>ezScrumStart</servlet-name>
-		<servlet-class>ntut.csie.ezScrum.useCase.ezScrumStart</servlet-class>
+		<servlet-class>ntut.csie.ezScrum.ezScrumStart</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
     

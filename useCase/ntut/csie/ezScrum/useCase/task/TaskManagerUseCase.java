@@ -13,6 +13,8 @@ import ntut.csie.ezScrum.useCase.task.io.DeleteTaskOutput;
 import ntut.csie.ezScrum.useCase.task.io.EditTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.EditTaskOutput;
 import ntut.csie.ezScrum.useCase.task.io.GetTaskInput;
+import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardInput;
+import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardOutput;
 import ntut.csie.ezScrum.useCase.task.io.TaskDTO;
 
 public class TaskManagerUseCase {
@@ -93,5 +95,15 @@ public class TaskManagerUseCase {
 		DeleteTaskOutput deleteTaskOutput = new DeleteTaskOutput();
 		deleteTaskOutput.setDeleteSuccess(true);
 		return deleteTaskOutput;
+	}
+	
+	public MoveTaskCardOutput moveTaskCard(MoveTaskCardInput moveTaskCardInput) {
+		String taskId = moveTaskCardInput.getTaskId();
+		Task task = context.getTask(taskId);
+		task.setStatus(moveTaskCardInput.getStatus());
+		context.editTask(taskId, task);
+		MoveTaskCardOutput moveTaskCardOutput = new MoveTaskCardOutput();
+		moveTaskCardOutput.setMoveTaskCardSuccess(true);
+		return moveTaskCardOutput;
 	}
 }

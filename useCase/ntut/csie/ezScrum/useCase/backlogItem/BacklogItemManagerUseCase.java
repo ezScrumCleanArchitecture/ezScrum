@@ -18,6 +18,8 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.GetBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetCommittedBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.CommittedBacklogItemDTO;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetNotYetCommittedBacklogItemInput;
+import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardInput;
+import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardOutput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.NotYetCommittedBacklogItemDTO;
 
 public class BacklogItemManagerUseCase {
@@ -169,6 +171,16 @@ public class BacklogItemManagerUseCase {
 		getNotYetCommittedBacklogItemOutput.setCreateTime(backlogItem.getCreateTime());
 		getNotYetCommittedBacklogItemOutput.setUpdateTime(backlogItem.getUpdateTime());
 		return getNotYetCommittedBacklogItemOutput;
+	}
+	
+	public MoveStoryCardOutput moveStoryCard(MoveStoryCardInput moveStoryCardInput) {
+		String backlogItemId = moveStoryCardInput.getBacklogItemId();
+		BacklogItem backlogItem = context.getBacklogItem(backlogItemId);
+		backlogItem.setStatus(moveStoryCardInput.getStatus());
+		context.editBacklogItem(backlogItemId, backlogItem);
+		MoveStoryCardOutput moveStoryCardOutput = new MoveStoryCardOutput();
+		moveStoryCardOutput.setMoveStoryCardSuccess(true);
+		return moveStoryCardOutput;
 	}
 	
 }

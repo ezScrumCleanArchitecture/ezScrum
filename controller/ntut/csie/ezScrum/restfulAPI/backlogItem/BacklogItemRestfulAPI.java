@@ -39,6 +39,8 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.GetBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetCommittedBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.CommittedBacklogItemDTO;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetNotYetCommittedBacklogItemInput;
+import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardInput;
+import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardOutput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.NotYetCommittedBacklogItemDTO;
 
 @Path("/product/{productId}/backlogItem")
@@ -248,5 +250,30 @@ public class BacklogItemRestfulAPI {
 		assignBacklogItemInput.setSprintId(sprintId);
 		assignBacklogItemInput.setBacklogItemId(backlogItemId);
 		backlogItemManagerUseCase.assignBacklogItemToSprint(assignBacklogItemInput);
+	}
+	
+	@POST
+	@Path("/moveStoryCard")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public MoveStoryCardOutput moveStoryCard(@PathParam("productId") String productId, 
+			String backlogItemInfo) {
+		String backlogItemId = "";
+		String status = "";
+		try {
+			JSONObject backlogItemJSON = new JSONObject(backlogItemInfo);
+			backlogItemId = backlogItemJSON.getString("backlogItemId");
+			status = backlogItemJSON.getString("status");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		MoveStoryCardInput moveStoryCardInput = new MoveStoryCardInput();
+		moveStoryCardInput.setBacklogItemId(backlogItemId);
+		moveStoryCardInput.setStatus(status);
+		
+		MoveStoryCardOutput moveStoryCardOutput = backlogItemManagerUseCase.moveStoryCard(moveStoryCardInput);
+		
+		return moveStoryCardOutput;
 	}
 }

@@ -24,6 +24,8 @@ import ntut.csie.ezScrum.useCase.task.TaskManagerUseCase;
 import ntut.csie.ezScrum.useCase.task.io.AddTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.AddTaskOutput;
 import ntut.csie.ezScrum.useCase.task.io.GetTaskInput;
+import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardInput;
+import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardOutput;
 import ntut.csie.ezScrum.useCase.task.io.TaskDTO;
 
 @Path("/backlogItem/{backlogItemId}/task")
@@ -31,6 +33,7 @@ import ntut.csie.ezScrum.useCase.task.io.TaskDTO;
 public class TaskRestfulAPI {
 	
 	ApplicationContext context = ApplicationContext.getInstance();
+	TaskManagerUseCase taskManagerUseCase = new TaskManagerUseCase(context);
 	
 	@POST
 	@Path("/addTask")
@@ -49,7 +52,6 @@ public class TaskRestfulAPI {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		TaskManagerUseCase taskManagerUseCase = new TaskManagerUseCase(context);
 		
 		AddTaskInput addTaskInput = new AddTaskInput();
 		addTaskInput.setDescription(description);
@@ -70,8 +72,6 @@ public class TaskRestfulAPI {
 	@Path("/getAllTask")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<TaskTableViewModel> getAllBacklogItem(@PathParam("backlogItemId") String backlogItemId) {
-		TaskManagerUseCase taskManagerUseCase = new TaskManagerUseCase(context);
-		
 		GetTaskInput getTaskInput = new GetTaskInput();
 		getTaskInput.setBacklogItemId(backlogItemId);
 		
@@ -93,4 +93,28 @@ public class TaskRestfulAPI {
 		return taskTableViewModelList;
 	}
 	
+	@POST
+	@Path("/moveTaskCard")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public MoveTaskCardOutput moveTaskCard(@PathParam("backlogItemId") String backlogItemId,
+			String taskInfo) {
+		String taskId = "";
+		String status = "";
+		try {
+			JSONObject taskJSON = new JSONObject(taskInfo);
+			taskId = taskJSON.getString("taskId");
+			status = taskJSON.getString("status");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		MoveTaskCardInput moveTaskCardInput = new MoveTaskCardInput();
+		moveTaskCardInput.setTaskId(taskId);
+		moveTaskCardInput.setStatus(status);
+		
+		MoveTaskCardOutput moveTaskCardOutput = taskManagerUseCase.moveTaskCard(moveTaskCardInput);
+		
+		return moveTaskCardOutput;
+	}
 }
