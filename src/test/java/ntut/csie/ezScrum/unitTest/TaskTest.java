@@ -29,10 +29,13 @@ import ntut.csie.ezScrum.useCase.task.io.DeleteTaskOutput;
 import ntut.csie.ezScrum.useCase.task.io.EditTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.EditTaskOutput;
 import ntut.csie.ezScrum.useCase.task.io.GetTaskInput;
+import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardInput;
+import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardOutput;
 import ntut.csie.ezScrum.useCase.task.io.TaskDTO;
 
 public class TaskTest {
 	private ApplicationContext context;
+	private TaskManagerUseCase taskManagerUseCase;
 	private String productId;
 	private String backlogItemId;
 	private String sprintId;
@@ -40,6 +43,7 @@ public class TaskTest {
 	@Before
 	public void setUp() {
 		context = ApplicationContext.getInstance();
+		taskManagerUseCase = new TaskManagerUseCase(context);
 		ProductManagerUseCase productManagerUseCase = new ProductManagerUseCase(context);
 		BacklogItemManagerUseCase backlogItemManagerUseCase = new BacklogItemManagerUseCase(context);
 		SprintManagerUseCase sprintManagerUseCase = new SprintManagerUseCase(context);
@@ -92,7 +96,6 @@ public class TaskTest {
 	
 	@Test
 	public void Should_RequiredDataInsertIntoTask_When_AddTaskWithRequiredParamemter() {
-		TaskManagerUseCase taskManagerUseCase = new TaskManagerUseCase(context);
 		String[] description = {"Write Unit Test to test adding task.", "Create task use case.", "Fix Bug of adding task."};
 		String[] taskId = new String[description.length];
 		
@@ -121,7 +124,6 @@ public class TaskTest {
 	
 	@Test
 	public void Should_AllDataInsertIntoTask_When_AddTaskWithAllParamemter() {
-		TaskManagerUseCase taskManagerUseCase = new TaskManagerUseCase(context);
 		String[] description = {"Write Unit Test to test adding task.", "Create task use case.", "Fix Bug of adding task."};
 		int[] estimate = {5, 3, 8};
 		String[] notes = {"Please use factory pattern to add task test data.", "Use task factory to call use case.", "You can run unit test first."};
@@ -166,7 +168,6 @@ public class TaskTest {
 	
 	@Test
 	public void Should_ReturnTaskList_When_GetAllTask() {
-		TaskManagerUseCase taskManagerUseCase  = new TaskManagerUseCase(context);
 		String[] description = {"Write Unit Test to test adding task.", "Create task use case.", "Fix Bug of adding task."};
 		
 		for(int i=0; i<description.length; i++) {
@@ -189,7 +190,6 @@ public class TaskTest {
 	
 	@Test
 	public void Should_UpdateData_When_EditTask() {
-		TaskManagerUseCase taskManagerUseCase = new TaskManagerUseCase(context);
 		String[] description = {"Write Unit Test to test adding task.", "Create task use case.", "Fix Bug of adding task."};
 		int[] estimate = {5, 3, 8};
 		String[] notes = {"Please use factory pattern to add task test data.", "Use task factory to call use case.", "You can run unit test first."};
@@ -233,7 +233,6 @@ public class TaskTest {
 	
 	@Test
 	public void Should_DeleteData_When_DeleteTask() {
-		TaskManagerUseCase taskManagerUseCase = new TaskManagerUseCase(context);
 		String[] description = {"Write Unit Test to test adding task.", "Create task use case.", "Fix Bug of adding task."};
 		int[] estimate = {5, 3, 8};
 		String[] notes = {"Please use factory pattern to add task test data.", "Use task factory to call use case.", "You can run unit test first."};
@@ -263,7 +262,7 @@ public class TaskTest {
 		assertEquals(true, deleteTaskOutput.isDeleteSuccess());
 		boolean isFound = false;
 		for(TaskDTO taskOutputDTO : taskList) {
-			if(taskOutputDTO.getTaskId().equals(taskId)) {
+			if(taskOutputDTO.getTaskId().equals(taskId[1])) {
 				isFound = true;
 				break;
 			}
@@ -273,7 +272,6 @@ public class TaskTest {
 	
 	@Test
 	public void Should_OrderIdUpdated_When_DeleteTask() {
-		TaskManagerUseCase taskManagerUseCase = new TaskManagerUseCase(context);
 		String[] description = {"Write Unit Test to test adding task.", "Create task use case.", "Fix Bug of adding task."};
 		int[] estimate = {5, 3, 8};
 		String[] notes = {"Please use factory pattern to add task test data.", "Use task factory to call use case.", "You can run unit test first."};
@@ -303,5 +301,113 @@ public class TaskTest {
 		for(int i=0; i<tasks.size(); i++) {
 			assertEquals(i+1, tasks.get(i).getOrderId());
 		}
+	}
+	
+	@Test
+	public void Should_ChangeTaskStatus_When_MoveTaskCard() {
+		String[] description = {"Write Unit Test to test adding task.", "Create task use case.", "Fix Bug of adding task."};
+		String[] status = {"To do", "Doing", "Done"};
+		String[] taskId = new String[description.length];
+		
+		for(int i=0; i<taskId.length ;i++) {
+			AddTaskInput taskInputDTO = new AddTaskInput();
+			taskInputDTO.setDescription(description[i]);
+			taskInputDTO.setBacklogItemId(backlogItemId);
+			
+			AddTaskOutput addTaskOutput = taskManagerUseCase.addTask(taskInputDTO);
+			taskId[i] = addTaskOutput.getTaskId();
+		}
+		
+		for(int i=0; i<taskId.length ;i++) {
+			MoveTaskCardInput moveTaskCardInput = new MoveTaskCardInput();
+			moveTaskCardInput.setTaskId(taskId[i]);
+			moveTaskCardInput.setStatus(status[1]);
+			
+			MoveTaskCardOutput moveTaskCardOutput = taskManagerUseCase.moveTaskCard(moveTaskCardInput);
+			boolean isSuccess = moveTaskCardOutput.isMoveTaskCardSuccess();
+			
+			Task testedTask = context.getTask(taskId[i]);
+			
+			assertEquals(true, isSuccess);
+			assertEquals(status[1], testedTask.getStatus());
+		}
+		
+		for(int i=0; i<taskId.length ;i++) {
+			MoveTaskCardInput moveTaskCardInput = new MoveTaskCardInput();
+			moveTaskCardInput.setTaskId(taskId[i]);
+			moveTaskCardInput.setStatus(status[2]);
+			
+			MoveTaskCardOutput moveTaskCardOutput = taskManagerUseCase.moveTaskCard(moveTaskCardInput);
+			boolean isSuccess = moveTaskCardOutput.isMoveTaskCardSuccess();
+			
+			Task testedTask = context.getTask(taskId[i]);
+			
+			assertEquals(true, isSuccess);
+			assertEquals(status[2], testedTask.getStatus());
+		}
+		
+		for(int i=0; i<taskId.length ;i++) {
+			MoveTaskCardInput moveTaskCardInput = new MoveTaskCardInput();
+			moveTaskCardInput.setTaskId(taskId[i]);
+			moveTaskCardInput.setStatus(status[0]);
+			
+			MoveTaskCardOutput moveTaskCardOutput = taskManagerUseCase.moveTaskCard(moveTaskCardInput);
+			boolean isSuccess = moveTaskCardOutput.isMoveTaskCardSuccess();
+			
+			Task testedTask = context.getTask(taskId[i]);
+			
+			assertEquals(true, isSuccess);
+			assertEquals(status[0], testedTask.getStatus());
+		}
+	}
+	
+	@Test
+	public void Should_ChangeTaskRemains_When_UpdateTaskRemains() {
+		String description = "Write Unit Test to Change Remain Hours";
+		int estimate = 13;
+		String[] status = {"Doing", "Done"};
+		String taskId;
+		
+		AddTaskInput addTaskInput = new AddTaskInput();
+		addTaskInput.setDescription(description);
+		addTaskInput.setEstimate(estimate);
+		addTaskInput.setBacklogItemId(backlogItemId);
+		
+		AddTaskOutput addTaskOutput = taskManagerUseCase.addTask(addTaskInput);
+		taskId = addTaskOutput.getTaskId();
+		
+		Task testedTask = context.getTask(taskId);
+		
+		assertEquals(estimate, testedTask.getRemains());
+		
+		MoveTaskCardInput moveTaskCardInput = new MoveTaskCardInput();
+		moveTaskCardInput.setTaskId(taskId);
+		moveTaskCardInput.setStatus(status[0]);
+		
+		taskManagerUseCase.moveTaskCard(moveTaskCardInput);
+		
+		int editedRemains = 8;
+		
+		EditTaskInput editTaskInput = new EditTaskInput();
+		editTaskInput.setTaskId(taskId);
+		editTaskInput.setDescription(description);
+		editTaskInput.setRemains(editedRemains);
+		editTaskInput.setBacklogItemId(backlogItemId);
+		
+		taskManagerUseCase.editTask(editTaskInput);
+		
+		Task testedTask2 = context.getTask(taskId);
+		
+		assertEquals(editedRemains, testedTask2.getRemains());
+		
+		MoveTaskCardInput moveTaskCardInput2 = new MoveTaskCardInput();
+		moveTaskCardInput2.setTaskId(taskId);
+		moveTaskCardInput2.setStatus(status[1]);
+		
+		taskManagerUseCase.moveTaskCard(moveTaskCardInput2);
+		
+		Task testedTask3 = context.getTask(taskId);
+		
+		assertEquals(0, testedTask3.getRemains());
 	}
 }

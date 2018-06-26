@@ -4,6 +4,7 @@ public class EditTaskInput {
 	private String taskId;
 	private String description;
 	private int estimate;
+	private int remains;
 	private String notes;
 	private String backlogItemId;
 	
@@ -24,6 +25,12 @@ public class EditTaskInput {
 	}
 	public void setEstimate(int estimate) {
 		this.estimate = estimate;
+	}
+	public int getRemains() {
+		return remains;
+	}
+	public void setRemains(int remains) {
+		this.remains = remains;
 	}
 	public String getNotes() {
 		return notes;

@@ -64,7 +64,7 @@ public class TaskManagerUseCase {
 		getTaskOutput.setHandlerId(task.getHandlerId());
 		getTaskOutput.setStatus(task.getStatus());
 		getTaskOutput.setEstimate(task.getEstimate());
-		getTaskOutput.setRemain(task.getRemain());
+		getTaskOutput.setRemains(task.getRemains());
 		getTaskOutput.setNotes(task.getNotes());
 		getTaskOutput.setBacklogItemId(task.getBacklogItemId());
 		return getTaskOutput;
@@ -75,6 +75,7 @@ public class TaskManagerUseCase {
 		Task task = context.getTask(taskId);
 		task.setDescription(editTaskInput.getDescription());
 		task.setEstimate(editTaskInput.getEstimate());
+		task.setRemains(editTaskInput.getRemains());
 		task.setNotes(editTaskInput.getNotes());
 		context.editTask(taskId, task);
 		EditTaskOutput editTaskOutput = new EditTaskOutput();
@@ -100,7 +101,11 @@ public class TaskManagerUseCase {
 	public MoveTaskCardOutput moveTaskCard(MoveTaskCardInput moveTaskCardInput) {
 		String taskId = moveTaskCardInput.getTaskId();
 		Task task = context.getTask(taskId);
-		task.setStatus(moveTaskCardInput.getStatus());
+		String status = moveTaskCardInput.getStatus();
+		task.setStatus(status);
+		if(status.equals("Done")) {
+			task.setRemains(0);
+		}
 		context.editTask(taskId, task);
 		MoveTaskCardOutput moveTaskCardOutput = new MoveTaskCardOutput();
 		moveTaskCardOutput.setMoveTaskCardSuccess(true);

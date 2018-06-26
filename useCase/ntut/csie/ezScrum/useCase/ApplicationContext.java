@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
 import ntut.csie.ezScrum.model.product.Product;
+import ntut.csie.ezScrum.model.retrospective.Retrospective;
 import ntut.csie.ezScrum.model.sprint.Sprint;
 import ntut.csie.ezScrum.model.task.Task;
 
@@ -16,12 +17,14 @@ public class ApplicationContext {
 	private Map<String, BacklogItem> backlogItems;
 	private Map<String, Sprint> sprints;
 	private Map<String, Task> tasks;
+	private Map<String, Retrospective> retrospectives;
 	
 	private ApplicationContext() {
 		products = Collections.synchronizedMap(new LinkedHashMap<String, Product>());
 		backlogItems = Collections.synchronizedMap(new LinkedHashMap<String, BacklogItem>());
 		sprints = Collections.synchronizedMap(new LinkedHashMap<String, Sprint>());
 		tasks = Collections.synchronizedMap(new LinkedHashMap<String, Task>());
+		retrospectives = Collections.synchronizedMap(new LinkedHashMap<String, Retrospective>());
 	}
 	public static ApplicationContext getInstance() {
 		if(instance == null) {
@@ -46,6 +49,10 @@ public class ApplicationContext {
 		return tasks.size();
 	}
 	
+	public int getNumberOfRetrospectives() {
+		return retrospectives.size();
+	}
+	
 	public void addProduct(Product product) {
 		products.put(product.getProductId(), product);
 	}
@@ -60,6 +67,10 @@ public class ApplicationContext {
 	
 	public void addTask(Task task) {
 		tasks.put(task.getTaskId(), task);
+	}
+	
+	public void addRetrospective(Retrospective retrospective) {
+		retrospectives.put(retrospective.getRetrospectiveId(), retrospective);
 	}
 	
 	public Collection<Product> getProducts() {
@@ -94,6 +105,14 @@ public class ApplicationContext {
 		return tasks.get(taskId);
 	}
 	
+	public Collection<Retrospective> getRetrospectives(){
+		return retrospectives.values();
+	}
+	
+	public Retrospective getRetrospective(String retrospectiveId) {
+		return retrospectives.get(retrospectiveId);
+	}
+	
 	public void clearProducts() {
 		products.clear();
 	}
@@ -108,6 +127,10 @@ public class ApplicationContext {
 	
 	public void clearTasks() {
 		tasks.clear();
+	}
+	
+	public void clearRetrospectives() {
+		retrospectives.clear();
 	}
 	
 	public void editProduct(Product product) {
@@ -126,6 +149,10 @@ public class ApplicationContext {
 		tasks.replace(taskId, task);
 	}
 	
+	public void editRetrospective(String retrospectiveId, Retrospective retrospective) {
+		retrospectives.replace(retrospectiveId, retrospective);
+	}
+	
 	public void deleteProduct(String productId) {
 		products.remove(productId);
 	}
@@ -140,5 +167,9 @@ public class ApplicationContext {
 	
 	public void deleteTask(String taskId) {
 		tasks.remove(taskId);
+	}
+	
+	public void deleteRetrospective(String retrospectiveId) {
+		retrospectives.remove(retrospectiveId);
 	}
 }

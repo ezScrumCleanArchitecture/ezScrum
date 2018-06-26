@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -23,6 +24,10 @@ import ntut.csie.ezScrum.useCase.ApplicationContext;
 import ntut.csie.ezScrum.useCase.task.TaskManagerUseCase;
 import ntut.csie.ezScrum.useCase.task.io.AddTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.AddTaskOutput;
+import ntut.csie.ezScrum.useCase.task.io.DeleteTaskInput;
+import ntut.csie.ezScrum.useCase.task.io.DeleteTaskOutput;
+import ntut.csie.ezScrum.useCase.task.io.EditTaskInput;
+import ntut.csie.ezScrum.useCase.task.io.EditTaskOutput;
 import ntut.csie.ezScrum.useCase.task.io.GetTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardInput;
 import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardOutput;
@@ -39,7 +44,7 @@ public class TaskRestfulAPI {
 	@Path("/addTask")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public TaskViewModel addBacklogItem(@PathParam("backlogItemId") String backlogItemId,
+	public TaskViewModel addTask(@PathParam("backlogItemId") String backlogItemId,
 			String taskInfo) {
 		String description = "";
 		int estimate = 0;
@@ -71,7 +76,7 @@ public class TaskRestfulAPI {
 	@GET
 	@Path("/getAllTask")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<TaskTableViewModel> getAllBacklogItem(@PathParam("backlogItemId") String backlogItemId) {
+	public List<TaskTableViewModel> getAllTask(@PathParam("backlogItemId") String backlogItemId) {
 		GetTaskInput getTaskInput = new GetTaskInput();
 		getTaskInput.setBacklogItemId(backlogItemId);
 		
@@ -86,11 +91,67 @@ public class TaskRestfulAPI {
 			taskTableViewModel.setHandlerId(taskDTO.getHandlerId());
 			taskTableViewModel.setStatus(taskDTO.getStatus());
 			taskTableViewModel.setEstimate(taskDTO.getEstimate());
+			taskTableViewModel.setRemains(taskDTO.getRemains());
 			taskTableViewModel.setNotes(taskDTO.getNotes());
 			taskTableViewModel.setBacklogItemOrderId(context.getBacklogItem(backlogItemId).getOrderId());
 			taskTableViewModelList.add(taskTableViewModel);
 		}
 		return taskTableViewModelList;
+	}
+	
+	@POST
+	@Path("/editTask")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public EditTaskOutput editTask(@PathParam("backlogItemId") String backlogItemId,
+			String taskInfo) {
+		String taskId = "";
+		String description = "";
+		int estimate = 0;
+		int remains = 0;
+		String notes = "";
+		try {
+			JSONObject taskJSON = new JSONObject(taskInfo);
+			taskId = taskJSON.getString("taskId");
+			description = taskJSON.getString("description");
+			estimate = taskJSON.getInt("estimate");
+			remains = taskJSON.getInt("remains");
+			notes = taskJSON.getString("notes");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		EditTaskInput editTaskInput = new EditTaskInput();
+		editTaskInput.setTaskId(taskId);
+		editTaskInput.setDescription(description);
+		editTaskInput.setEstimate(estimate);
+		editTaskInput.setRemains(remains);
+		editTaskInput.setNotes(notes);
+		editTaskInput.setBacklogItemId(backlogItemId);
+		
+		EditTaskOutput editTaskOutput = taskManagerUseCase.editTask(editTaskInput);
+		
+		return editTaskOutput;
+	}
+	
+	@DELETE
+	@Path("/deleteTask")
+	public DeleteTaskOutput deleteBacklogItem(@PathParam("backlogItemId") String backlogItemId,
+			String taskInfo) {
+		String taskId = "";
+		try {
+			JSONObject taskJSON = new JSONObject(taskInfo);
+			taskId = taskJSON.getString("taskId");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		DeleteTaskInput deleteTaskInput = new DeleteTaskInput();
+		deleteTaskInput.setTaskId(taskId);
+		
+		DeleteTaskOutput deleteTaskOutput = taskManagerUseCase.deleteTask(deleteTaskInput);
+		
+		return deleteTaskOutput;
 	}
 	
 	@POST

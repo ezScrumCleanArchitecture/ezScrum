@@ -26,6 +26,8 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.GetBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetCommittedBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.CommittedBacklogItemDTO;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetNotYetCommittedBacklogItemInput;
+import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardInput;
+import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardOutput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.NotYetCommittedBacklogItemDTO;
 import ntut.csie.ezScrum.useCase.product.ProductManagerUseCase;
 import ntut.csie.ezScrum.useCase.sprint.SprintManagerUseCase;
@@ -34,12 +36,14 @@ import ntut.csie.ezScrum.useCase.sprint.io.AddSprintOutput;
 
 public class BacklogItemTest {
 	private ApplicationContext context;
+	private BacklogItemManagerUseCase backlogItemManagerUseCase;
 	private String productId;
 	private String sprintId;
 
 	@Before
 	public void setUp() {
 		context = ApplicationContext.getInstance();
+		backlogItemManagerUseCase = new BacklogItemManagerUseCase(context);
 		ProductManagerUseCase productManagerUseCase = new ProductManagerUseCase(context);
 		SprintManagerUseCase sprintManagerUseCase = new SprintManagerUseCase(context);
 		Product product = null;
@@ -74,7 +78,6 @@ public class BacklogItemTest {
 
 	@Test
 	public void Should_RequiredDataInsertIntoBacklogItem_When_AddBacklogItemWithRequiredParamemter() {
-		BacklogItemManagerUseCase backlogItemManagerUseCase = new BacklogItemManagerUseCase(context);
 		String description = "As a ezScrum developer, I want to test addBacklogItem.";
 		
 		AddBacklogItemInput backlogItemInputDTO = new AddBacklogItemInput();
@@ -93,7 +96,6 @@ public class BacklogItemTest {
 	
 	@Test
 	public void Should_AllDataInsertIntoBacklogItem_When_AddBacklogItemWithAllParamemter() {
-		BacklogItemManagerUseCase backlogItemManagerUseCase = new BacklogItemManagerUseCase(context);
 		String description = "As a ezScrum developer, I want to test addBacklogItem.";
 		int estimate = 13;
 		int importance = 90;
@@ -130,7 +132,6 @@ public class BacklogItemTest {
 
 	@Test
 	public void Should_ReturnBacklogItemList_When_GetAllBacklogItem() {
-		BacklogItemManagerUseCase backlogItemManagerUseCase  = new BacklogItemManagerUseCase(context);
 		String[] description = {"As a ezScrum developer, I want to get the first backlog item.",
 				"As a ezScrum developer, I want to get the second backlog item.",
 				"As a ezScrum developer, I want to get the third backlog item."
@@ -157,8 +158,6 @@ public class BacklogItemTest {
 		backlogItemInputDTO.setProductId(productId);
 		backlogItemInputDTO.setDescription("The description of ezScrum.");
 		
-		BacklogItemManagerUseCase backlogItemManagerUseCase = new BacklogItemManagerUseCase(context);
-		
 		AddBacklogItemOutput backlogItemAddOutput = backlogItemManagerUseCase.addBacklogItem(backlogItemInputDTO);
 		String backlogItemId = backlogItemAddOutput.getBacklogItemId();
 		
@@ -172,7 +171,6 @@ public class BacklogItemTest {
 	
 	@Test
 	public void Should_UpdateData_When_EditBacklogItem() {
-		BacklogItemManagerUseCase backlogItemManagerUseCase = new BacklogItemManagerUseCase(context);
 		String description = "As a ezScrum developer, I want to test addBacklogItem.";
 		int estimate = 13;
 		int importance = 90;
@@ -214,7 +212,6 @@ public class BacklogItemTest {
 	
 	@Test
 	public void Should_DeleteData_When_DeleteBacklogItem() {
-		BacklogItemManagerUseCase backlogItemManagerUseCase = new BacklogItemManagerUseCase(context);
 		String description = "As a ezScrum developer, I want to test addBacklogItem.";
 		int estimate = 13;
 		int importance = 90;
@@ -252,7 +249,6 @@ public class BacklogItemTest {
 	
 	@Test
 	public void Should_OrderIdUpdated_When_DeleteBacklogItem() {
-		BacklogItemManagerUseCase backlogItemManagerUseCase  = new BacklogItemManagerUseCase(context);
 		String[] description = {"As a ezScrum developer, I want to get the first backlog item.",
 				"As a ezScrum developer, I want to get the second backlog item.",
 				"As a ezScrum developer, I want to get the third backlog item."
@@ -282,7 +278,6 @@ public class BacklogItemTest {
 	
 	@Test
 	public void Should_IdentifyBacklogItemCommittedOrNot_When_GetBacklogItems() {
-		BacklogItemManagerUseCase backlogItemManagerUseCase  = new BacklogItemManagerUseCase(context);
 		String[] description = {"As a ezScrum developer, I want to get the first backlog item.",
 				"As a ezScrum developer, I want to get the second backlog item.",
 				"As a ezScrum developer, I want to get the third backlog item."
@@ -323,5 +318,40 @@ public class BacklogItemTest {
 			assertEquals(description[i+1], committedBacklogItemList.get(i).getDescription());
 		}
 		assertEquals(2, committedBacklogItemList.size());
+	}
+	
+	@Test
+	public void Should_ChangeBacklogItemStatus_When_MoveStoryCard() {
+		String description = "As a ezScrum developer, I want to test moving story card.";
+		String[] status = {"To do", "Done"};
+		
+		AddBacklogItemInput backlogItemInputDTO = new AddBacklogItemInput();
+		backlogItemInputDTO.setDescription(description);
+		
+		AddBacklogItemOutput backlogItemAddOutput = backlogItemManagerUseCase.addBacklogItem(backlogItemInputDTO);
+		String backlogItemId = backlogItemAddOutput.getBacklogItemId();
+		
+		MoveStoryCardInput moveStoryCardInput = new MoveStoryCardInput();
+		moveStoryCardInput.setBacklogItemId(backlogItemId);
+		moveStoryCardInput.setStatus(status[1]);
+		
+		MoveStoryCardOutput moveStoryCardOutput = backlogItemManagerUseCase.moveStoryCard(moveStoryCardInput);
+		boolean isSuccess = moveStoryCardOutput.isMoveStoryCardSuccess();
+		
+		BacklogItem testedBacklogItem = context.getBacklogItem(backlogItemId);
+		
+		assertEquals(true, isSuccess);
+		assertEquals(status[1], testedBacklogItem.getStatus());
+		
+		MoveStoryCardInput moveStoryCardInput2 = new MoveStoryCardInput();
+		moveStoryCardInput2.setBacklogItemId(backlogItemId);
+		moveStoryCardInput2.setStatus(status[0]);
+		
+		MoveStoryCardOutput moveStoryCardOutput2 = backlogItemManagerUseCase.moveStoryCard(moveStoryCardInput2);
+		isSuccess = moveStoryCardOutput2.isMoveStoryCardSuccess();
+		
+		BacklogItem testedBacklogItem2 = context.getBacklogItem(backlogItemId);
+		assertEquals(true, isSuccess);
+		assertEquals(status[0], testedBacklogItem2.getStatus());
 	}
 }

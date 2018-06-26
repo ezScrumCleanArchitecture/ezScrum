@@ -6,6 +6,7 @@ public class TaskTableViewModel extends TaskViewModel {
 	private String handlerId;
 	private String status;
 	private int estimate;
+	private int remains;
 	private String notes;
 	private long backlogItemOrderId;
 	
@@ -38,6 +39,12 @@ public class TaskTableViewModel extends TaskViewModel {
 	}
 	public void setEstimate(int estimate) {
 		this.estimate = estimate;
+	}
+	public int getRemains() {
+		return remains;
+	}
+	public void setRemains(int remains) {
+		this.remains = remains;
 	}
 	public String getNotes() {
 		return notes;

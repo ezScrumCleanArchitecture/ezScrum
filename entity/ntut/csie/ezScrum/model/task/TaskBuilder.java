@@ -53,7 +53,7 @@ public class TaskBuilder {
 		task.setTaskId(taskId);
 		task.setOrderId(orderId);
 		task.setEstimate(estimate);
-		task.setRemain(estimate);
+		task.setRemains(estimate);
 		task.setNotes(notes);
 		task.setStatus("To do");
 		return task;

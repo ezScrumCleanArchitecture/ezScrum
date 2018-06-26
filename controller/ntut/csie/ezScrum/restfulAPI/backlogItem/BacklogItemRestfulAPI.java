@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 
 import javax.ws.rs.core.MediaType;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -106,6 +107,7 @@ public class BacklogItemRestfulAPI {
 			committedBacklogItemTableViewModel.setStatus(committedBacklogItemDTO.getStatus());
 			committedBacklogItemTableViewModel.setEstimate(committedBacklogItemDTO.getEstimate());
 			committedBacklogItemTableViewModel.setImportance(committedBacklogItemDTO.getImportance());
+			committedBacklogItemTableViewModel.setNotes(committedBacklogItemDTO.getNotes());
 			committedBacklogItemTableViewModelList.add(committedBacklogItemTableViewModel);
 		}
 		return committedBacklogItemTableViewModelList;
@@ -128,6 +130,7 @@ public class BacklogItemRestfulAPI {
 			notYetCommittedBacklogItemTableViewModel.setDescription(notYetCommittedBacklogItemDTO.getDescription());
 			notYetCommittedBacklogItemTableViewModel.setEstimate(notYetCommittedBacklogItemDTO.getEstimate());
 			notYetCommittedBacklogItemTableViewModel.setImportance(notYetCommittedBacklogItemDTO.getImportance());
+			notYetCommittedBacklogItemTableViewModel.setNotes(notYetCommittedBacklogItemDTO.getNotes());
 			notYetCommittedBacklogItemTableViewModelList.add(notYetCommittedBacklogItemTableViewModel);
 		}
 		return notYetCommittedBacklogItemTableViewModelList;
@@ -238,18 +241,25 @@ public class BacklogItemRestfulAPI {
 	public void assignBacklogItem(@PathParam("productId") String productId,
 			String backlogItemInfo) {
 		String sprintId = "";
-		String backlogItemId = "";
+		String backlogItemIds = "";
+		List<String> backlogItemIdList = new ArrayList<>();
 		try {
 			JSONObject backlogItemJSON = new JSONObject(backlogItemInfo);
 			sprintId = backlogItemJSON.getString("sprintId");
-			backlogItemId = backlogItemJSON.getString("backlogItemId");
+			backlogItemIds = backlogItemJSON.getString("backlogItemIds");
+			JSONArray backlogItemIdsJSON = new JSONArray(backlogItemIds);
+			for(int i = 0; i < backlogItemIdsJSON.length(); i++) {
+				backlogItemIdList.add(backlogItemIdsJSON.getString(i));
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		AssignBacklogItemInput assignBacklogItemInput = new AssignBacklogItemInput();
-		assignBacklogItemInput.setSprintId(sprintId);
-		assignBacklogItemInput.setBacklogItemId(backlogItemId);
-		backlogItemManagerUseCase.assignBacklogItemToSprint(assignBacklogItemInput);
+		for(String backlogItemId : backlogItemIdList) {
+			assignBacklogItemInput.setSprintId(sprintId);
+			assignBacklogItemInput.setBacklogItemId(backlogItemId);
+			backlogItemManagerUseCase.assignBacklogItemToSprint(assignBacklogItemInput);
+		}
 	}
 	
 	@POST

@@ -7,7 +7,7 @@ public class TaskDTO {
 	private String handlerId;
 	private String status;
 	private int estimate;
-	private int remain;
+	private int remains;
 	private String notes;
 	private String backlogItemId;
 	private String createTime;
@@ -51,11 +51,11 @@ public class TaskDTO {
 	public void setEstimate(int estimate) {
 		this.estimate = estimate;
 	}
-	public int getRemain() {
-		return remain;
+	public int getRemains() {
+		return remains;
 	}
-	public void setRemain(int remain) {
-		this.remain = remain;
+	public void setRemains(int remains) {
+		this.remains = remains;
 	}
 	public String getNotes() {
 		return notes;
