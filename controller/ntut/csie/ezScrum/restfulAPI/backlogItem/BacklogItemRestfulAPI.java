@@ -18,14 +18,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.restfulAPI.backlogItem.viewModel.AddBacklogItemViewModel;
-import ntut.csie.ezScrum.restfulAPI.backlogItem.viewModel.BacklogItemTableViewModel;
-import ntut.csie.ezScrum.restfulAPI.backlogItem.viewModel.BacklogItemViewModel;
-import ntut.csie.ezScrum.restfulAPI.backlogItem.viewModel.CommittedBacklogItemTableViewModel;
-import ntut.csie.ezScrum.restfulAPI.backlogItem.viewModel.DeleteBacklogItemViewModel;
-import ntut.csie.ezScrum.restfulAPI.backlogItem.viewModel.EditBacklogItemViewModel;
-import ntut.csie.ezScrum.restfulAPI.backlogItem.viewModel.MessageBox;
-import ntut.csie.ezScrum.restfulAPI.backlogItem.viewModel.NotYetCommittedBacklogItemTableViewModel;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
 import ntut.csie.ezScrum.useCase.backlogItem.BacklogItemManagerUseCase;
 import ntut.csie.ezScrum.useCase.backlogItem.io.AddBacklogItemInput;
@@ -55,7 +47,7 @@ public class BacklogItemRestfulAPI {
 	@Path("/addBacklogItem")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public BacklogItemViewModel addBacklogItem(@PathParam("productId") String productId,
+	public AddBacklogItemOutput addBacklogItem(@PathParam("productId") String productId,
 			String backlogItemInfo) {
 		String description = "";
 		int estimate = 0;
@@ -79,18 +71,14 @@ public class BacklogItemRestfulAPI {
 		addBacklogItemInput.setProductId(productId);
 		
 		AddBacklogItemOutput addBacklogItemOutput = backlogItemManagerUseCase.addBacklogItem(addBacklogItemInput);
-		String backlogItemId = addBacklogItemOutput.getBacklogItemId();
 		
-		BacklogItemViewModel addBacklogItemViewModel = new AddBacklogItemViewModel();
-		addBacklogItemViewModel.setBacklogItemId(backlogItemId);
-		
-		return addBacklogItemViewModel;
+		return addBacklogItemOutput;
 	}
 	
 	@GET
 	@Path("/sprint/{sprintId}/getCommittedBacklogItems")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<CommittedBacklogItemTableViewModel> getCommittedBacklogItems(@PathParam("productId") String productId, 
+	public List<CommittedBacklogItemDTO> getCommittedBacklogItems(@PathParam("productId") String productId, 
 			@PathParam("sprintId") String sprintId) {
 		GetCommittedBacklogItemInput getCommittedBacklogItemInput = new GetCommittedBacklogItemInput();
 		getCommittedBacklogItemInput.setProductId(productId);
@@ -98,77 +86,38 @@ public class BacklogItemRestfulAPI {
 		
 		List<CommittedBacklogItemDTO> committedBacklogItemDTOList = backlogItemManagerUseCase.getCommittedBacklogItems(getCommittedBacklogItemInput);
 		
-		List<CommittedBacklogItemTableViewModel> committedBacklogItemTableViewModelList = new ArrayList<>();
-		for(CommittedBacklogItemDTO committedBacklogItemDTO : committedBacklogItemDTOList) {
-			CommittedBacklogItemTableViewModel committedBacklogItemTableViewModel = new CommittedBacklogItemTableViewModel();
-			committedBacklogItemTableViewModel.setBacklogItemId(committedBacklogItemDTO.getBacklogItemId());
-			committedBacklogItemTableViewModel.setOrderId(committedBacklogItemDTO.getOrderId());
-			committedBacklogItemTableViewModel.setDescription(committedBacklogItemDTO.getDescription());
-			committedBacklogItemTableViewModel.setStatus(committedBacklogItemDTO.getStatus());
-			committedBacklogItemTableViewModel.setEstimate(committedBacklogItemDTO.getEstimate());
-			committedBacklogItemTableViewModel.setImportance(committedBacklogItemDTO.getImportance());
-			committedBacklogItemTableViewModel.setNotes(committedBacklogItemDTO.getNotes());
-			committedBacklogItemTableViewModelList.add(committedBacklogItemTableViewModel);
-		}
-		return committedBacklogItemTableViewModelList;
+		return committedBacklogItemDTOList;
 	}
 	
 	@GET
 	@Path("/getNotYetCommittedBacklogItems")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<NotYetCommittedBacklogItemTableViewModel> getNotYetCommittedBacklogItems(@PathParam("productId") String productId) {
+	public List<NotYetCommittedBacklogItemDTO> getNotYetCommittedBacklogItems(@PathParam("productId") String productId) {
 		GetNotYetCommittedBacklogItemInput getNotYetCommittedBacklogItemInput = new GetNotYetCommittedBacklogItemInput();
 		getNotYetCommittedBacklogItemInput.setProductId(productId);
 		
 		List<NotYetCommittedBacklogItemDTO> notYetCommittedBacklogItemDTOList = backlogItemManagerUseCase.getNotYetCommittedBacklogItems(getNotYetCommittedBacklogItemInput);
 		
-		List<NotYetCommittedBacklogItemTableViewModel> notYetCommittedBacklogItemTableViewModelList = new ArrayList<>();
-		for(NotYetCommittedBacklogItemDTO notYetCommittedBacklogItemDTO : notYetCommittedBacklogItemDTOList) {
-			NotYetCommittedBacklogItemTableViewModel notYetCommittedBacklogItemTableViewModel = new NotYetCommittedBacklogItemTableViewModel();
-			notYetCommittedBacklogItemTableViewModel.setBacklogItemId(notYetCommittedBacklogItemDTO.getBacklogItemId());
-			notYetCommittedBacklogItemTableViewModel.setOrderId(notYetCommittedBacklogItemDTO.getOrderId());
-			notYetCommittedBacklogItemTableViewModel.setDescription(notYetCommittedBacklogItemDTO.getDescription());
-			notYetCommittedBacklogItemTableViewModel.setEstimate(notYetCommittedBacklogItemDTO.getEstimate());
-			notYetCommittedBacklogItemTableViewModel.setImportance(notYetCommittedBacklogItemDTO.getImportance());
-			notYetCommittedBacklogItemTableViewModel.setNotes(notYetCommittedBacklogItemDTO.getNotes());
-			notYetCommittedBacklogItemTableViewModelList.add(notYetCommittedBacklogItemTableViewModel);
-		}
-		return notYetCommittedBacklogItemTableViewModelList;
+		return notYetCommittedBacklogItemDTOList;
 	}
 	
 	@GET
 	@Path("/getAllBacklogItem")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<BacklogItemTableViewModel> getAllBacklogItem(@PathParam("productId") String productId) {
+	public List<BacklogItemDTO> getAllBacklogItem(@PathParam("productId") String productId) {
 		GetBacklogItemInput getBacklogItemInput = new GetBacklogItemInput();
 		getBacklogItemInput.setProductId(productId);
+		
 		List<BacklogItemDTO> backlogItemDTOList = backlogItemManagerUseCase.getBacklogItems(getBacklogItemInput);
-		List<BacklogItemTableViewModel> backlogItemTableViewModelList = new ArrayList<>();
-		for(BacklogItemDTO backlogItemDTO : backlogItemDTOList) {
-			BacklogItemTableViewModel backlogItemTableViewModel = new BacklogItemTableViewModel();
-			backlogItemTableViewModel.setBacklogItemId(backlogItemDTO.getBacklogItemId());
-			backlogItemTableViewModel.setOrderId(backlogItemDTO.getOrderId());
-			backlogItemTableViewModel.setDescription(backlogItemDTO.getDescription());
-			backlogItemTableViewModel.setEstimate(backlogItemDTO.getEstimate());
-			backlogItemTableViewModel.setImportance(backlogItemDTO.getImportance());
-			String sprintId = backlogItemDTO.getSprintId();
-			if(sprintId == null) {
-				backlogItemTableViewModel.setSprintOrderId(0);
-			}else {
-				backlogItemTableViewModel.setSprintOrderId(context.getSprint(sprintId).getOrderId());
-			}
-			backlogItemTableViewModel.setStatus(backlogItemDTO.getStatus());
-			backlogItemTableViewModel.setNotes(backlogItemDTO.getNotes());
-			backlogItemTableViewModelList.add(backlogItemTableViewModel);
-		}
-		return backlogItemTableViewModelList;
+		
+		return backlogItemDTOList;
 	}
 	
 	@POST
 	@Path("/editBacklogItem")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public MessageBox editBacklogItem(@PathParam("productId") String productId, 
+	public EditBacklogItemOutput editBacklogItem(@PathParam("productId") String productId, 
 			String backlogItemInfo) {
 		String backlogItemId = "";
 		String description = "";
@@ -194,21 +143,13 @@ public class BacklogItemRestfulAPI {
 		editBacklogItemInput.setNotes(notes);
 		
 		EditBacklogItemOutput editBacklogItemOutput = backlogItemManagerUseCase.editBacklogItem(editBacklogItemInput);
-		boolean isSuccess = editBacklogItemOutput.isEditSuccess();
 		
-		MessageBox editBacklogItemViewModel = new EditBacklogItemViewModel();
-		if(isSuccess) {
-			editBacklogItemViewModel.setMessage("Edit backlogItem success!");
-		}else {
-			editBacklogItemViewModel.setMessage("Edit backlogItem fail!");
-		}
-		
-		return editBacklogItemViewModel;
+		return editBacklogItemOutput;
 	}
 	
 	@DELETE
 	@Path("/deleteBacklogItem")
-	public MessageBox deleteBacklogItem(@PathParam("productId") String productId,
+	public DeleteBacklogItemOutput deleteBacklogItem(@PathParam("productId") String productId,
 			String backlogItemInfo) {
 		String backlogItemId = "";
 		try {
@@ -222,16 +163,8 @@ public class BacklogItemRestfulAPI {
 		deleteBacklogItemInput.setBacklogItemId(backlogItemId);
 		
 		DeleteBacklogItemOutput deleteBacklogItemOutput = backlogItemManagerUseCase.deleteBacklogItem(deleteBacklogItemInput);
-		boolean isSuccess = deleteBacklogItemOutput.isDeleteSuccess();
 		
-		MessageBox deleteBacklogItemViewModel = new DeleteBacklogItemViewModel();
-		if(isSuccess) {
-			deleteBacklogItemViewModel.setMessage("Delete backlog item success!");
-		}else {
-			deleteBacklogItemViewModel.setMessage("Delete backlog item fail!");
-		}
-		
-		return deleteBacklogItemViewModel;
+		return deleteBacklogItemOutput;
 	}
 	
 	@POST

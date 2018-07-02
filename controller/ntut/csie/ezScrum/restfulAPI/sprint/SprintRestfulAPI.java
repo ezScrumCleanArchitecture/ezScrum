@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.restfulAPI.sprint;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Singleton;
@@ -18,14 +17,6 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.restfulAPI.sprint.viewModel.AddSprintViewModel;
-import ntut.csie.ezScrum.restfulAPI.sprint.viewModel.DeleteSprintViewModel;
-import ntut.csie.ezScrum.restfulAPI.sprint.viewModel.EditSprintViewModel;
-import ntut.csie.ezScrum.restfulAPI.sprint.viewModel.IsSprintOverdueViewModel;
-import ntut.csie.ezScrum.restfulAPI.sprint.viewModel.IsSprintOverlapViewModel;
-import ntut.csie.ezScrum.restfulAPI.sprint.viewModel.SprintListViewModel;
-import ntut.csie.ezScrum.restfulAPI.sprint.viewModel.SprintTableViewModel;
-import ntut.csie.ezScrum.restfulAPI.sprint.viewModel.SprintViewModel;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
 import ntut.csie.ezScrum.useCase.sprint.SprintManagerUseCase;
 import ntut.csie.ezScrum.useCase.sprint.io.AddSprintInput;
@@ -52,7 +43,7 @@ public class SprintRestfulAPI {
 	@Path("/addSprint")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public SprintViewModel addSprint(@PathParam("productId") String productId,
+	public AddSprintOutput addSprint(@PathParam("productId") String productId,
 			String sprintInfo) {
 		String goal = "";
 		int interval = 0;
@@ -88,64 +79,39 @@ public class SprintRestfulAPI {
 		addSprintInput.setProductId(productId);
 		
 		AddSprintOutput addSprintOutput = sprintManagerUseCase.addSprint(addSprintInput);
-		String sprintId = addSprintOutput.getSprintId();
-		
-		SprintViewModel sprintViewModel = new AddSprintViewModel();
-		sprintViewModel.setSprintId(sprintId);
-		return sprintViewModel;
+
+		return addSprintOutput;
 	}
 	
 	@GET
 	@Path("/getAllSprint")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<SprintTableViewModel> getAllSprint(@PathParam("productId") String productId) {
+	public List<SprintDTO> getAllSprint(@PathParam("productId") String productId) {
 		GetSprintInput getSprintInput = new GetSprintInput();
 		getSprintInput.setProductId(productId);
 		
 		List<SprintDTO> sprintDTOList = sprintManagerUseCase.getSprints(getSprintInput);
 		
-		List<SprintTableViewModel> sprintTableViewModelList = new ArrayList<>();
-		for(SprintDTO sprintDTO : sprintDTOList) {
-			SprintTableViewModel sprintTableViewModel = new SprintTableViewModel();
-			sprintTableViewModel.setSprintId(sprintDTO.getSprintId());
-			sprintTableViewModel.setOrderId(sprintDTO.getOrderId());
-			sprintTableViewModel.setGoal(sprintDTO.getGoal());
-			sprintTableViewModel.setStartDate(sprintDTO.getStartDate());
-			sprintTableViewModel.setInterval(sprintDTO.getInterval());
-			sprintTableViewModel.setEndDate(sprintDTO.getEndDate());
-			sprintTableViewModel.setDemoDate(sprintDTO.getDemoDate());
-			sprintTableViewModel.setDemoPlace(sprintDTO.getDemoPlace());
-			sprintTableViewModel.setTeamSize(sprintDTO.getTeamSize());
-			sprintTableViewModel.setDaily(sprintDTO.getDaily());
-			sprintTableViewModelList.add(sprintTableViewModel);
-		}
-		return sprintTableViewModelList;
+		return sprintDTOList;
 	}
 	
 	@GET
 	@Path("/getAllSprintList")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<SprintListViewModel> getSprintList(@PathParam("productId") String productId) {
+	public List<SprintDTO> getSprintList(@PathParam("productId") String productId) {
 		GetSprintInput getSprintInput = new GetSprintInput();
 		getSprintInput.setProductId(productId);
 		
 		List<SprintDTO> sprintDTOList = sprintManagerUseCase.getSprints(getSprintInput);
 		
-		List<SprintListViewModel> sprintList = new ArrayList<>();
-		for(SprintDTO sprintDTO : sprintDTOList) {
-			SprintListViewModel sprintViewModel = new SprintListViewModel();
-			sprintViewModel.setSprintId(sprintDTO.getSprintId());
-			sprintViewModel.setDisplayName("Sprint#" + sprintDTO.getOrderId());
-			sprintList.add(sprintViewModel);
-		}
-		return sprintList;
+		return sprintDTOList;
 	}
 	
 	@POST
 	@Path("/editSprint")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public EditSprintViewModel editSprint(@PathParam("productId") String productId,
+	public EditSprintOutput editSprint(@PathParam("productId") String productId,
 			String sprintInfo) {
 		String sprintId = "";
 		String goal = "";
@@ -183,21 +149,13 @@ public class SprintRestfulAPI {
 		editSprintInput.setDaily(daily);
 		
 		EditSprintOutput editSprintOutput = sprintManagerUseCase.editSprint(editSprintInput);
-		boolean isSuccess = editSprintOutput.isEditSuccess();
 		
-		EditSprintViewModel editSprintViewModel = new EditSprintViewModel();
-		if(isSuccess) {
-			editSprintViewModel.setMessage("Edit sprint success!");
-		}else {
-			editSprintViewModel.setMessage("Edit sprint fail!");
-		}
-		
-		return editSprintViewModel;
+		return editSprintOutput;
 	}
 	
 	@DELETE
 	@Path("/deleteSprint")
-	public DeleteSprintViewModel deleteBacklogItem(@PathParam("productId") String productId,
+	public DeleteSprintOutput deleteBacklogItem(@PathParam("productId") String productId,
 			String sprintInfo) {
 		String sprintId = "";
 		try {
@@ -211,21 +169,13 @@ public class SprintRestfulAPI {
 		deleteSprintInput.setSprintId(sprintId);
 		
 		DeleteSprintOutput deleteSprintOutput = sprintManagerUseCase.deleteSprint(deleteSprintInput);
-		boolean isSuccess = deleteSprintOutput.isDeleteSuccess();
 		
-		DeleteSprintViewModel deleteSprintViewModel = new DeleteSprintViewModel();
-		if(isSuccess) {
-			deleteSprintViewModel.setMessage("Delete sprint success!");
-		}else {
-			deleteSprintViewModel.setMessage("Delete sprint fail!");
-		}
-		
-		return deleteSprintViewModel;
+		return deleteSprintOutput;
 	}
 	
 	@POST
 	@Path("/isSprintOverlap")
-	public IsSprintOverlapViewModel isSprintOverlap(@PathParam("productId") String productId,
+	public IsSprintOverlapOutput isSprintOverlap(@PathParam("productId") String productId,
 			String sprintInfo) {
 		String startDate = "";
 		String endDate = "";
@@ -242,23 +192,19 @@ public class SprintRestfulAPI {
 		isSprintOverlapInput.setStartDate(startDate);
 		isSprintOverlapInput.setEndDate(endDate);
 		
-		boolean isOverlap = false;
+		IsSprintOverlapOutput isSprintOverlapOutput = null;
 		try {
-			IsSprintOverlapOutput isSprintOverlapOutput = sprintManagerUseCase.isSprintOverlap(isSprintOverlapInput);
-			isOverlap = isSprintOverlapOutput.isSprintOverlap();
+			isSprintOverlapOutput = sprintManagerUseCase.isSprintOverlap(isSprintOverlapInput);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		
-		IsSprintOverlapViewModel isSprintOverlapViewModel = new IsSprintOverlapViewModel();
-		isSprintOverlapViewModel.setSprintOverlap(isOverlap);
-		
-		return isSprintOverlapViewModel;
+		return isSprintOverlapOutput;
 	}
 	
 	@POST
 	@Path("/isSprintOverdue")
-	public IsSprintOverdueViewModel isSprintOverdue(String sprintInfo) {
+	public IsSprintOverdueOutput isSprintOverdue(String sprintInfo) {
 		String sprintId = "";
 		try {
 			JSONObject sprintJSON = new JSONObject(sprintInfo);
@@ -270,17 +216,13 @@ public class SprintRestfulAPI {
 		IsSprintOverdueInput isSprintOverdueInput = new IsSprintOverdueInput();
 		isSprintOverdueInput.setSprintId(sprintId);
 		
-		boolean isOverdue = false;
+		IsSprintOverdueOutput isSprintOverdueOutput = null;
 		try {
-			IsSprintOverdueOutput isSprintOverdueOutput = sprintManagerUseCase.isSprintOverdue(isSprintOverdueInput);
-			isOverdue = isSprintOverdueOutput.isSprintOverdue();
+			isSprintOverdueOutput = sprintManagerUseCase.isSprintOverdue(isSprintOverdueInput);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
-		IsSprintOverdueViewModel isSprintOverdueViewModel = new IsSprintOverdueViewModel();
-		isSprintOverdueViewModel.setSprintOverdue(isOverdue);
-		
-		return isSprintOverdueViewModel;
+
+		return isSprintOverdueOutput;
 	}
 }

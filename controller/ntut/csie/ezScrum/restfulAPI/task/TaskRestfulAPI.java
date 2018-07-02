@@ -1,6 +1,5 @@
 package ntut.csie.ezScrum.restfulAPI.task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Singleton;
@@ -17,9 +16,6 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.restfulAPI.task.viewModel.AddTaskViewModel;
-import ntut.csie.ezScrum.restfulAPI.task.viewModel.TaskTableViewModel;
-import ntut.csie.ezScrum.restfulAPI.task.viewModel.TaskViewModel;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
 import ntut.csie.ezScrum.useCase.task.TaskManagerUseCase;
 import ntut.csie.ezScrum.useCase.task.io.AddTaskInput;
@@ -44,7 +40,7 @@ public class TaskRestfulAPI {
 	@Path("/addTask")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public TaskViewModel addTask(@PathParam("backlogItemId") String backlogItemId,
+	public AddTaskOutput addTask(@PathParam("backlogItemId") String backlogItemId,
 			String taskInfo) {
 		String description = "";
 		int estimate = 0;
@@ -65,38 +61,20 @@ public class TaskRestfulAPI {
 		addTaskInput.setBacklogItemId(backlogItemId);
 		
 		AddTaskOutput addTaskOutput = taskManagerUseCase.addTask(addTaskInput);
-		String taskId = addTaskOutput.getTaskId();
 		
-		TaskViewModel addTaskViewModel = new AddTaskViewModel();
-		addTaskViewModel.setTaskId(taskId);
-		
-		return addTaskViewModel;
+		return addTaskOutput;
 	}
 	
 	@GET
 	@Path("/getAllTask")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<TaskTableViewModel> getAllTask(@PathParam("backlogItemId") String backlogItemId) {
+	public List<TaskDTO> getAllTask(@PathParam("backlogItemId") String backlogItemId) {
 		GetTaskInput getTaskInput = new GetTaskInput();
 		getTaskInput.setBacklogItemId(backlogItemId);
 		
 		List<TaskDTO> taskDTOList = taskManagerUseCase.getTasks(getTaskInput);
 		
-		List<TaskTableViewModel> taskTableViewModelList = new ArrayList<>();
-		for(TaskDTO taskDTO : taskDTOList) {
-			TaskTableViewModel taskTableViewModel = new TaskTableViewModel();
-			taskTableViewModel.setTaskId(taskDTO.getTaskId());
-			taskTableViewModel.setOrderId(taskDTO.getOrderId());
-			taskTableViewModel.setDescription(taskDTO.getDescription());
-			taskTableViewModel.setHandlerId(taskDTO.getHandlerId());
-			taskTableViewModel.setStatus(taskDTO.getStatus());
-			taskTableViewModel.setEstimate(taskDTO.getEstimate());
-			taskTableViewModel.setRemains(taskDTO.getRemains());
-			taskTableViewModel.setNotes(taskDTO.getNotes());
-			taskTableViewModel.setBacklogItemOrderId(context.getBacklogItem(backlogItemId).getOrderId());
-			taskTableViewModelList.add(taskTableViewModel);
-		}
-		return taskTableViewModelList;
+		return taskDTOList;
 	}
 	
 	@POST
