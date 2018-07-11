@@ -12,11 +12,17 @@ import ntut.csie.ezScrum.model.product.Product;
 import ntut.csie.ezScrum.model.product.ProductBuilder;
 import ntut.csie.ezScrum.model.task.Task;
 import ntut.csie.ezScrum.model.task.TaskBuilder;
+import ntut.csie.ezScrum.restfulAPI.backlogItem.AddBacklogItemRestfulAPI;
+import ntut.csie.ezScrum.restfulAPI.backlogItem.AssignBacklogItemRestfulAPI;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
-import ntut.csie.ezScrum.useCase.backlogItem.BacklogItemManagerUseCase;
+import ntut.csie.ezScrum.useCase.backlogItem.AddBacklogItemUseCase;
+import ntut.csie.ezScrum.useCase.backlogItem.AddBacklogItemUseCaseImpl;
+import ntut.csie.ezScrum.useCase.backlogItem.AssignBacklogItemUseCase;
+import ntut.csie.ezScrum.useCase.backlogItem.AssignBacklogItemUseCaseImpl;
 import ntut.csie.ezScrum.useCase.backlogItem.io.AddBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.AddBacklogItemOutput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.AssignBacklogItemInput;
+import ntut.csie.ezScrum.useCase.backlogItem.io.AssignBacklogItemOutput;
 import ntut.csie.ezScrum.useCase.product.ProductManagerUseCase;
 import ntut.csie.ezScrum.useCase.sprint.SprintManagerUseCase;
 import ntut.csie.ezScrum.useCase.sprint.io.AddSprintInput;
@@ -31,7 +37,7 @@ import ntut.csie.ezScrum.useCase.task.io.EditTaskOutput;
 import ntut.csie.ezScrum.useCase.task.io.GetTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardInput;
 import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardOutput;
-import ntut.csie.ezScrum.useCase.task.io.TaskDTO;
+import ntut.csie.ezScrum.useCase.task.io.GetTaskOutput;
 
 public class TaskTest {
 	private ApplicationContext context;
@@ -45,7 +51,6 @@ public class TaskTest {
 		context = ApplicationContext.getInstance();
 		taskManagerUseCase = new TaskManagerUseCase(context);
 		ProductManagerUseCase productManagerUseCase = new ProductManagerUseCase(context);
-		BacklogItemManagerUseCase backlogItemManagerUseCase = new BacklogItemManagerUseCase(context);
 		SprintManagerUseCase sprintManagerUseCase = new SprintManagerUseCase(context);
 		Product product = null;
 		try {
@@ -58,14 +63,18 @@ public class TaskTest {
 		}
 		productId = productManagerUseCase.addProduct(product);
 
-		AddBacklogItemInput backlogItemInputDTO = new AddBacklogItemInput();
-		backlogItemInputDTO.setDescription("The description of the ezScrum.");
-		backlogItemInputDTO.setEstimate(3);
-		backlogItemInputDTO.setImportance(70);
-		backlogItemInputDTO.setNotes("This is the note for this backlog item.");
-		backlogItemInputDTO.setProductId(productId);
+		AddBacklogItemInput addBacklogItemInput = new AddBacklogItemUseCaseImpl();
+		addBacklogItemInput.setDescription("The description of the ezScrum.");
+		addBacklogItemInput.setEstimate(3);
+		addBacklogItemInput.setImportance(70);
+		addBacklogItemInput.setNotes("This is the note for this backlog item.");
+		addBacklogItemInput.setProductId(productId);
 		
-		AddBacklogItemOutput addBacklogItemOutput = backlogItemManagerUseCase.addBacklogItem(backlogItemInputDTO);
+		AddBacklogItemOutput addBacklogItemOutput = new AddBacklogItemRestfulAPI();
+		
+		AddBacklogItemUseCase addBacklogItemUseCase = new AddBacklogItemUseCaseImpl(context);
+		addBacklogItemUseCase.execute(addBacklogItemInput, addBacklogItemOutput);
+		
 		backlogItemId = addBacklogItemOutput.getBacklogItemId();
 		
 		AddSprintInput addSprintInput = new AddSprintInput();
@@ -79,11 +88,14 @@ public class TaskTest {
 		AddSprintOutput sprintAddOutput = sprintManagerUseCase.addSprint(addSprintInput);
 		sprintId = sprintAddOutput.getSprintId();
 		
-		AssignBacklogItemInput assignBacklogItemInput = new AssignBacklogItemInput();
-		assignBacklogItemInput.setSprintId(sprintId);
+		AssignBacklogItemInput assignBacklogItemInput = new AssignBacklogItemUseCaseImpl();
 		assignBacklogItemInput.setBacklogItemId(backlogItemId);
+		assignBacklogItemInput.setSprintId(sprintId);
 		
-		backlogItemManagerUseCase.assignBacklogItemToSprint(assignBacklogItemInput);
+		AssignBacklogItemOutput assignBacklogItemOutput = new AssignBacklogItemRestfulAPI();
+		
+		AssignBacklogItemUseCase assignBacklogItemUseCase = new AssignBacklogItemUseCaseImpl(context);
+		assignBacklogItemUseCase.execute(assignBacklogItemInput, assignBacklogItemOutput);
 	}
 	
 	@After
@@ -180,7 +192,7 @@ public class TaskTest {
 		GetTaskInput getTaskInput = new GetTaskInput();
 		getTaskInput.setBacklogItemId(backlogItemId);
 		
-		List<TaskDTO> taskList = taskManagerUseCase.getTasks(getTaskInput);
+		List<GetTaskOutput> taskList = taskManagerUseCase.getTasks(getTaskInput);
 		
 		for(int i=0; i<taskList.size(); i++) {
 			assertEquals(description[i], taskList.get(i).getDescription());
@@ -257,11 +269,11 @@ public class TaskTest {
 		GetTaskInput getTaskInput = new GetTaskInput();
 		getTaskInput.setBacklogItemId(backlogItemId);
 		
-		List<TaskDTO> taskList = taskManagerUseCase.getTasks(getTaskInput);
+		List<GetTaskOutput> taskList = taskManagerUseCase.getTasks(getTaskInput);
 		
 		assertEquals(true, deleteTaskOutput.isDeleteSuccess());
 		boolean isFound = false;
-		for(TaskDTO taskOutputDTO : taskList) {
+		for(GetTaskOutput taskOutputDTO : taskList) {
 			if(taskOutputDTO.getTaskId().equals(taskId[1])) {
 				isFound = true;
 				break;
@@ -296,7 +308,7 @@ public class TaskTest {
 		GetTaskInput getTaskInput = new GetTaskInput();
 		getTaskInput.setBacklogItemId(backlogItemId);
 		
-		List<TaskDTO> tasks = taskManagerUseCase.getTasks(getTaskInput);
+		List<GetTaskOutput> tasks = taskManagerUseCase.getTasks(getTaskInput);
 		
 		for(int i=0; i<tasks.size(); i++) {
 			assertEquals(i+1, tasks.get(i).getOrderId());

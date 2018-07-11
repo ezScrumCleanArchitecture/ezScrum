@@ -22,7 +22,7 @@ import ntut.csie.ezScrum.useCase.retrospective.io.DeleteRetrospectiveOutput;
 import ntut.csie.ezScrum.useCase.retrospective.io.EditRetrospectiveInput;
 import ntut.csie.ezScrum.useCase.retrospective.io.EditRetrospectiveOutput;
 import ntut.csie.ezScrum.useCase.retrospective.io.GetRetrospectiveInput;
-import ntut.csie.ezScrum.useCase.retrospective.io.RetrospectiveDTO;
+import ntut.csie.ezScrum.useCase.retrospective.io.GetRetrospectiveOutput;
 import ntut.csie.ezScrum.useCase.sprint.SprintManagerUseCase;
 import ntut.csie.ezScrum.useCase.sprint.io.AddSprintInput;
 import ntut.csie.ezScrum.useCase.sprint.io.AddSprintOutput;
@@ -140,10 +140,10 @@ public class RetrospectiveTest {
 		
 		GetRetrospectiveInput getRetrospectiveInput = new GetRetrospectiveInput();
 		getRetrospectiveInput.setProductId(productId);
-		List<RetrospectiveDTO> retrospectiveList = retrospectiveManagerUseCase.getRetrospectives(getRetrospectiveInput);
+		List<GetRetrospectiveOutput> retrospectiveList = retrospectiveManagerUseCase.getRetrospectives(getRetrospectiveInput);
 		int sprintOrderId = context.getSprint(sprintId).getOrderId();
 		for(int i=0; i<retrospectiveList.size(); i++) {
-			RetrospectiveDTO testedRetrospective = retrospectiveList.get(i);
+			GetRetrospectiveOutput testedRetrospective = retrospectiveList.get(i);
 			assertEquals(description[i], testedRetrospective.getDescription());
 			assertEquals(sprintOrderId, testedRetrospective.getSprintOrderId());
 		}
@@ -198,11 +198,11 @@ public class RetrospectiveTest {
 		
 		GetRetrospectiveInput getRetrospectiveInput = new GetRetrospectiveInput();
 		getRetrospectiveInput.setProductId(productId);
-		List<RetrospectiveDTO> retrospectives = retrospectiveManagerUseCase.getRetrospectives(getRetrospectiveInput);
+		List<GetRetrospectiveOutput> retrospectives = retrospectiveManagerUseCase.getRetrospectives(getRetrospectiveInput);
 		
 		assertEquals(true, deleteRetrospectiveOutput.isDeleteSuccess());
 		boolean isFound = false;
-		for(RetrospectiveDTO retrospectiveDTO : retrospectives) {
+		for(GetRetrospectiveOutput retrospectiveDTO : retrospectives) {
 			if(retrospectiveDTO.getRetrospectiveId().equals(retrospectiveId)) {
 				isFound = true;
 				break;
@@ -234,7 +234,7 @@ public class RetrospectiveTest {
 		
 		GetRetrospectiveInput getRetrospectivedInput = new GetRetrospectiveInput();
 		getRetrospectivedInput.setProductId(productId);
-		List<RetrospectiveDTO> retrospectiveList = retrospectiveManagerUseCase.getRetrospectives(getRetrospectivedInput);
+		List<GetRetrospectiveOutput> retrospectiveList = retrospectiveManagerUseCase.getRetrospectives(getRetrospectivedInput);
 		
 		for(int i=0; i<retrospectiveList.size(); i++) {
 			assertEquals(i+1, retrospectiveList.get(i).getOrderId());

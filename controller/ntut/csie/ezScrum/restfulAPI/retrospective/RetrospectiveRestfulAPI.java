@@ -24,7 +24,7 @@ import ntut.csie.ezScrum.useCase.retrospective.io.DeleteRetrospectiveOutput;
 import ntut.csie.ezScrum.useCase.retrospective.io.EditRetrospectiveInput;
 import ntut.csie.ezScrum.useCase.retrospective.io.EditRetrospectiveOutput;
 import ntut.csie.ezScrum.useCase.retrospective.io.GetRetrospectiveInput;
-import ntut.csie.ezScrum.useCase.retrospective.io.RetrospectiveDTO;
+import ntut.csie.ezScrum.useCase.retrospective.io.GetRetrospectiveOutput;
 
 @Path("/product/{productId}/retrospective")
 @Singleton
@@ -62,10 +62,10 @@ public class RetrospectiveRestfulAPI {
 	@GET
 	@Path("/getAllRetrospective")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<RetrospectiveDTO> getAllRetrospective(@PathParam("productId") String productId) {
+	public List<GetRetrospectiveOutput> getAllRetrospective(@PathParam("productId") String productId) {
 		GetRetrospectiveInput getRetrospectiveInput = new GetRetrospectiveInput();
 		getRetrospectiveInput.setProductId(productId);
-		List<RetrospectiveDTO> retrospectiveDTOList = retrospectiveManagerUseCase.getRetrospectives(getRetrospectiveInput);
+		List<GetRetrospectiveOutput> retrospectiveDTOList = retrospectiveManagerUseCase.getRetrospectives(getRetrospectiveInput);
 		return retrospectiveDTOList;
 	}
 	

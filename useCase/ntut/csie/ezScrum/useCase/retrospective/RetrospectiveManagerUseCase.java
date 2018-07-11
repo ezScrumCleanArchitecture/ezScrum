@@ -5,6 +5,7 @@ import java.util.List;
 
 import ntut.csie.ezScrum.model.retrospective.Retrospective;
 import ntut.csie.ezScrum.model.retrospective.RetrospectiveBuilder;
+import ntut.csie.ezScrum.model.sprint.Sprint;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
 import ntut.csie.ezScrum.useCase.retrospective.io.AddRetrospectiveInput;
 import ntut.csie.ezScrum.useCase.retrospective.io.AddRetrospectiveOutput;
@@ -13,7 +14,7 @@ import ntut.csie.ezScrum.useCase.retrospective.io.DeleteRetrospectiveOutput;
 import ntut.csie.ezScrum.useCase.retrospective.io.EditRetrospectiveInput;
 import ntut.csie.ezScrum.useCase.retrospective.io.EditRetrospectiveOutput;
 import ntut.csie.ezScrum.useCase.retrospective.io.GetRetrospectiveInput;
-import ntut.csie.ezScrum.useCase.retrospective.io.RetrospectiveDTO;
+import ntut.csie.ezScrum.useCase.retrospective.io.GetRetrospectiveOutput;
 
 public class RetrospectiveManagerUseCase {
 	private ApplicationContext context;
@@ -41,9 +42,9 @@ public class RetrospectiveManagerUseCase {
 		return addRetrospectiveOutput;
 	}
 	
-	public List<RetrospectiveDTO> getRetrospectives(GetRetrospectiveInput getRetrospectiveInput) {
+	public List<GetRetrospectiveOutput> getRetrospectives(GetRetrospectiveInput getRetrospectiveInput) {
 		String productId = getRetrospectiveInput.getProductId();
-		List<RetrospectiveDTO> retrospectiveList = new ArrayList<>();
+		List<GetRetrospectiveOutput> retrospectiveList = new ArrayList<>();
 		for(Retrospective retrospective : context.getRetrospectives()) {
 			if(retrospective.getProductId().equals(productId)) {
 				retrospectiveList.add(convertRetrospectiveToGetOutput(retrospective));
@@ -52,13 +53,18 @@ public class RetrospectiveManagerUseCase {
 		return retrospectiveList;
 	}
 	
-	private RetrospectiveDTO convertRetrospectiveToGetOutput(Retrospective retrospective) {
-		RetrospectiveDTO getRetrospectiveOutput = new RetrospectiveDTO();
+	private GetRetrospectiveOutput convertRetrospectiveToGetOutput(Retrospective retrospective) {
+		GetRetrospectiveOutput getRetrospectiveOutput = new GetRetrospectiveOutput();
 		getRetrospectiveOutput.setRetrospectiveId(retrospective.getRetrospectiveId());
 		getRetrospectiveOutput.setOrderId(retrospective.getOrderId());
 		getRetrospectiveOutput.setDescription(retrospective.getDescription());
 		getRetrospectiveOutput.setProductId(retrospective.getProductId());
-		getRetrospectiveOutput.setSprintOrderId(context.getSprint(retrospective.getSprintId()).getOrderId());
+		System.out.println("Retrospctive's sprint Id: " + retrospective.getSprintId());
+		for(Sprint sprint : context.getSprints()) {
+			System.out.println(sprint.getSprintId());
+		}
+		Sprint sprint = context.getSprint(retrospective.getSprintId());
+		getRetrospectiveOutput.setSprintOrderId(sprint.getOrderId());
 		getRetrospectiveOutput.setCreateTime(retrospective.getCreateTime());
 		getRetrospectiveOutput.setUpdateTime(retrospective.getUpdateTime());
 		return getRetrospectiveOutput;

@@ -27,7 +27,7 @@ import ntut.csie.ezScrum.useCase.task.io.EditTaskOutput;
 import ntut.csie.ezScrum.useCase.task.io.GetTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardInput;
 import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardOutput;
-import ntut.csie.ezScrum.useCase.task.io.TaskDTO;
+import ntut.csie.ezScrum.useCase.task.io.GetTaskOutput;
 
 @Path("/backlogItem/{backlogItemId}/task")
 @Singleton
@@ -68,11 +68,11 @@ public class TaskRestfulAPI {
 	@GET
 	@Path("/getAllTask")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<TaskDTO> getAllTask(@PathParam("backlogItemId") String backlogItemId) {
+	public List<GetTaskOutput> getAllTask(@PathParam("backlogItemId") String backlogItemId) {
 		GetTaskInput getTaskInput = new GetTaskInput();
 		getTaskInput.setBacklogItemId(backlogItemId);
 		
-		List<TaskDTO> taskDTOList = taskManagerUseCase.getTasks(getTaskInput);
+		List<GetTaskOutput> taskDTOList = taskManagerUseCase.getTasks(getTaskInput);
 		
 		return taskDTOList;
 	}

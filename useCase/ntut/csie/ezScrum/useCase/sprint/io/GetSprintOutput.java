@@ -1,6 +1,6 @@
 package ntut.csie.ezScrum.useCase.sprint.io;
 
-public class SprintDTO {
+public class GetSprintOutput {
 	
 	private String sprintId;
 	private int orderId;

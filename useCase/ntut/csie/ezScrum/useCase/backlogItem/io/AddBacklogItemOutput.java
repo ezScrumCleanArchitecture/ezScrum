@@ -1,14 +1,10 @@
 package ntut.csie.ezScrum.useCase.backlogItem.io;
 
-public class AddBacklogItemOutput {
-	private String backlogItemId;
+import ntut.csie.ezScrum.useCase.Output;
 
-	public String getBacklogItemId() {
-		return backlogItemId;
-	}
-
-	public void setBacklogItemId(String backlogItemId) {
-		this.backlogItemId = backlogItemId;
-	}
+public interface AddBacklogItemOutput extends Output{
 	
+	public String getBacklogItemId();
+
+	public void setBacklogItemId(String backlogItemId);
 }

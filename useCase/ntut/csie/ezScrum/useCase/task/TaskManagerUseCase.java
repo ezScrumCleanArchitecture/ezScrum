@@ -15,7 +15,7 @@ import ntut.csie.ezScrum.useCase.task.io.EditTaskOutput;
 import ntut.csie.ezScrum.useCase.task.io.GetTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardInput;
 import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardOutput;
-import ntut.csie.ezScrum.useCase.task.io.TaskDTO;
+import ntut.csie.ezScrum.useCase.task.io.GetTaskOutput;
 
 public class TaskManagerUseCase {
 	
@@ -45,9 +45,9 @@ public class TaskManagerUseCase {
 		return addTaskOutput;
 	}
 	
-	public List<TaskDTO> getTasks(GetTaskInput getTaskInput){
+	public List<GetTaskOutput> getTasks(GetTaskInput getTaskInput){
 		String backlogItemId = getTaskInput.getBacklogItemId();
-		List<TaskDTO> taskList = new ArrayList<>();
+		List<GetTaskOutput> taskList = new ArrayList<>();
 		for(Task task : context.getTasks()) {
 			if(task.getBacklogItemId().equals(backlogItemId)) {
 				taskList.add(convertTaskToGetTaskOutput(task));
@@ -56,8 +56,8 @@ public class TaskManagerUseCase {
 		return taskList;
 	}
 	
-	private TaskDTO convertTaskToGetTaskOutput(Task task) {
-		TaskDTO getTaskOutput = new TaskDTO();
+	private GetTaskOutput convertTaskToGetTaskOutput(Task task) {
+		GetTaskOutput getTaskOutput = new GetTaskOutput();
 		getTaskOutput.setTaskId(task.getTaskId());
 		getTaskOutput.setOrderId(task.getOrderId());
 		getTaskOutput.setDescription(task.getDescription());

@@ -1,6 +1,6 @@
 package ntut.csie.ezScrum.useCase.backlogItem.io;
 
-public class CommittedBacklogItemDTO {
+public class GetAllNotYetCommittedBacklogItemDTO {
 	private String backlogItemId;
 	private int orderId;
 	private String description;
@@ -9,10 +9,9 @@ public class CommittedBacklogItemDTO {
 	private int importance;
 	private String notes;
 	private String productId; 
-	private String sprintId;
 	private String createTime;
 	private String updateTime;
-
+	
 	public String getBacklogItemId() {
 		return backlogItemId;
 	}
@@ -75,14 +74,6 @@ public class CommittedBacklogItemDTO {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
-	}
-
-	public String getSprintId() {
-		return sprintId;
-	}
-
-	public void setSprintId(String sprintId) {
-		this.sprintId = sprintId;
 	}
 
 	public String getCreateTime() {

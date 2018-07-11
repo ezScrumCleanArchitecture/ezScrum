@@ -1,13 +1,8 @@
 package ntut.csie.ezScrum.useCase.backlogItem.io;
 
-public class MoveStoryCardOutput {
-	private boolean moveStoryCardSuccess;
+import ntut.csie.ezScrum.useCase.Output;
 
-	public boolean isMoveStoryCardSuccess() {
-		return moveStoryCardSuccess;
-	}
-
-	public void setMoveStoryCardSuccess(boolean moveStoryCardSuccess) {
-		this.moveStoryCardSuccess = moveStoryCardSuccess;
-	}
+public interface MoveStoryCardOutput extends Output{
+	public boolean isMoveStoryCardSuccess();
+	public void setMoveStoryCardSuccess(boolean moveStoryCardSuccess);
 }

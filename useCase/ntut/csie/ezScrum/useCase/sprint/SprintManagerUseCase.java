@@ -16,7 +16,7 @@ import ntut.csie.ezScrum.useCase.sprint.io.DeleteSprintOutput;
 import ntut.csie.ezScrum.useCase.sprint.io.EditSprintInput;
 import ntut.csie.ezScrum.useCase.sprint.io.EditSprintOutput;
 import ntut.csie.ezScrum.useCase.sprint.io.GetSprintInput;
-import ntut.csie.ezScrum.useCase.sprint.io.SprintDTO;
+import ntut.csie.ezScrum.useCase.sprint.io.GetSprintOutput;
 import ntut.csie.ezScrum.useCase.sprint.io.IsSprintOverdueInput;
 import ntut.csie.ezScrum.useCase.sprint.io.IsSprintOverdueOutput;
 import ntut.csie.ezScrum.useCase.sprint.io.IsSprintOverlapInput;
@@ -55,9 +55,9 @@ public class SprintManagerUseCase {
 		return addSprintOutput;
 	}
 	
-	public List<SprintDTO> getSprints(GetSprintInput getSprintInput) {
+	public List<GetSprintOutput> getSprints(GetSprintInput getSprintInput) {
 		String productId = getSprintInput.getProductId();
-		List<SprintDTO> sprintList = new ArrayList<>();
+		List<GetSprintOutput> sprintList = new ArrayList<>();
 		for(Sprint sprint : context.getSprints()) {
 			if(sprint.getProductId().equals(productId)) {
 				sprintList.add(convertSprintToGetOutput(sprint));
@@ -66,8 +66,8 @@ public class SprintManagerUseCase {
 		return sprintList;
 	}
 	
-	private SprintDTO convertSprintToGetOutput(Sprint sprint) {
-		SprintDTO getSprintOutput = new SprintDTO();
+	private GetSprintOutput convertSprintToGetOutput(Sprint sprint) {
+		GetSprintOutput getSprintOutput = new GetSprintOutput();
 		getSprintOutput.setSprintId(sprint.getSprintId());
 		getSprintOutput.setOrderId(sprint.getOrderId());
 		getSprintOutput.setGoal(sprint.getGoal());

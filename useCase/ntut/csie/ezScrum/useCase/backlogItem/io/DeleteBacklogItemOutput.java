@@ -1,13 +1,8 @@
 package ntut.csie.ezScrum.useCase.backlogItem.io;
 
-public class DeleteBacklogItemOutput {
-	private boolean deleteSuccess;
+import ntut.csie.ezScrum.useCase.Output;
 
-	public boolean isDeleteSuccess() {
-		return deleteSuccess;
-	}
-
-	public void setDeleteSuccess(boolean deleteSuccess) {
-		this.deleteSuccess = deleteSuccess;
-	}
+public interface DeleteBacklogItemOutput extends Output{
+	public boolean isDeleteSuccess();
+	public void setDeleteSuccess(boolean deleteSuccess);
 }

@@ -1,6 +1,6 @@
 package ntut.csie.ezScrum.useCase.backlogItem.io;
 
-public class BacklogItemDTO {
+public class GetAllBacklogItemDTO {
 	private String backlogItemId;
 	private int orderId;
 	private String description;
@@ -9,7 +9,7 @@ public class BacklogItemDTO {
 	private int importance;
 	private String notes;
 	private String productId; 
-	private String sprintId;
+	private int sprintOrderId;
 	private String createTime;
 	private String updateTime;
 
@@ -20,11 +20,11 @@ public class BacklogItemDTO {
 	public void setBacklogItemId(String backlogItemId) {
 		this.backlogItemId = backlogItemId;
 	}
-	
+
 	public int getOrderId() {
 		return orderId;
 	}
-	
+
 	public void setOrderId(int orderId) {
 		this.orderId = orderId;
 	}
@@ -77,12 +77,12 @@ public class BacklogItemDTO {
 		this.productId = productId;
 	}
 
-	public String getSprintId() {
-		return sprintId;
+	public int getSprintOrderId() {
+		return sprintOrderId;
 	}
 
-	public void setSprintId(String sprintId) {
-		this.sprintId = sprintId;
+	public void setSprintOrderId(int sprintOrderId) {
+		this.sprintOrderId = sprintOrderId;
 	}
 
 	public String getCreateTime() {
@@ -100,5 +100,4 @@ public class BacklogItemDTO {
 	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
 	}
-	
 }

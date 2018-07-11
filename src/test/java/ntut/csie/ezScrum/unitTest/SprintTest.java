@@ -23,7 +23,7 @@ import ntut.csie.ezScrum.useCase.sprint.io.DeleteSprintOutput;
 import ntut.csie.ezScrum.useCase.sprint.io.EditSprintInput;
 import ntut.csie.ezScrum.useCase.sprint.io.EditSprintOutput;
 import ntut.csie.ezScrum.useCase.sprint.io.GetSprintInput;
-import ntut.csie.ezScrum.useCase.sprint.io.SprintDTO;
+import ntut.csie.ezScrum.useCase.sprint.io.GetSprintOutput;
 import ntut.csie.ezScrum.useCase.sprint.io.IsSprintOverlapInput;
 import ntut.csie.ezScrum.useCase.sprint.io.IsSprintOverlapOutput;
 
@@ -168,7 +168,7 @@ public class SprintTest {
 		GetSprintInput sprintGetInput = new GetSprintInput();
 		sprintGetInput.setProductId(productId);
 		
-		List<SprintDTO> sprintList = sprintManagerUseCase.getSprints(sprintGetInput);
+		List<GetSprintOutput> sprintList = sprintManagerUseCase.getSprints(sprintGetInput);
 		
 		for(int i=0; i<sprintList.size(); i++) {
 			assertEquals(goal[i], sprintList.get(i).getGoal());
@@ -275,11 +275,11 @@ public class SprintTest {
 		GetSprintInput sprintGetInput = new GetSprintInput();
 		sprintGetInput.setProductId(productId);
 		
-		List<SprintDTO> sprintList = sprintManagerUseCase.getSprints(sprintGetInput);
+		List<GetSprintOutput> sprintList = sprintManagerUseCase.getSprints(sprintGetInput);
 		
 		assertEquals(true, sprintDeleteOutput.isDeleteSuccess());
 		boolean isFound = false;
-		for(SprintDTO sprintOutputDTO : sprintList) {
+		for(GetSprintOutput sprintOutputDTO : sprintList) {
 			if(sprintOutputDTO.getSprintId().equals(sprintId)) {
 				isFound = true;
 				break;
@@ -320,7 +320,7 @@ public class SprintTest {
 		GetSprintInput sprintGetInput = new GetSprintInput();
 		sprintGetInput.setProductId(productId);
 		
-		List<SprintDTO> sprintList = sprintManagerUseCase.getSprints(sprintGetInput);
+		List<GetSprintOutput> sprintList = sprintManagerUseCase.getSprints(sprintGetInput);
 		
 		for(int i=0; i<sprintList.size(); i++) {
 			assertEquals(i+1, sprintList.get(i).getOrderId());

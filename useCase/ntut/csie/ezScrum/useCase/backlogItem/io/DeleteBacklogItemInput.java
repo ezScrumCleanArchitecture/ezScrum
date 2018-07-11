@@ -1,13 +1,8 @@
 package ntut.csie.ezScrum.useCase.backlogItem.io;
 
-public class DeleteBacklogItemInput {
-	private String backlogItemId;
+import ntut.csie.ezScrum.useCase.Input;
 
-	public String getBacklogItemId() {
-		return backlogItemId;
-	}
-
-	public void setBacklogItemId(String backlogItemId) {
-		this.backlogItemId = backlogItemId;
-	}
+public interface DeleteBacklogItemInput extends Input{
+	public String getBacklogItemId();
+	public void setBacklogItemId(String backlogItemId);
 }

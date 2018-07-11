@@ -26,7 +26,7 @@ import ntut.csie.ezScrum.useCase.sprint.io.DeleteSprintOutput;
 import ntut.csie.ezScrum.useCase.sprint.io.EditSprintInput;
 import ntut.csie.ezScrum.useCase.sprint.io.EditSprintOutput;
 import ntut.csie.ezScrum.useCase.sprint.io.GetSprintInput;
-import ntut.csie.ezScrum.useCase.sprint.io.SprintDTO;
+import ntut.csie.ezScrum.useCase.sprint.io.GetSprintOutput;
 import ntut.csie.ezScrum.useCase.sprint.io.IsSprintOverdueInput;
 import ntut.csie.ezScrum.useCase.sprint.io.IsSprintOverdueOutput;
 import ntut.csie.ezScrum.useCase.sprint.io.IsSprintOverlapInput;
@@ -86,11 +86,11 @@ public class SprintRestfulAPI {
 	@GET
 	@Path("/getAllSprint")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<SprintDTO> getAllSprint(@PathParam("productId") String productId) {
+	public List<GetSprintOutput> getAllSprint(@PathParam("productId") String productId) {
 		GetSprintInput getSprintInput = new GetSprintInput();
 		getSprintInput.setProductId(productId);
 		
-		List<SprintDTO> sprintDTOList = sprintManagerUseCase.getSprints(getSprintInput);
+		List<GetSprintOutput> sprintDTOList = sprintManagerUseCase.getSprints(getSprintInput);
 		
 		return sprintDTOList;
 	}
@@ -98,11 +98,11 @@ public class SprintRestfulAPI {
 	@GET
 	@Path("/getAllSprintList")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<SprintDTO> getSprintList(@PathParam("productId") String productId) {
+	public List<GetSprintOutput> getSprintList(@PathParam("productId") String productId) {
 		GetSprintInput getSprintInput = new GetSprintInput();
 		getSprintInput.setProductId(productId);
 		
-		List<SprintDTO> sprintDTOList = sprintManagerUseCase.getSprints(getSprintInput);
+		List<GetSprintOutput> sprintDTOList = sprintManagerUseCase.getSprints(getSprintInput);
 		
 		return sprintDTOList;
 	}
