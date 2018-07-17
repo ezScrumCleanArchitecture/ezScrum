@@ -1,14 +1,10 @@
 package ntut.csie.ezScrum.useCase.sprint.io;
 
-public class DeleteSprintOutput {
-	private boolean deleteSuccess;
+import ntut.csie.ezScrum.useCase.Output;
 
-	public boolean isDeleteSuccess() {
-		return deleteSuccess;
-	}
-
-	public void setDeleteSuccess(boolean deleteSuccess) {
-		this.deleteSuccess = deleteSuccess;
-	}
-	
+public interface DeleteSprintOutput extends Output{
+	public boolean isDeleteSuccess();
+	public void setDeleteSuccess(boolean deleteSuccess);
+	public String getErrorMessage();
+	public void setErrorMessage(String errorMessage);
 }

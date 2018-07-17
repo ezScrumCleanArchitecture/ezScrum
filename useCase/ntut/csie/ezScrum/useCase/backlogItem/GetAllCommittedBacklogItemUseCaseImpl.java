@@ -47,10 +47,6 @@ public class GetAllCommittedBacklogItemUseCaseImpl implements GetAllCommittedBac
 		dto.setDescription(backlogItem.getDescription());
 		dto.setEstimate(backlogItem.getEstimate());
 		dto.setImportance(backlogItem.getImportance());
-		System.out.println("CommittedBacklogItem's sprint Id: " + backlogItem.getSprintId());
-		for(Sprint sprint : context.getSprints()) {
-			System.out.println(sprint.getSprintId());
-		}
 		Sprint sprint = context.getSprint(backlogItem.getSprintId());
 		dto.setSprintOrderId(sprint.getOrderId());
 		dto.setStatus(backlogItem.getStatus());

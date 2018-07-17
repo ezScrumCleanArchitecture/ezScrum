@@ -1,14 +1,8 @@
 package ntut.csie.ezScrum.useCase.task.io;
 
-public class AddTaskOutput {
-	private String taskId;
+import ntut.csie.ezScrum.useCase.Output;
 
-	public String getTaskId() {
-		return taskId;
-	}
-
-	public void setTaskId(String taskId) {
-		this.taskId = taskId;
-	}
-	
+public interface AddTaskOutput extends Output{
+	public boolean isAddSuccess();
+	public void setAddSuccess(boolean addSuccess);
 }

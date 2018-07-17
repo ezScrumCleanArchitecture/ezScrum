@@ -23,7 +23,9 @@ public class AddBacklogItemRestfulAPI implements AddBacklogItemOutput{
 	
 	private ApplicationContext context = ApplicationContext.getInstance();
 	private AddBacklogItemUseCase addBacklogItemUseCase = new AddBacklogItemUseCaseImpl(context);
+	
 	private String backlogItemId;
+	private boolean addSuccess;
 	
 	@POST
 	@Path("/addBacklogItem")
@@ -67,4 +69,15 @@ public class AddBacklogItemRestfulAPI implements AddBacklogItemOutput{
 	public void setBacklogItemId(String backlogItemId) {
 		this.backlogItemId = backlogItemId;
 	}
+
+	@Override
+	public boolean isAddSuccess() {
+		return addSuccess;
+	}
+
+	@Override
+	public void setAddSuccess(boolean addSuccess) {
+		this.addSuccess = addSuccess;
+	}
+	
 }

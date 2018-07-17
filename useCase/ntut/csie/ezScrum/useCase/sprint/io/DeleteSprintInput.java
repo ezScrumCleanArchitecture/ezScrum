@@ -1,14 +1,8 @@
 package ntut.csie.ezScrum.useCase.sprint.io;
 
-public class DeleteSprintInput {
-	private String sprintId;
+import ntut.csie.ezScrum.useCase.Input;
 
-	public String getSprintId() {
-		return sprintId;
-	}
-
-	public void setSprintId(String sprintId) {
-		this.sprintId = sprintId;
-	}
-	
+public interface DeleteSprintInput extends Input{
+	public String getSprintId();
+	public void setSprintId(String sprintId);
 }

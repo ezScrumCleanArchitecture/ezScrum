@@ -21,10 +21,16 @@ public class MoveStoryCardUseCaseImpl implements MoveStoryCardUseCase, MoveStory
 	@Override
 	public void execute(MoveStoryCardInput input, MoveStoryCardOutput output) {
 		String backlogItemId = input.getBacklogItemId();
+		String status = input.getStatus();
 		BacklogItem backlogItem = context.getBacklogItem(backlogItemId);
-		backlogItem.setStatus(input.getStatus());
+		if(backlogItem == null) {
+			output.setMoveSuccess(false);
+			output.setErrorMessage("Sorry, the backlog item is not exist.");
+			return;
+		}
+		backlogItem.setStatus(status);
 		context.editBacklogItem(backlogItemId, backlogItem);
-		output.setMoveStoryCardSuccess(true);
+		output.setMoveSuccess(true);
 	}
 
 	@Override

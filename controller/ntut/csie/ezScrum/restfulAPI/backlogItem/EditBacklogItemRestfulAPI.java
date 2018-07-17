@@ -23,7 +23,9 @@ public class EditBacklogItemRestfulAPI implements EditBacklogItemOutput{
 	
 	private ApplicationContext context = ApplicationContext.getInstance();
 	private EditBacklogItemUseCase editBacklogItemUseCase = new EditBacklogItemUseCaseImpl(context);
+	
 	private boolean editSuccess;
+	private String errorMessage;
 	
 	@POST
 	@Path("/editBacklogItem")
@@ -60,7 +62,7 @@ public class EditBacklogItemRestfulAPI implements EditBacklogItemOutput{
 		
 		return output;
 	}
-	
+
 	@Override
 	public boolean isEditSuccess() {
 		return editSuccess;
@@ -70,4 +72,15 @@ public class EditBacklogItemRestfulAPI implements EditBacklogItemOutput{
 	public void setEditSuccess(boolean editSuccess) {
 		this.editSuccess = editSuccess;
 	}
+
+	@Override
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	@Override
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+	
 }

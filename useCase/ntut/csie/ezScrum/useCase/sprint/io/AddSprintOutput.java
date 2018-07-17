@@ -1,14 +1,10 @@
 package ntut.csie.ezScrum.useCase.sprint.io;
 
-public class AddSprintOutput {
-	private String sprintId;
+import ntut.csie.ezScrum.useCase.Output;
 
-	public String getSprintId() {
-		return sprintId;
-	}
-
-	public void setSprintId(String sprintId) {
-		this.sprintId = sprintId;
-	}
-	
+public interface AddSprintOutput extends Output{
+	public boolean isAddSuccess();
+	public void setAddSuccess(boolean addSuccess);
+	public String getErrorMessage();
+	public void setErrorMessage(String errorMessage);
 }

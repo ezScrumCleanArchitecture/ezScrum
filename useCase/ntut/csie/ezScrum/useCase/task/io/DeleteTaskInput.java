@@ -1,14 +1,8 @@
 package ntut.csie.ezScrum.useCase.task.io;
 
-public class DeleteTaskInput {
-	private String taskId;
+import ntut.csie.ezScrum.useCase.Input;
 
-	public String getTaskId() {
-		return taskId;
-	}
-
-	public void setTaskId(String taskId) {
-		this.taskId = taskId;
-	}
-	
+public interface DeleteTaskInput extends Input{
+	public String getTaskId();
+	public void setTaskId(String taskId);
 }

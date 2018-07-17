@@ -41,10 +41,6 @@ public class GetAllBacklogItemUseCaseImpl implements GetAllBacklogItemUseCase, G
 		dto.setEstimate(backlogItem.getEstimate());
 		dto.setImportance(backlogItem.getImportance());
 		dto.setProductId(backlogItem.getProductId());
-		System.out.println("BacklogItem's sprint Id: " + backlogItem.getSprintId());
-		for(Sprint sprint : context.getSprints()) {
-			System.out.println(sprint.getSprintId());
-		}
 		Sprint sprint = context.getSprint(backlogItem.getSprintId());
 		if(sprint != null) {
 			dto.setSprintOrderId(sprint.getOrderId());

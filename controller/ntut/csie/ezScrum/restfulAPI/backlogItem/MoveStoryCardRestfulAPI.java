@@ -24,7 +24,8 @@ public class MoveStoryCardRestfulAPI implements MoveStoryCardOutput{
 	private ApplicationContext context = ApplicationContext.getInstance();
 	private MoveStoryCardUseCase moveStoryCardUseCase = new MoveStoryCardUseCaseImpl(context);
 	
-	private boolean moveStoryCardSuccess;
+	private boolean moveSuccess;
+	private String errorMessage;
 	
 	@POST
 	@Path("/moveStoryCard")
@@ -54,13 +55,23 @@ public class MoveStoryCardRestfulAPI implements MoveStoryCardOutput{
 	}
 
 	@Override
-	public boolean isMoveStoryCardSuccess() {
-		return moveStoryCardSuccess;
+	public boolean isMoveSuccess() {
+		return moveSuccess;
 	}
 
 	@Override
-	public void setMoveStoryCardSuccess(boolean moveStoryCardSuccess) {
-		this.moveStoryCardSuccess = moveStoryCardSuccess;
+	public void setMoveSuccess(boolean moveSuccess) {
+		this.moveSuccess = moveSuccess;
+	}
+
+	@Override
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	@Override
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 
 }

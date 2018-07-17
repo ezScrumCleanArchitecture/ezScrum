@@ -1,75 +1,26 @@
 package ntut.csie.ezScrum.useCase.sprint.io;
 
-public class EditSprintInput {
-	private String sprintId;
-	private String goal;
-	private int interval;
-	private int teamSize;
-	private String startDate;
-	private String endDate;
-	private String demoDate;
-	private String demoPlace;
-	private String daily;
-	private String productId;
-	
-	public String getSprintId() {
-		return sprintId;
-	}
-	public void setSprintId(String sprintId) {
-		this.sprintId = sprintId;
-	}
-	public String getGoal() {
-		return goal;
-	}
-	public void setGoal(String goal) {
-		this.goal = goal;
-	}
-	public int getInterval() {
-		return interval;
-	}
-	public void setInterval(int interval) {
-		this.interval = interval;
-	}
-	public int getTeamSize() {
-		return teamSize;
-	}
-	public void setTeamSize(int teamSize) {
-		this.teamSize = teamSize;
-	}
-	public String getStartDate() {
-		return startDate;
-	}
-	public void setStartDate(String startDate) {
-		this.startDate = startDate;
-	}
-	public String getEndDate() {
-		return endDate;
-	}
-	public void setEndDate(String endDate) {
-		this.endDate = endDate;
-	}
-	public String getDemoDate() {
-		return demoDate;
-	}
-	public void setDemoDate(String demoDate) {
-		this.demoDate = demoDate;
-	}
-	public String getDemoPlace() {
-		return demoPlace;
-	}
-	public void setDemoPlace(String demoPlace) {
-		this.demoPlace = demoPlace;
-	}
-	public String getDaily() {
-		return daily;
-	}
-	public void setDaily(String daily) {
-		this.daily = daily;
-	}
-	public String getProductId() {
-		return productId;
-	}
-	public void setProductId(String productId) {
-		this.productId = productId;
-	}
+import ntut.csie.ezScrum.useCase.Input;
+
+public interface EditSprintInput extends Input{
+	public String getSprintId();
+	public void setSprintId(String sprintId);
+	public String getGoal();
+	public void setGoal(String goal);
+	public int getInterval();
+	public void setInterval(int interval);
+	public int getTeamSize();
+	public void setTeamSize(int teamSize);
+	public String getStartDate();
+	public void setStartDate(String startDate);
+	public String getEndDate();
+	public void setEndDate(String endDate);
+	public String getDemoDate();
+	public void setDemoDate(String demoDate);
+	public String getDemoPlace();
+	public void setDemoPlace(String demoPlace);
+	public String getDaily();
+	public void setDaily(String daily);
+	public String getProductId();
+	public void setProductId(String productId);
 }

@@ -20,7 +20,9 @@ public class DeleteBacklogItemRestfulAPI implements DeleteBacklogItemOutput{
 	
 	private ApplicationContext context = ApplicationContext.getInstance();
 	private DeleteBacklogItemUseCase deleteBacklogItemUseCase = new DeleteBacklogItemUseCaseImpl(context);
+	
 	private boolean deleteSuccess;
+	private String errorMessage;
 	
 	@DELETE
 	@Path("/deleteBacklogItem")
@@ -52,6 +54,16 @@ public class DeleteBacklogItemRestfulAPI implements DeleteBacklogItemOutput{
 	@Override
 	public void setDeleteSuccess(boolean deleteSuccess) {
 		this.deleteSuccess = deleteSuccess;
+	}
+
+	@Override
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	@Override
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 
 }

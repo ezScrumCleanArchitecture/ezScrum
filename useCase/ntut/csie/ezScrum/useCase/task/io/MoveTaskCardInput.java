@@ -1,19 +1,10 @@
 package ntut.csie.ezScrum.useCase.task.io;
 
-public class MoveTaskCardInput {
-	private String taskId;
-	private String status;
-	
-	public String getTaskId() {
-		return taskId;
-	}
-	public void setTaskId(String taskId) {
-		this.taskId = taskId;
-	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
+import ntut.csie.ezScrum.useCase.Input;
+
+public interface MoveTaskCardInput extends Input{
+	public String getTaskId();
+	public void setTaskId(String taskId);
+	public String getStatus();
+	public void setStatus(String status);
 }

@@ -1,14 +1,10 @@
 package ntut.csie.ezScrum.useCase.task.io;
 
-public class EditTaskOutput {
-	private boolean editSuccess;
+import ntut.csie.ezScrum.useCase.Output;
 
-	public boolean isEditSuccess() {
-		return editSuccess;
-	}
-
-	public void setEditSuccess(boolean editSuccess) {
-		this.editSuccess = editSuccess;
-	}
-	
+public interface EditTaskOutput extends Output{
+	public boolean isEditSuccess();
+	public void setEditSuccess(boolean editSuccess);
+	public String getErrorMessage();
+	public void setErrorMessage(String errorMessage);
 }

@@ -34,7 +34,7 @@ public class RetrospectiveManagerUseCase {
 					description(addRetrospectiveInput.getDescription()).
 					build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		context.addRetrospective(retrospective);
 		AddRetrospectiveOutput addRetrospectiveOutput = new AddRetrospectiveOutput();
@@ -59,10 +59,6 @@ public class RetrospectiveManagerUseCase {
 		getRetrospectiveOutput.setOrderId(retrospective.getOrderId());
 		getRetrospectiveOutput.setDescription(retrospective.getDescription());
 		getRetrospectiveOutput.setProductId(retrospective.getProductId());
-		System.out.println("Retrospctive's sprint Id: " + retrospective.getSprintId());
-		for(Sprint sprint : context.getSprints()) {
-			System.out.println(sprint.getSprintId());
-		}
 		Sprint sprint = context.getSprint(retrospective.getSprintId());
 		getRetrospectiveOutput.setSprintOrderId(sprint.getOrderId());
 		getRetrospectiveOutput.setCreateTime(retrospective.getCreateTime());

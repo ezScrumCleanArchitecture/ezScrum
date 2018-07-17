@@ -1,14 +1,12 @@
 package ntut.csie.ezScrum.useCase.sprint.io;
 
-public class EditSprintOutput {
-	private boolean editSuccess;
+import ntut.csie.ezScrum.useCase.Output;
 
-	public boolean isEditSuccess() {
-		return editSuccess;
-	}
-
-	public void setEditSuccess(boolean editSuccess) {
-		this.editSuccess = editSuccess;
-	}
-	
+public interface EditSprintOutput extends Output{
+	public boolean isEditSuccess();
+	public void setEditSuccess(boolean editSuccess);
+	public boolean isOverlap();
+	public void setOverlap(boolean overlap);
+	public String getErrorMessage();
+	public void setErrorMessage(String errorMessage);
 }

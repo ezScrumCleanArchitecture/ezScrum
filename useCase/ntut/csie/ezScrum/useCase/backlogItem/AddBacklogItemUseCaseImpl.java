@@ -38,8 +38,8 @@ public class AddBacklogItemUseCaseImpl implements AddBacklogItemUseCase, AddBack
 			System.out.print(e.getMessage());
 		}
 		context.addBacklogItem(backlogItem);
-		String backlogItemId = backlogItem.getBacklogItemId();
-		output.setBacklogItemId(backlogItemId);
+		output.setBacklogItemId(backlogItem.getBacklogItemId());
+		output.setAddSuccess(true);
 	}
 
 	@Override

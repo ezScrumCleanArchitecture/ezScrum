@@ -25,6 +25,11 @@ public class EditBacklogItemUseCaseImpl implements EditBacklogItemUseCase, EditB
 	public void execute(EditBacklogItemInput input, EditBacklogItemOutput output) {
 		String backlogItemId = input.getBacklogItemId();
 		BacklogItem backlogItem = context.getBacklogItem(backlogItemId);
+		if(backlogItem == null) {
+			output.setEditSuccess(false);
+			output.setErrorMessage("Sorry, the backlog item is not exist.");
+			return;
+		}
 		backlogItem.setDescription(input.getDescription());
 		backlogItem.setEstimate(input.getEstimate());
 		backlogItem.setImportance(input.getImportance());

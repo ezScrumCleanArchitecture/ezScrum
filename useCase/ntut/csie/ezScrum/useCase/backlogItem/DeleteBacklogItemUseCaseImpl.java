@@ -19,7 +19,13 @@ public class DeleteBacklogItemUseCaseImpl implements DeleteBacklogItemUseCase, D
 	@Override
 	public void execute(DeleteBacklogItemInput input, DeleteBacklogItemOutput output) {
 		String backlogItemId = input.getBacklogItemId();
-		int orderId = context.getBacklogItem(backlogItemId).getOrderId();
+		BacklogItem backlogItem = context.getBacklogItem(backlogItemId);
+		if(backlogItem == null) {
+			output.setDeleteSuccess(false);
+			output.setErrorMessage("Sorry, the backlog item is not exist.");
+			return;
+		}
+		int orderId = backlogItem.getOrderId();
 		int numberOfBacklogItems = context.getNumberOfBacklogItems();
 		BacklogItem[] backlogItems = context.getBacklogItems().toArray(new BacklogItem[numberOfBacklogItems]);
 		for(int i = orderId; i < numberOfBacklogItems; i++) {

@@ -1,13 +1,10 @@
 package ntut.csie.ezScrum.useCase.task.io;
 
-public class MoveTaskCardOutput {
-	private boolean moveTaskCardSuccess;
+import ntut.csie.ezScrum.useCase.Output;
 
-	public boolean isMoveTaskCardSuccess() {
-		return moveTaskCardSuccess;
-	}
-
-	public void setMoveTaskCardSuccess(boolean moveTaskCardSuccess) {
-		this.moveTaskCardSuccess = moveTaskCardSuccess;
-	}
+public interface MoveTaskCardOutput extends Output{
+	public boolean isMoveSuccess();
+	public void setMoveSuccess(boolean moveSuccess);
+	public String getErrorMessage();
+	public void setErrorMessage(String errorMessage);
 }
