@@ -1,6 +1,8 @@
 package ntut.csie.ezScrum.useCase.backlogItem;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
@@ -37,6 +39,13 @@ public class GetAllCommittedBacklogItemUseCaseImpl implements GetAllCommittedBac
 				}
 			}
 		}
+		Collections.sort(committedBacklogItemList, new Comparator<GetAllCommittedBacklogItemDTO>() {
+			@Override
+			public int compare(GetAllCommittedBacklogItemDTO dto1, GetAllCommittedBacklogItemDTO dto2) {
+				return dto2.getImportance() - dto1.getImportance();
+			}
+			
+		});
 		output.setCommittedBacklogItemList(committedBacklogItemList);
 	}
 
