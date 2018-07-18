@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.restfulAPI.task;
 
 import java.util.List;
 
-import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -17,8 +16,8 @@ import ntut.csie.ezScrum.useCase.task.io.GetAllTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.GetAllTaskOutput;
 
 @Path("/backlogItem/{backlogItemId}/task")
-@Singleton
 public class GetAllTaskRestfulAPI implements GetAllTaskOutput{
+	
 	private ApplicationContext context = ApplicationContext.getInstance();
 	private GetAllTaskUseCase getAllTaskUseCase = new GetAllTaskUseCaseImpl(context);
 	

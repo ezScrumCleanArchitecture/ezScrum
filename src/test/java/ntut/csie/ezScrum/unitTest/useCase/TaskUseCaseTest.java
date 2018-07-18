@@ -212,9 +212,6 @@ public class TaskUseCaseTest {
 		String deleteTaskId = tasks[1].getTaskId();
 		deleteTask(deleteTaskId);
 		
-		GetAllTaskInput getTaskInput = new GetAllTaskUseCaseImpl();
-		getTaskInput.setBacklogItemId(backlogItemId);
-		
 		GetAllTaskOutput output = getAllTask();
 		List<GetAllTaskDTO> taskList = output.getTaskList();
 		

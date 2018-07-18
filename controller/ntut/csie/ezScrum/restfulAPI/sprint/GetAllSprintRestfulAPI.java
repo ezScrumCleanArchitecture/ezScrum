@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.restfulAPI.sprint;
 
 import java.util.List;
 
-import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -17,8 +16,8 @@ import ntut.csie.ezScrum.useCase.sprint.io.GetAllSprintInput;
 import ntut.csie.ezScrum.useCase.sprint.io.GetAllSprintOutput;
 
 @Path("/product/{productId}/sprint")
-@Singleton
 public class GetAllSprintRestfulAPI implements GetAllSprintOutput{
+	
 	private ApplicationContext context = ApplicationContext.getInstance();
 	private GetAllSprintUseCase getAllSprintUseCase = new GetAllSprintUseCaseImpl(context);
 	

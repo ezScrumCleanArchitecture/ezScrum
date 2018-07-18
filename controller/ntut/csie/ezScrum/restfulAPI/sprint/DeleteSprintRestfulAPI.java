@@ -1,6 +1,5 @@
 package ntut.csie.ezScrum.restfulAPI.sprint;
 
-import javax.inject.Singleton;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -15,8 +14,8 @@ import ntut.csie.ezScrum.useCase.sprint.io.DeleteSprintInput;
 import ntut.csie.ezScrum.useCase.sprint.io.DeleteSprintOutput;
 
 @Path("/product/{productId}/sprint")
-@Singleton
 public class DeleteSprintRestfulAPI implements DeleteSprintOutput{
+	
 	private ApplicationContext context = ApplicationContext.getInstance();
 	private DeleteSprintUseCase deleteSprintUseCase = new DeleteSprintUseCaseImpl(context);
 	

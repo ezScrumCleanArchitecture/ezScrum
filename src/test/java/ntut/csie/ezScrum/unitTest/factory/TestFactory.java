@@ -4,6 +4,8 @@ import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
 import ntut.csie.ezScrum.model.backlogItem.BacklogItemBuilder;
 import ntut.csie.ezScrum.model.product.Product;
 import ntut.csie.ezScrum.model.product.ProductBuilder;
+import ntut.csie.ezScrum.model.retrospective.Retrospective;
+import ntut.csie.ezScrum.model.retrospective.RetrospectiveBuilder;
 import ntut.csie.ezScrum.model.sprint.Sprint;
 import ntut.csie.ezScrum.model.sprint.SprintBuilder;
 import ntut.csie.ezScrum.model.task.Task;
@@ -83,5 +85,22 @@ public class TestFactory {
 		}
 		context.addTask(task);
 		return task;
+	}
+	
+	public Retrospective getNewRetrospective(String productId, String sprintId, String description) {
+		int orderId = context.getNumberOfRetrospectives() + 1;
+		Retrospective retrospective = null;
+		try {
+			retrospective = RetrospectiveBuilder.newInstance().
+					orderId(orderId).
+					productId(productId).
+					sprintId(sprintId).
+					description(description).
+					build();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		context.addRetrospective(retrospective);
+		return retrospective;
 	}
 }

@@ -1,6 +1,5 @@
 package ntut.csie.ezScrum.restfulAPI.backlogItem;
 
-import javax.inject.Singleton;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -15,7 +14,6 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.DeleteBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.DeleteBacklogItemOutput;
 
 @Path("/product/{productId}/backlogItem")
-@Singleton
 public class DeleteBacklogItemRestfulAPI implements DeleteBacklogItemOutput{
 	
 	private ApplicationContext context = ApplicationContext.getInstance();

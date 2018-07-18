@@ -1,6 +1,5 @@
 package ntut.csie.ezScrum.restfulAPI.task;
 
-import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -18,8 +17,8 @@ import ntut.csie.ezScrum.useCase.task.io.AddTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.AddTaskOutput;
 
 @Path("/backlogItem/{backlogItemId}/task")
-@Singleton
 public class AddTaskRestfulAPI implements AddTaskOutput{
+	
 	private ApplicationContext context = ApplicationContext.getInstance();
 	private AddTaskUseCase addTaskUseCase = new AddTaskUseCaseImpl(context);
 	

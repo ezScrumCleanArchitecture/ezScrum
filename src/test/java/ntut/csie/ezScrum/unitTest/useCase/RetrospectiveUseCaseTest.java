@@ -1,7 +1,11 @@
 package ntut.csie.ezScrum.unitTest.useCase;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.List;
 
 import org.junit.After;
@@ -10,23 +14,33 @@ import org.junit.Test;
 
 import ntut.csie.ezScrum.model.product.Product;
 import ntut.csie.ezScrum.model.retrospective.Retrospective;
-import ntut.csie.ezScrum.model.retrospective.RetrospectiveBuilder;
 import ntut.csie.ezScrum.model.sprint.Sprint;
+import ntut.csie.ezScrum.restfulAPI.retrospective.AddRetrospectiveRestfulAPI;
+import ntut.csie.ezScrum.restfulAPI.retrospective.DeleteRetrospectiveRestfulAPI;
+import ntut.csie.ezScrum.restfulAPI.retrospective.EditRetrospectiveRestfulAPI;
+import ntut.csie.ezScrum.restfulAPI.retrospective.GetAllRetrospectiveRestfulAPI;
 import ntut.csie.ezScrum.unitTest.factory.TestFactory;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
-import ntut.csie.ezScrum.useCase.retrospective.RetrospectiveManagerUseCase;
+import ntut.csie.ezScrum.useCase.retrospective.AddRetrospectiveUseCase;
+import ntut.csie.ezScrum.useCase.retrospective.AddRetrospectiveUseCaseImpl;
+import ntut.csie.ezScrum.useCase.retrospective.DeleteRetrospectiveUseCase;
+import ntut.csie.ezScrum.useCase.retrospective.DeleteRetrospectiveUseCaseImpl;
+import ntut.csie.ezScrum.useCase.retrospective.EditRetrospectiveUseCase;
+import ntut.csie.ezScrum.useCase.retrospective.EditRetrospectiveUseCaseImpl;
+import ntut.csie.ezScrum.useCase.retrospective.GetAllRetrospectiveUseCase;
+import ntut.csie.ezScrum.useCase.retrospective.GetAllRetrospectiveUseCaseImpl;
 import ntut.csie.ezScrum.useCase.retrospective.io.AddRetrospectiveInput;
 import ntut.csie.ezScrum.useCase.retrospective.io.AddRetrospectiveOutput;
 import ntut.csie.ezScrum.useCase.retrospective.io.DeleteRetrospectiveInput;
 import ntut.csie.ezScrum.useCase.retrospective.io.DeleteRetrospectiveOutput;
 import ntut.csie.ezScrum.useCase.retrospective.io.EditRetrospectiveInput;
 import ntut.csie.ezScrum.useCase.retrospective.io.EditRetrospectiveOutput;
-import ntut.csie.ezScrum.useCase.retrospective.io.GetRetrospectiveInput;
-import ntut.csie.ezScrum.useCase.retrospective.io.GetRetrospectiveOutput;
+import ntut.csie.ezScrum.useCase.retrospective.io.GetAllRetrospectiveDTO;
+import ntut.csie.ezScrum.useCase.retrospective.io.GetAllRetrospectiveInput;
+import ntut.csie.ezScrum.useCase.retrospective.io.GetAllRetrospectiveOutput;
 
 public class RetrospectiveUseCaseTest {
 	private ApplicationContext context;
-	private RetrospectiveManagerUseCase retrospectiveManagerUseCase;
 	
 	private TestFactory testFactory;
 	private String productId;
@@ -37,7 +51,6 @@ public class RetrospectiveUseCaseTest {
 	public void setUp() {
 		context = ApplicationContext.getInstance();
 		testFactory = new TestFactory();
-		retrospectiveManagerUseCase = new RetrospectiveManagerUseCase(context);
 		
 		Product product = testFactory.getNewProduct();
 		productId = product.getProductId();
@@ -50,13 +63,11 @@ public class RetrospectiveUseCaseTest {
 		Sprint sprint = testFactory.getNewSprint(productId, goal, interval, startDate, endDate, demoDate);
 		sprintId = sprint.getSprintId();
 	
-		String editedGoal = "The goal of ezScrum.";
-		int editedInterval = 2;
-		String editedStartDate = "2018-05-05";
-		String editedEndDate = "2018-05-19";
-		String editedDemoDate = "2018-05-19";
-		Sprint editedSprint = testFactory.getNewSprint(productId, editedGoal, editedInterval, editedStartDate, editedEndDate, editedDemoDate);
-		
+		String editedGoal = "The goal of ezScrum part 2.";
+		String editedStartDate = "2018-05-20";
+		String editedEndDate = "2018-06-03";
+		String editedDemoDate = "2018-06-03";
+		Sprint editedSprint = testFactory.getNewSprint(productId, editedGoal, interval, editedStartDate, editedEndDate, editedDemoDate);
 		editedSprintId = editedSprint.getSprintId();
 	}
 	
@@ -68,46 +79,48 @@ public class RetrospectiveUseCaseTest {
 	}
 	
 	@Test
-	public void Should_AllDataInsertIntoRetrospective_When_AddRetrospectiveWithAllParamemter() {
+	public void Should_Success_When_AddRetrospectiveWithAllParamemter() {
 		String description = "The good thing is we have the unit test to test our feature.";
 		
-		AddRetrospectiveInput retrospectiveInput = new AddRetrospectiveInput();
-		retrospectiveInput.setDescription(description);
-		retrospectiveInput.setProductId(productId);
-		retrospectiveInput.setSprintId(sprintId);
+		AddRetrospectiveOutput output = addNewRetrospectiveWithAllParamemter(description);
 		
-		AddRetrospectiveOutput addRetrospectiveOutput = retrospectiveManagerUseCase.addRetrospective(retrospectiveInput);
-		String retrospectiveId = addRetrospectiveOutput.getRetrospectiveId();
-		
-		Retrospective testedRetrospective = context.getRetrospective(retrospectiveId);
-		assertEquals(retrospectiveId, testedRetrospective.getRetrospectiveId());
-		assertEquals(description, testedRetrospective.getDescription());
-		assertEquals(sprintId, testedRetrospective.getSprintId());
+		boolean isAddSuccess = output.isAddSuccess();
+		assertTrue(isAddSuccess);
 	}
 	
-	@Test
+	@Test(expected = Exception.class)
 	public void Should_ThrowExcpetion_When_AddBacklogItemWithoutDesciption() {
-		try {
-			RetrospectiveBuilder.newInstance().
-					productId(productId).
-					description(null).
-					build();
-		} catch (Exception e) {
-			assertEquals("The description of the retrospective should not be null.", e.getMessage());
-		}
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		PrintStream printStream = new PrintStream(stream);
+		System.setOut(printStream);
+		
+		AddRetrospectiveInput input = new AddRetrospectiveUseCaseImpl();
+		
+		AddRetrospectiveOutput output = new AddRetrospectiveRestfulAPI();
+		
+		AddRetrospectiveUseCase addRetrospectiveUseCase = new AddRetrospectiveUseCaseImpl(context);
+		addRetrospectiveUseCase.execute(input, output);
+
+		String expectedException = "The description of the retrospective should not be null.";
+		assertEquals(expectedException, stream.toString());
 	}
 	
-	@Test
+	@Test(expected = Exception.class)
 	public void Should_ThrowExcpetion_When_AddBacklogItemWithoutSprint() {
-		try {
-			RetrospectiveBuilder.newInstance().
-					productId(productId).
-					description("The bad thing is bad smell.").
-					sprintId(null).
-					build();
-		} catch (Exception e) {
-			assertEquals("The sprint of the retrospective should not be null.", e.getMessage());
-		}
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		PrintStream printStream = new PrintStream(stream);
+		System.setOut(printStream);
+		
+		AddRetrospectiveInput input = new AddRetrospectiveUseCaseImpl();
+		input.setDescription("The bad thing is bad smell.");
+		
+		AddRetrospectiveOutput output = new AddRetrospectiveRestfulAPI();
+		
+		AddRetrospectiveUseCase addRetrospectiveUseCase = new AddRetrospectiveUseCaseImpl(context);
+		addRetrospectiveUseCase.execute(input, output);
+
+		String expectedException = "The sprint of the retrospective should not be null.";
+		assertEquals(expectedException, stream.toString());
 	}
 
 	@Test
@@ -116,85 +129,67 @@ public class RetrospectiveUseCaseTest {
 				"The diffcult thing is implement react UI.",
 				"I think just go to view other people example could be better."
 		};
-		for(int i=0; i<description.length; i++) {
-			AddRetrospectiveInput addRetrospectiveInput = new AddRetrospectiveInput();
-			addRetrospectiveInput.setDescription(description[i]);
-			addRetrospectiveInput.setProductId(productId);
-			addRetrospectiveInput.setSprintId(sprintId);
-			retrospectiveManagerUseCase.addRetrospective(addRetrospectiveInput);
+		int numberOfRetrospectives = description.length;
+		for(int i=0; i<numberOfRetrospectives; i++) {
+			addNewRetrospectiveWithAllParamemter(description[i]);
 		}
 		
-		GetRetrospectiveInput getRetrospectiveInput = new GetRetrospectiveInput();
-		getRetrospectiveInput.setProductId(productId);
-		List<GetRetrospectiveOutput> retrospectiveList = retrospectiveManagerUseCase.getRetrospectives(getRetrospectiveInput);
-		int sprintOrderId = context.getSprint(sprintId).getOrderId();
+		GetAllRetrospectiveOutput output = getAllRetrospective();
+		List<GetAllRetrospectiveDTO> retrospectiveList = output.getRetrospectiveList();
 		for(int i=0; i<retrospectiveList.size(); i++) {
-			GetRetrospectiveOutput testedRetrospective = retrospectiveList.get(i);
-			assertEquals(description[i], testedRetrospective.getDescription());
-			assertEquals(sprintOrderId, testedRetrospective.getSprintOrderId());
+			assertEquals(description[i], retrospectiveList.get(i).getDescription());
 		}
-		assertEquals(description.length, retrospectiveList.size());
+		assertEquals(numberOfRetrospectives, retrospectiveList.size());
 	}
 	
 	@Test
-	public void Should_UpdateData_When_EditRetrospective() {
+	public void Should_Success_When_EditRetrospective() {
 		String description = "The bad thing is we have so many things need to do. So busy~";
 		
-		AddRetrospectiveInput addRetrospecitveInput = new AddRetrospectiveInput();
-		addRetrospecitveInput.setDescription(description);
-		addRetrospecitveInput.setProductId(productId);
-		addRetrospecitveInput.setSprintId(sprintId);
-		
-		AddRetrospectiveOutput addRetrospectiveOutput = retrospectiveManagerUseCase.addRetrospective(addRetrospecitveInput);
-		String retrospectiveId = addRetrospectiveOutput.getRetrospectiveId();
+		Retrospective retrospective = testFactory.getNewRetrospective(productId, sprintId, description);
+		String retrospectiveId = retrospective.getRetrospectiveId();
 		
 		String editedDescription = "The good thing is we have the machine to finish our thing automatally. So funny~";
 		
-		EditRetrospectiveInput editRetrospectiveInput = new EditRetrospectiveInput();
+		EditRetrospectiveOutput output = editRetrospective(retrospectiveId, editedDescription, editedSprintId);
 		
-		editRetrospectiveInput.setRetrospectiveId(retrospectiveId);
-		editRetrospectiveInput.setDescription(editedDescription);
-		editRetrospectiveInput.setSprintId(editedSprintId);
-		
-		EditRetrospectiveOutput editBacklogItemOutput = retrospectiveManagerUseCase.editRetrospective(editRetrospectiveInput);
-		
-		Retrospective testedRetrospective = context.getRetrospective(retrospectiveId);
-		
-		assertEquals(true, editBacklogItemOutput.isEditSuccess());
-		assertEquals(editedDescription, testedRetrospective.getDescription());
-		assertEquals(editedSprintId, testedRetrospective.getSprintId());
+		boolean isEditSuccess = output.isEditSuccess();
+		assertTrue(isEditSuccess);
 	}
 	
 	@Test
-	public void Should_DeleteData_When_DeleteRetrospective() {
+	public void Should_ReturnErrorMessage_When_EditNotExistRetrospective() {
+		String editedDescription = "The good thing is we have the machine to finish our thing automatally. So funny~";
+		
+		EditRetrospectiveOutput output = editRetrospective(null, editedDescription, editedSprintId);
+		
+		boolean isEditSuccess = output.isEditSuccess();
+		String expectedErrorMessage = "Sorry, the retrospective is not exist.";
+		assertFalse(isEditSuccess);
+		assertEquals(expectedErrorMessage, output.getErrorMessage());
+	}
+	
+	@Test
+	public void Should_Success_When_DeleteRetrospective() {
 		String description = "The bad thing is we have so many things need to do. So busy~";
 		
-		AddRetrospectiveInput addRetrospectiveInput = new AddRetrospectiveInput();
-		addRetrospectiveInput.setDescription(description);
-		addRetrospectiveInput.setProductId(productId);
-		addRetrospectiveInput.setSprintId(sprintId);
+		Retrospective retrospective = testFactory.getNewRetrospective(productId, sprintId, description);
+		String retrospectiveId = retrospective.getRetrospectiveId();
 		
-		AddRetrospectiveOutput addRetrospectiveOutput = retrospectiveManagerUseCase.addRetrospective(addRetrospectiveInput);
-		String retrospectiveId = addRetrospectiveOutput.getRetrospectiveId();
+		DeleteRetrospectiveOutput output = deleteRetrospective(retrospectiveId);
 		
-		DeleteRetrospectiveInput deleteRetrospectiveInput = new DeleteRetrospectiveInput();
-		deleteRetrospectiveInput.setRetrospectiveId(retrospectiveId);
+		boolean isDeleteSuccess = output.isDeleteSuccess();
+		assertTrue(isDeleteSuccess);
+	}
+	
+	@Test
+	public void Should_ReturnErrorMessage_When_DeleteNotExistRetrospective() {
+		DeleteRetrospectiveOutput output = deleteRetrospective(null);
 		
-		DeleteRetrospectiveOutput deleteRetrospectiveOutput = retrospectiveManagerUseCase.deleteRetrospective(deleteRetrospectiveInput);
-		
-		GetRetrospectiveInput getRetrospectiveInput = new GetRetrospectiveInput();
-		getRetrospectiveInput.setProductId(productId);
-		List<GetRetrospectiveOutput> retrospectives = retrospectiveManagerUseCase.getRetrospectives(getRetrospectiveInput);
-		
-		assertEquals(true, deleteRetrospectiveOutput.isDeleteSuccess());
-		boolean isFound = false;
-		for(GetRetrospectiveOutput retrospectiveDTO : retrospectives) {
-			if(retrospectiveDTO.getRetrospectiveId().equals(retrospectiveId)) {
-				isFound = true;
-				break;
-			}
-		}
-		assertEquals(false, isFound);
+		boolean isDeleteSuccess = output.isDeleteSuccess();
+		String expectedDeleteMessage = "Sorry, the retrospective is not exist.";
+		assertFalse(isDeleteSuccess);
+		assertEquals(expectedDeleteMessage, output.getErrorMessage());
 	}
 	
 	@Test
@@ -203,27 +198,72 @@ public class RetrospectiveUseCaseTest {
 				"The diffcult thing is implement react UI.",
 				"I think just go to view other people example could be better."
 		};
-		String[] retrospectiveIds = new String[description.length];
-		for(int i=0; i<description.length; i++) {
-			AddRetrospectiveInput addRetrospectiveInput = new AddRetrospectiveInput();
-			addRetrospectiveInput.setDescription(description[i]);
-			addRetrospectiveInput.setProductId(productId);
-			addRetrospectiveInput.setSprintId(sprintId);
-			AddRetrospectiveOutput addRetrospectiveOutput = retrospectiveManagerUseCase.addRetrospective(addRetrospectiveInput);
-			retrospectiveIds[i] = addRetrospectiveOutput.getRetrospectiveId();
+		int numberOfRetrospectives = description.length;
+		Retrospective[] retrospectives = new Retrospective[numberOfRetrospectives];
+		for(int i=0; i<numberOfRetrospectives; i++) {
+			retrospectives[i] = testFactory.getNewRetrospective(productId, sprintId, description[i]);
 		}
 		
-		DeleteRetrospectiveInput deleteRetrospectiveInput = new DeleteRetrospectiveInput();
-		deleteRetrospectiveInput.setRetrospectiveId(retrospectiveIds[1]);
+		String deleteRetrospectiveId = retrospectives[1].getRetrospectiveId();
+		deleteRetrospective(deleteRetrospectiveId);
 		
-		retrospectiveManagerUseCase.deleteRetrospective(deleteRetrospectiveInput);
-		
-		GetRetrospectiveInput getRetrospectivedInput = new GetRetrospectiveInput();
-		getRetrospectivedInput.setProductId(productId);
-		List<GetRetrospectiveOutput> retrospectiveList = retrospectiveManagerUseCase.getRetrospectives(getRetrospectivedInput);
+		GetAllRetrospectiveOutput output = getAllRetrospective();
+		List<GetAllRetrospectiveDTO> retrospectiveList = output.getRetrospectiveList();
 		
 		for(int i=0; i<retrospectiveList.size(); i++) {
 			assertEquals(i+1, retrospectiveList.get(i).getOrderId());
 		}
+	}
+	
+	private AddRetrospectiveOutput addNewRetrospectiveWithAllParamemter(String description) {
+		AddRetrospectiveInput input = new AddRetrospectiveUseCaseImpl();
+		input.setDescription(description);
+		input.setProductId(productId);
+		input.setSprintId(sprintId);
+		
+		AddRetrospectiveOutput output = new AddRetrospectiveRestfulAPI();
+		
+		AddRetrospectiveUseCase addRetrospectiveUseCase = new AddRetrospectiveUseCaseImpl(context);
+		addRetrospectiveUseCase.execute(input, output);
+		
+		return output;
+	}
+	
+	private GetAllRetrospectiveOutput getAllRetrospective() {
+		GetAllRetrospectiveInput input = new GetAllRetrospectiveUseCaseImpl();
+		input.setProductId(productId);
+		
+		GetAllRetrospectiveOutput output = new GetAllRetrospectiveRestfulAPI();
+		
+		GetAllRetrospectiveUseCase getAllRetrospectiveUseCase = new GetAllRetrospectiveUseCaseImpl(context);
+		getAllRetrospectiveUseCase.execute(input, output);
+		
+		return output;
+	}
+	
+	private EditRetrospectiveOutput editRetrospective(String retrospectiveId, String editedDescription, String editedSprintId) {
+		EditRetrospectiveInput input = new EditRetrospectiveUseCaseImpl();
+		input.setRetrospectiveId(retrospectiveId);
+		input.setDescription(editedDescription);
+		input.setSprintId(editedSprintId);
+		
+		EditRetrospectiveOutput output = new EditRetrospectiveRestfulAPI();
+		
+		EditRetrospectiveUseCase editRetrospectiveUseCase = new EditRetrospectiveUseCaseImpl(context);
+		editRetrospectiveUseCase.execute(input, output);
+		
+		return output;
+	}
+	
+	private DeleteRetrospectiveOutput deleteRetrospective(String retrospectiveId) {
+		DeleteRetrospectiveInput input = new DeleteRetrospectiveUseCaseImpl();
+		input.setRetrospectiveId(retrospectiveId);
+		
+		DeleteRetrospectiveOutput output = new DeleteRetrospectiveRestfulAPI();
+		
+		DeleteRetrospectiveUseCase deleteRetrospectiveUseCase = new DeleteRetrospectiveUseCaseImpl(context);
+		deleteRetrospectiveUseCase.execute(input, output);
+		
+		return output;
 	}
 }

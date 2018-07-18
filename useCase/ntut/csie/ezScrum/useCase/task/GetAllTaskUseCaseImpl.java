@@ -26,13 +26,13 @@ public class GetAllTaskUseCaseImpl implements GetAllTaskUseCase, GetAllTaskInput
 		List<GetAllTaskDTO> taskList = new ArrayList<>();
 		for(Task task : context.getTasks()) {
 			if(task.getBacklogItemId().equals(backlogItemId)) {
-				taskList.add(convertTaskToGetTaskOutput(task));
+				taskList.add(convertTaskToDTO(task));
 			}
 		}
 		output.setTaskList(taskList);
 	}
 	
-	private GetAllTaskDTO convertTaskToGetTaskOutput(Task task) {
+	private GetAllTaskDTO convertTaskToDTO(Task task) {
 		GetAllTaskDTO dto = new GetAllTaskDTO();
 		dto.setTaskId(task.getTaskId());
 		dto.setOrderId(task.getOrderId());

@@ -1,6 +1,5 @@
 package ntut.csie.ezScrum.restfulAPI.backlogItem;
 
-import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -18,7 +17,6 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.AddBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.AddBacklogItemOutput;
 
 @Path("/product/{productId}/backlogItem")
-@Singleton
 public class AddBacklogItemRestfulAPI implements AddBacklogItemOutput{
 	
 	private ApplicationContext context = ApplicationContext.getInstance();

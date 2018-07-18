@@ -1,13 +1,8 @@
 package ntut.csie.ezScrum.useCase.retrospective.io;
 
-public class DeleteRetrospectiveInput {
-	private String retrospectiveId;
+import ntut.csie.ezScrum.useCase.Input;
 
-	public String getRetrospectiveId() {
-		return retrospectiveId;
-	}
-
-	public void setRetrospectiveId(String retrospectiveId) {
-		this.retrospectiveId = retrospectiveId;
-	}
+public interface DeleteRetrospectiveInput extends Input{
+	public String getRetrospectiveId();
+	public void setRetrospectiveId(String retrospectiveId);
 }

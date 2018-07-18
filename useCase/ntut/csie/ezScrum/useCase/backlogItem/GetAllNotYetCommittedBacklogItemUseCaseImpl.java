@@ -28,14 +28,14 @@ public class GetAllNotYetCommittedBacklogItemUseCaseImpl implements GetAllNotYet
 		for(BacklogItem backlogItem : context.getBacklogItems()) {
 			if(backlogItem.getProductId().equals(productId)) {
 				if(backlogItem.getSprintId() == null) {
-					notYetCommittedBacklogItemList.add(convertBacklogItemToGetNotYetCommittedBacklogItemOutput(backlogItem));
+					notYetCommittedBacklogItemList.add(convertBacklogItemToDTO(backlogItem));
 				}
 			}
 		}
 		output.setNotYetCommittedBacklogItemList(notYetCommittedBacklogItemList);
 	}
 	
-	private GetAllNotYetCommittedBacklogItemDTO convertBacklogItemToGetNotYetCommittedBacklogItemOutput(BacklogItem backlogItem) {
+	private GetAllNotYetCommittedBacklogItemDTO convertBacklogItemToDTO(BacklogItem backlogItem) {
 		GetAllNotYetCommittedBacklogItemDTO dto = new GetAllNotYetCommittedBacklogItemDTO();
 		dto.setBacklogItemId(backlogItem.getBacklogItemId());
 		dto.setOrderId(backlogItem.getOrderId());

@@ -32,7 +32,7 @@ public class GetAllCommittedBacklogItemUseCaseImpl implements GetAllCommittedBac
 			if(backlogItem.getProductId().equals(productId)) {
 				if(backlogItem.getSprintId() != null) {
 					if(backlogItem.getSprintId().equals(sprintId)) {
-						committedBacklogItemList.add(convertBacklogItemToGetCommittedBacklogItemOutput(backlogItem));
+						committedBacklogItemList.add(convertBacklogItemToDTO(backlogItem));
 					}
 				}
 			}
@@ -40,7 +40,7 @@ public class GetAllCommittedBacklogItemUseCaseImpl implements GetAllCommittedBac
 		output.setCommittedBacklogItemList(committedBacklogItemList);
 	}
 
-	private GetAllCommittedBacklogItemDTO convertBacklogItemToGetCommittedBacklogItemOutput(BacklogItem backlogItem) {
+	private GetAllCommittedBacklogItemDTO convertBacklogItemToDTO(BacklogItem backlogItem) {
 		GetAllCommittedBacklogItemDTO dto = new GetAllCommittedBacklogItemDTO();
 		dto.setBacklogItemId(backlogItem.getBacklogItemId());
 		dto.setOrderId(backlogItem.getOrderId());

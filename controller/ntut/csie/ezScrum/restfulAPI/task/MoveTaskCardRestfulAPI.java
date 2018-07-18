@@ -1,6 +1,5 @@
 package ntut.csie.ezScrum.restfulAPI.task;
 
-import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -18,8 +17,8 @@ import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardInput;
 import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardOutput;
 
 @Path("/backlogItem/{backlogItemId}/task")
-@Singleton
 public class MoveTaskCardRestfulAPI implements MoveTaskCardOutput{
+	
 	private ApplicationContext context = ApplicationContext.getInstance();
 	private MoveTaskCardUseCase moveTaskUseCase = new MoveTaskCardUseCaseImpl(context);
 	

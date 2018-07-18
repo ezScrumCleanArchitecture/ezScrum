@@ -1,6 +1,5 @@
 package ntut.csie.ezScrum.restfulAPI.task;
 
-import javax.inject.Singleton;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -15,8 +14,8 @@ import ntut.csie.ezScrum.useCase.task.io.DeleteTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.DeleteTaskOutput;
 
 @Path("/backlogItem/{backlogItemId}/task")
-@Singleton
 public class DeleteTaskRestfulAPI implements DeleteTaskOutput{
+	
 	private ApplicationContext context = ApplicationContext.getInstance();
 	private DeleteTaskUseCase deleteTaskUseCase = new DeleteTaskUseCaseImpl(context);
 	

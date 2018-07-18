@@ -1,6 +1,5 @@
 package ntut.csie.ezScrum.restfulAPI.sprint;
 
-import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -18,8 +17,8 @@ import ntut.csie.ezScrum.useCase.sprint.io.EditSprintInput;
 import ntut.csie.ezScrum.useCase.sprint.io.EditSprintOutput;
 
 @Path("/product/{productId}/sprint")
-@Singleton
 public class EditSprintRestfulAPI implements EditSprintOutput{
+	
 	private ApplicationContext context = ApplicationContext.getInstance();
 	private EditSprintUseCase editSprintUseCase = new EditSprintUseCaseImpl(context);
 	

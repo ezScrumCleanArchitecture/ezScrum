@@ -3,7 +3,6 @@ package ntut.csie.ezScrum.restfulAPI.backlogItem;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -22,7 +21,6 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.AssignBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.AssignBacklogItemOutput;
 
 @Path("/product/{productId}/backlogItem")
-@Singleton
 public class AssignBacklogItemRestfulAPI implements AssignBacklogItemOutput{
 	
 	private ApplicationContext context = ApplicationContext.getInstance();

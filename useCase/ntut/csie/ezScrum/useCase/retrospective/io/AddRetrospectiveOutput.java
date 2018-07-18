@@ -1,13 +1,8 @@
 package ntut.csie.ezScrum.useCase.retrospective.io;
 
-public class AddRetrospectiveOutput {
-	private String retrospectiveId;
+import ntut.csie.ezScrum.useCase.Output;
 
-	public String getRetrospectiveId() {
-		return retrospectiveId;
-	}
-
-	public void setRetrospectiveId(String retrospectiveId) {
-		this.retrospectiveId = retrospectiveId;
-	}
+public interface AddRetrospectiveOutput extends Output{
+	public boolean isAddSuccess();
+	public void setAddSuccess(boolean addSuccess);
 }

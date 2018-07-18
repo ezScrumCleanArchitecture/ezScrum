@@ -1,13 +1,10 @@
 package ntut.csie.ezScrum.useCase.retrospective.io;
 
-public class EditRetrospectiveOutput {
-	private boolean editSuccess;
+import ntut.csie.ezScrum.useCase.Output;
 
-	public boolean isEditSuccess() {
-		return editSuccess;
-	}
-
-	public void setEditSuccess(boolean editSuccess) {
-		this.editSuccess = editSuccess;
-	}
+public interface EditRetrospectiveOutput extends Output{
+	public boolean isEditSuccess();
+	public void setEditSuccess(boolean editSuccess);
+	public String getErrorMessage();
+	public void setErrorMessage(String errorMessage);
 }

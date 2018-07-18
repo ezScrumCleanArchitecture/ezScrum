@@ -1,6 +1,6 @@
 package ntut.csie.ezScrum.useCase.retrospective.io;
 
-public class GetRetrospectiveOutput {
+public class GetAllRetrospectiveDTO {
 	private String retrospectiveId;
 	private int orderId;
 	private String description;

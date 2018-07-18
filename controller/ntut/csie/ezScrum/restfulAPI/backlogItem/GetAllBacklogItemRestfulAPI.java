@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.restfulAPI.backlogItem;
 
 import java.util.List;
 
-import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -17,7 +16,6 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllBacklogItemOutput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllBacklogItemDTO;
 
 @Path("/product/{productId}/backlogItem")
-@Singleton
 public class GetAllBacklogItemRestfulAPI implements GetAllBacklogItemOutput{
 	
 	private ApplicationContext context = ApplicationContext.getInstance();

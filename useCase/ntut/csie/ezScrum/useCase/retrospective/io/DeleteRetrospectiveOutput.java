@@ -1,13 +1,10 @@
 package ntut.csie.ezScrum.useCase.retrospective.io;
 
-public class DeleteRetrospectiveOutput {
-	private boolean deleteSuccess;
+import ntut.csie.ezScrum.useCase.Output;
 
-	public boolean isDeleteSuccess() {
-		return deleteSuccess;
-	}
-
-	public void setDeleteSuccess(boolean deleteSuccess) {
-		this.deleteSuccess = deleteSuccess;
-	}
+public interface DeleteRetrospectiveOutput extends Output{
+	public boolean isDeleteSuccess();
+	public void setDeleteSuccess(boolean deleteSuccess);
+	public String getErrorMessage();
+	public void setErrorMessage(String errorMessage);
 }
