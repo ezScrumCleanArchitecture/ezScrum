@@ -44,7 +44,7 @@ import ntut.csie.ezScrum.useCase.task.io.DeleteTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.DeleteTaskOutput;
 import ntut.csie.ezScrum.useCase.task.io.EditTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.EditTaskOutput;
-import ntut.csie.ezScrum.useCase.task.io.GetAllTaskDTO;
+import ntut.csie.ezScrum.useCase.task.io.TaskModel;
 import ntut.csie.ezScrum.useCase.task.io.GetAllTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardInput;
 import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardOutput;
@@ -137,7 +137,7 @@ public class TaskUseCaseTest {
 		
 		GetAllTaskOutput output = getAllTask();
 		
-		List<GetAllTaskDTO> taskList = output.getTaskList();
+		List<TaskModel> taskList = output.getTaskList();
 		
 		for(int i=0; i<taskList.size(); i++) {
 			assertEquals(description[i], taskList.get(i).getDescription());
@@ -213,7 +213,7 @@ public class TaskUseCaseTest {
 		deleteTask(deleteTaskId);
 		
 		GetAllTaskOutput output = getAllTask();
-		List<GetAllTaskDTO> taskList = output.getTaskList();
+		List<TaskModel> taskList = output.getTaskList();
 		
 		for(int i=0; i<taskList.size(); i++) {
 			assertEquals(i+1, taskList.get(i).getOrderId());

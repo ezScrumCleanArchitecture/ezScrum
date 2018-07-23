@@ -5,6 +5,6 @@ import java.util.List;
 import ntut.csie.ezScrum.useCase.Output;
 
 public interface GetAllBacklogItemOutput extends Output{
-	public List<GetAllBacklogItemDTO> getBacklogItemList();
-	public void setBacklogItemList(List<GetAllBacklogItemDTO> backlogItemList);
+	public List<BacklogItemModel> getBacklogItemList();
+	public void setBacklogItemList(List<BacklogItemModel> backlogItemList);
 }

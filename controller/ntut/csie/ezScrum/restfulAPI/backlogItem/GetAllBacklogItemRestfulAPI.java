@@ -8,20 +8,26 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
+import ntut.csie.ezScrum.repository.backlogItem.BacklogItemRepository;
+import ntut.csie.ezScrum.repository.backlogItem.GetBacklogItemsByProductId;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.Repository;
+import ntut.csie.ezScrum.useCase.SqlSpecification;
 import ntut.csie.ezScrum.useCase.backlogItem.GetAllBacklogItemUseCase;
 import ntut.csie.ezScrum.useCase.backlogItem.GetAllBacklogItemUseCaseImpl;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllBacklogItemOutput;
-import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllBacklogItemDTO;
+import ntut.csie.ezScrum.useCase.backlogItem.io.BacklogItemModel;
 
 @Path("/product/{productId}/backlogItem")
 public class GetAllBacklogItemRestfulAPI implements GetAllBacklogItemOutput{
 	
 	private ApplicationContext context = ApplicationContext.getInstance();
-	private GetAllBacklogItemUseCase getBacklogItemUseCase = new GetAllBacklogItemUseCaseImpl(context);
+	private Repository<BacklogItem> repository = new BacklogItemRepository();
+	private GetAllBacklogItemUseCase getBacklogItemUseCase = new GetAllBacklogItemUseCaseImpl(repository);
 	
-	private List<GetAllBacklogItemDTO> backlogItemList;
+	private List<BacklogItemModel> backlogItemList;
 	
 	@GET
 	@Path("/getAllBacklogItem")
@@ -38,12 +44,12 @@ public class GetAllBacklogItemRestfulAPI implements GetAllBacklogItemOutput{
 	}
 
 	@Override
-	public List<GetAllBacklogItemDTO> getBacklogItemList() {
+	public List<BacklogItemModel> getBacklogItemList() {
 		return backlogItemList;
 	}
 
 	@Override
-	public void setBacklogItemList(List<GetAllBacklogItemDTO> backlogItemList) {
+	public void setBacklogItemList(List<BacklogItemModel> backlogItemList) {
 		this.backlogItemList = backlogItemList;
 	}
 	

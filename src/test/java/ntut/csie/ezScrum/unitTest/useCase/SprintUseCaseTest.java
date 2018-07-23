@@ -34,7 +34,7 @@ import ntut.csie.ezScrum.useCase.sprint.io.DeleteSprintInput;
 import ntut.csie.ezScrum.useCase.sprint.io.DeleteSprintOutput;
 import ntut.csie.ezScrum.useCase.sprint.io.EditSprintInput;
 import ntut.csie.ezScrum.useCase.sprint.io.EditSprintOutput;
-import ntut.csie.ezScrum.useCase.sprint.io.GetAllSprintDTO;
+import ntut.csie.ezScrum.useCase.sprint.io.SprintModel;
 import ntut.csie.ezScrum.useCase.sprint.io.GetAllSprintInput;
 import ntut.csie.ezScrum.useCase.sprint.io.GetAllSprintOutput;
 
@@ -131,7 +131,7 @@ public class SprintUseCaseTest {
 		}
 		
 		GetAllSprintOutput output = getAllSprint();
-		List<GetAllSprintDTO> sprintList = output.getSprintList();
+		List<SprintModel> sprintList = output.getSprintList();
 		
 		for(int i=0; i<sprintList.size(); i++) {
 			assertEquals(goal[i], sprintList.get(i).getGoal());
@@ -240,7 +240,7 @@ public class SprintUseCaseTest {
 		deleteSprint(deleteSprintId);
 		
 		GetAllSprintOutput output = getAllSprint();
-		List<GetAllSprintDTO> sprintList = output.getSprintList();
+		List<SprintModel> sprintList = output.getSprintList();
 		
 		for(int i=0; i<sprintList.size(); i++) {
 			assertEquals(i+1, sprintList.get(i).getOrderId());

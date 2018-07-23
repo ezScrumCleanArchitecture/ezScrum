@@ -5,7 +5,7 @@ import java.util.List;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
-import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItemDTO;
+import ntut.csie.ezScrum.useCase.backlogItem.io.NotYetCommittedBacklogItemModel;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItemOutput;
 
@@ -24,7 +24,7 @@ public class GetAllNotYetCommittedBacklogItemUseCaseImpl implements GetAllNotYet
 	@Override
 	public void execute(GetAllNotYetCommittedBacklogItemInput input, GetAllNotYetCommittedBacklogItemOutput output) {
 		String productId = input.getProductId();
-		List<GetAllNotYetCommittedBacklogItemDTO> notYetCommittedBacklogItemList = new ArrayList<>();
+		List<NotYetCommittedBacklogItemModel> notYetCommittedBacklogItemList = new ArrayList<>();
 		for(BacklogItem backlogItem : context.getBacklogItems()) {
 			if(backlogItem.getProductId().equals(productId)) {
 				if(backlogItem.getSprintId() == null) {
@@ -35,8 +35,8 @@ public class GetAllNotYetCommittedBacklogItemUseCaseImpl implements GetAllNotYet
 		output.setNotYetCommittedBacklogItemList(notYetCommittedBacklogItemList);
 	}
 	
-	private GetAllNotYetCommittedBacklogItemDTO convertBacklogItemToDTO(BacklogItem backlogItem) {
-		GetAllNotYetCommittedBacklogItemDTO dto = new GetAllNotYetCommittedBacklogItemDTO();
+	private NotYetCommittedBacklogItemModel convertBacklogItemToDTO(BacklogItem backlogItem) {
+		NotYetCommittedBacklogItemModel dto = new NotYetCommittedBacklogItemModel();
 		dto.setBacklogItemId(backlogItem.getBacklogItemId());
 		dto.setOrderId(backlogItem.getOrderId());
 		dto.setDescription(backlogItem.getDescription());

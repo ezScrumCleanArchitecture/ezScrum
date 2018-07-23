@@ -5,14 +5,19 @@ import java.util.List;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
 import ntut.csie.ezScrum.model.sprint.Sprint;
+import ntut.csie.ezScrum.repository.backlogItem.GetBacklogItemsByProductId;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.Repository;
+import ntut.csie.ezScrum.useCase.SqlSpecification;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllBacklogItemOutput;
-import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllBacklogItemDTO;
+import ntut.csie.ezScrum.useCase.backlogItem.io.BacklogItemModel;
 
 public class GetAllBacklogItemUseCaseImpl implements GetAllBacklogItemUseCase, GetAllBacklogItemInput{
 
 	private ApplicationContext context;
+	private Repository<BacklogItem> repository;
+	
 	private String productId;
 
 	public GetAllBacklogItemUseCaseImpl() {};
@@ -21,11 +26,17 @@ public class GetAllBacklogItemUseCaseImpl implements GetAllBacklogItemUseCase, G
 		this.context = context;
 	}
 	
+	public GetAllBacklogItemUseCaseImpl(Repository<BacklogItem> repository) {
+		this.repository = repository;
+	}
+	
 	@Override
 	public void execute(GetAllBacklogItemInput input, GetAllBacklogItemOutput output) {
 		String productId = input.getProductId();
-		List<GetAllBacklogItemDTO> backlogItemList = new ArrayList<>();
-		for(BacklogItem backlogItem : context.getBacklogItems()) {
+		List<BacklogItemModel> backlogItemList = new ArrayList<>();
+		
+		SqlSpecification getBacklogItemsByProductId = new GetBacklogItemsByProductId(productId);
+		for(BacklogItem backlogItem : repository.query(getBacklogItemsByProductId)) {
 			if(backlogItem.getProductId().equals(productId)) {
 				backlogItemList.add(convertBacklogItemToDTO(backlogItem));
 			}
@@ -33,8 +44,8 @@ public class GetAllBacklogItemUseCaseImpl implements GetAllBacklogItemUseCase, G
 		output.setBacklogItemList(backlogItemList);
 	}
 
-	private GetAllBacklogItemDTO convertBacklogItemToDTO(BacklogItem backlogItem) {
-		GetAllBacklogItemDTO dto = new GetAllBacklogItemDTO();
+	private BacklogItemModel convertBacklogItemToDTO(BacklogItem backlogItem) {
+		BacklogItemModel dto = new BacklogItemModel();
 		dto.setBacklogItemId(backlogItem.getBacklogItemId());
 		dto.setOrderId(backlogItem.getOrderId());
 		dto.setDescription(backlogItem.getDescription());

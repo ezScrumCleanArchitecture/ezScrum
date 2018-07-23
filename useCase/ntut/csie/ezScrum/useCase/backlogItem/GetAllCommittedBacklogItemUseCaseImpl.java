@@ -8,7 +8,7 @@ import java.util.List;
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
 import ntut.csie.ezScrum.model.sprint.Sprint;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
-import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllCommittedBacklogItemDTO;
+import ntut.csie.ezScrum.useCase.backlogItem.io.CommittedBacklogItemModel;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllCommittedBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllCommittedBacklogItemOutput;
 
@@ -29,7 +29,7 @@ public class GetAllCommittedBacklogItemUseCaseImpl implements GetAllCommittedBac
 	public void execute(GetAllCommittedBacklogItemInput input, GetAllCommittedBacklogItemOutput output) {
 		String productId = input.getProductId();
 		String sprintId = input.getSprintId();
-		List<GetAllCommittedBacklogItemDTO> committedBacklogItemList = new ArrayList<>();
+		List<CommittedBacklogItemModel> committedBacklogItemList = new ArrayList<>();
 		for(BacklogItem backlogItem : context.getBacklogItems()) {
 			if(backlogItem.getProductId().equals(productId)) {
 				if(backlogItem.getSprintId() != null) {
@@ -39,9 +39,9 @@ public class GetAllCommittedBacklogItemUseCaseImpl implements GetAllCommittedBac
 				}
 			}
 		}
-		Collections.sort(committedBacklogItemList, new Comparator<GetAllCommittedBacklogItemDTO>() {
+		Collections.sort(committedBacklogItemList, new Comparator<CommittedBacklogItemModel>() {
 			@Override
-			public int compare(GetAllCommittedBacklogItemDTO dto1, GetAllCommittedBacklogItemDTO dto2) {
+			public int compare(CommittedBacklogItemModel dto1, CommittedBacklogItemModel dto2) {
 				return dto2.getImportance() - dto1.getImportance();
 			}
 			
@@ -49,8 +49,8 @@ public class GetAllCommittedBacklogItemUseCaseImpl implements GetAllCommittedBac
 		output.setCommittedBacklogItemList(committedBacklogItemList);
 	}
 
-	private GetAllCommittedBacklogItemDTO convertBacklogItemToDTO(BacklogItem backlogItem) {
-		GetAllCommittedBacklogItemDTO dto = new GetAllCommittedBacklogItemDTO();
+	private CommittedBacklogItemModel convertBacklogItemToDTO(BacklogItem backlogItem) {
+		CommittedBacklogItemModel dto = new CommittedBacklogItemModel();
 		dto.setBacklogItemId(backlogItem.getBacklogItemId());
 		dto.setOrderId(backlogItem.getOrderId());
 		dto.setDescription(backlogItem.getDescription());

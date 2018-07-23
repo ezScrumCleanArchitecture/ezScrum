@@ -5,7 +5,7 @@ import java.util.List;
 
 import ntut.csie.ezScrum.model.task.Task;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
-import ntut.csie.ezScrum.useCase.task.io.GetAllTaskDTO;
+import ntut.csie.ezScrum.useCase.task.io.TaskModel;
 import ntut.csie.ezScrum.useCase.task.io.GetAllTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.GetAllTaskOutput;
 
@@ -23,7 +23,7 @@ public class GetAllTaskUseCaseImpl implements GetAllTaskUseCase, GetAllTaskInput
 	@Override
 	public void execute(GetAllTaskInput input, GetAllTaskOutput output) {
 		String backlogItemId = input.getBacklogItemId();
-		List<GetAllTaskDTO> taskList = new ArrayList<>();
+		List<TaskModel> taskList = new ArrayList<>();
 		for(Task task : context.getTasks()) {
 			if(task.getBacklogItemId().equals(backlogItemId)) {
 				taskList.add(convertTaskToDTO(task));
@@ -32,8 +32,8 @@ public class GetAllTaskUseCaseImpl implements GetAllTaskUseCase, GetAllTaskInput
 		output.setTaskList(taskList);
 	}
 	
-	private GetAllTaskDTO convertTaskToDTO(Task task) {
-		GetAllTaskDTO dto = new GetAllTaskDTO();
+	private TaskModel convertTaskToDTO(Task task) {
+		TaskModel dto = new TaskModel();
 		dto.setTaskId(task.getTaskId());
 		dto.setOrderId(task.getOrderId());
 		dto.setDescription(task.getDescription());

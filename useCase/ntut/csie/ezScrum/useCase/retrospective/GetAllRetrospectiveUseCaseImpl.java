@@ -6,7 +6,7 @@ import java.util.List;
 import ntut.csie.ezScrum.model.retrospective.Retrospective;
 import ntut.csie.ezScrum.model.sprint.Sprint;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
-import ntut.csie.ezScrum.useCase.retrospective.io.GetAllRetrospectiveDTO;
+import ntut.csie.ezScrum.useCase.retrospective.io.RetrospectiveModel;
 import ntut.csie.ezScrum.useCase.retrospective.io.GetAllRetrospectiveInput;
 import ntut.csie.ezScrum.useCase.retrospective.io.GetAllRetrospectiveOutput;
 
@@ -24,7 +24,7 @@ public class GetAllRetrospectiveUseCaseImpl implements GetAllRetrospectiveUseCas
 	@Override
 	public void execute(GetAllRetrospectiveInput input, GetAllRetrospectiveOutput output) {
 		String productId = input.getProductId();
-		List<GetAllRetrospectiveDTO> retrospectiveList = new ArrayList<>();
+		List<RetrospectiveModel> retrospectiveList = new ArrayList<>();
 		for(Retrospective retrospective : context.getRetrospectives()) {
 			if(retrospective.getProductId().equals(productId)) {
 				retrospectiveList.add(convertRetrospectiveToDTO(retrospective));
@@ -33,8 +33,8 @@ public class GetAllRetrospectiveUseCaseImpl implements GetAllRetrospectiveUseCas
 		output.setRetrospectiveList(retrospectiveList);
 	}
 	
-	private GetAllRetrospectiveDTO convertRetrospectiveToDTO(Retrospective retrospective) {
-		GetAllRetrospectiveDTO dto = new GetAllRetrospectiveDTO();
+	private RetrospectiveModel convertRetrospectiveToDTO(Retrospective retrospective) {
+		RetrospectiveModel dto = new RetrospectiveModel();
 		dto.setRetrospectiveId(retrospective.getRetrospectiveId());
 		dto.setOrderId(retrospective.getOrderId());
 		dto.setDescription(retrospective.getDescription());

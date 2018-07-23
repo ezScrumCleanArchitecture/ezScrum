@@ -5,6 +5,6 @@ import java.util.List;
 import ntut.csie.ezScrum.useCase.Output;
 
 public interface GetAllRetrospectiveOutput extends Output{
-	public List<GetAllRetrospectiveDTO> getRetrospectiveList();
-	public void setRetrospectiveList(List<GetAllRetrospectiveDTO> retrospectiveList);
+	public List<RetrospectiveModel> getRetrospectiveList();
+	public void setRetrospectiveList(List<RetrospectiveModel> retrospectiveList);
 }

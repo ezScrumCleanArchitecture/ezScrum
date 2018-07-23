@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
 import ntut.csie.ezScrum.useCase.sprint.GetAllSprintUseCase;
 import ntut.csie.ezScrum.useCase.sprint.GetAllSprintUseCaseImpl;
-import ntut.csie.ezScrum.useCase.sprint.io.GetAllSprintDTO;
+import ntut.csie.ezScrum.useCase.sprint.io.SprintModel;
 import ntut.csie.ezScrum.useCase.sprint.io.GetAllSprintInput;
 import ntut.csie.ezScrum.useCase.sprint.io.GetAllSprintOutput;
 
@@ -21,7 +21,7 @@ public class GetAllSprintRestfulAPI implements GetAllSprintOutput{
 	private ApplicationContext context = ApplicationContext.getInstance();
 	private GetAllSprintUseCase getAllSprintUseCase = new GetAllSprintUseCaseImpl(context);
 	
-	private List<GetAllSprintDTO> sprintList;
+	private List<SprintModel> sprintList;
 
 	@GET
 	@Path("/getAllSprint")
@@ -38,12 +38,12 @@ public class GetAllSprintRestfulAPI implements GetAllSprintOutput{
 	}
 	
 	@Override
-	public List<GetAllSprintDTO> getSprintList() {
+	public List<SprintModel> getSprintList() {
 		return sprintList;
 	}
 
 	@Override
-	public void setSprintList(List<GetAllSprintDTO> sprintList) {
+	public void setSprintList(List<SprintModel> sprintList) {
 		this.sprintList = sprintList;
 	}
 }

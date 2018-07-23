@@ -8,6 +8,7 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/entity"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/useCase"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/controller"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/database"/>
         <property name="context-root" value="ezScrum"/>
         <property name="java-output-path" value="/ezScrum/target/classes"/>
     </wb-module>

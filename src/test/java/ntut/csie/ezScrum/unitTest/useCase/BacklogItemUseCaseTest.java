@@ -49,13 +49,13 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.DeleteBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.DeleteBacklogItemOutput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.EditBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.EditBacklogItemOutput;
-import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllBacklogItemDTO;
+import ntut.csie.ezScrum.useCase.backlogItem.io.BacklogItemModel;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllBacklogItemOutput;
-import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllCommittedBacklogItemDTO;
+import ntut.csie.ezScrum.useCase.backlogItem.io.CommittedBacklogItemModel;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllCommittedBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllCommittedBacklogItemOutput;
-import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItemDTO;
+import ntut.csie.ezScrum.useCase.backlogItem.io.NotYetCommittedBacklogItemModel;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItemOutput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardInput;
@@ -139,7 +139,7 @@ public class BacklogItemUseCaseTest {
 		}
 		
 		GetAllBacklogItemOutput output = getAllBacklogItem();
-		List<GetAllBacklogItemDTO> backlogItemList = output.getBacklogItemList();
+		List<BacklogItemModel> backlogItemList = output.getBacklogItemList();
 		for(int i=0; i<backlogItemList.size(); i++) {
 			assertEquals(description[i], backlogItemList.get(i).getDescription());
 		}
@@ -235,7 +235,7 @@ public class BacklogItemUseCaseTest {
 		deleteBacklogItem(deleteBacklogItemId);
 		
 		GetAllBacklogItemOutput output = getAllBacklogItem();
-		List<GetAllBacklogItemDTO> backlogItemList = output.getBacklogItemList();
+		List<BacklogItemModel> backlogItemList = output.getBacklogItemList();
 		for(int i=0; i<backlogItemList.size(); i++) {
 			assertEquals(i+1, backlogItemList.get(i).getOrderId());
 		}
@@ -261,10 +261,10 @@ public class BacklogItemUseCaseTest {
 		assignBacklogItem(backlogItems[2].getBacklogItemId(), sprintId);
 		
 		GetAllNotYetCommittedBacklogItemOutput getAllNotYetCommittedBacklogItemOutput = getAllNotYetCommittedBacklogItem();
-		List<GetAllNotYetCommittedBacklogItemDTO> notYetCommittedBacklogItemList = getAllNotYetCommittedBacklogItemOutput.getNotYetCommittedBacklogItemList();
+		List<NotYetCommittedBacklogItemModel> notYetCommittedBacklogItemList = getAllNotYetCommittedBacklogItemOutput.getNotYetCommittedBacklogItemList();
 		
 		GetAllCommittedBacklogItemOutput getAllCommittedBacklogItemOutput = getAllCommittedBacklogItem(sprintId);
-		List<GetAllCommittedBacklogItemDTO> committedBacklogItemList = getAllCommittedBacklogItemOutput.getCommittedBacklogItemList();
+		List<CommittedBacklogItemModel> committedBacklogItemList = getAllCommittedBacklogItemOutput.getCommittedBacklogItemList();
 		
 		for(int i=0; i<notYetCommittedBacklogItemList.size(); i++) {
 			String expectedNotYetCommittedBacklogItemId = backlogItems[i].getBacklogItemId();

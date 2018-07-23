@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
 import ntut.csie.ezScrum.useCase.task.GetAllTaskUseCase;
 import ntut.csie.ezScrum.useCase.task.GetAllTaskUseCaseImpl;
-import ntut.csie.ezScrum.useCase.task.io.GetAllTaskDTO;
+import ntut.csie.ezScrum.useCase.task.io.TaskModel;
 import ntut.csie.ezScrum.useCase.task.io.GetAllTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.GetAllTaskOutput;
 
@@ -21,7 +21,7 @@ public class GetAllTaskRestfulAPI implements GetAllTaskOutput{
 	private ApplicationContext context = ApplicationContext.getInstance();
 	private GetAllTaskUseCase getAllTaskUseCase = new GetAllTaskUseCaseImpl(context);
 	
-	private List<GetAllTaskDTO> taskList;
+	private List<TaskModel> taskList;
 	
 	@GET
 	@Path("/getAllTask")
@@ -38,12 +38,12 @@ public class GetAllTaskRestfulAPI implements GetAllTaskOutput{
 	}
 	
 	@Override
-	public List<GetAllTaskDTO> getTaskList() {
+	public List<TaskModel> getTaskList() {
 		return taskList;
 	}
 
 	@Override
-	public void setTaskList(List<GetAllTaskDTO> taskList) {
+	public void setTaskList(List<TaskModel> taskList) {
 		this.taskList = taskList;
 	}
 	

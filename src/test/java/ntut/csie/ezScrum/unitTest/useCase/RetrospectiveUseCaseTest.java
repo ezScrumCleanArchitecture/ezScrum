@@ -35,7 +35,7 @@ import ntut.csie.ezScrum.useCase.retrospective.io.DeleteRetrospectiveInput;
 import ntut.csie.ezScrum.useCase.retrospective.io.DeleteRetrospectiveOutput;
 import ntut.csie.ezScrum.useCase.retrospective.io.EditRetrospectiveInput;
 import ntut.csie.ezScrum.useCase.retrospective.io.EditRetrospectiveOutput;
-import ntut.csie.ezScrum.useCase.retrospective.io.GetAllRetrospectiveDTO;
+import ntut.csie.ezScrum.useCase.retrospective.io.RetrospectiveModel;
 import ntut.csie.ezScrum.useCase.retrospective.io.GetAllRetrospectiveInput;
 import ntut.csie.ezScrum.useCase.retrospective.io.GetAllRetrospectiveOutput;
 
@@ -135,7 +135,7 @@ public class RetrospectiveUseCaseTest {
 		}
 		
 		GetAllRetrospectiveOutput output = getAllRetrospective();
-		List<GetAllRetrospectiveDTO> retrospectiveList = output.getRetrospectiveList();
+		List<RetrospectiveModel> retrospectiveList = output.getRetrospectiveList();
 		for(int i=0; i<retrospectiveList.size(); i++) {
 			assertEquals(description[i], retrospectiveList.get(i).getDescription());
 		}
@@ -208,7 +208,7 @@ public class RetrospectiveUseCaseTest {
 		deleteRetrospective(deleteRetrospectiveId);
 		
 		GetAllRetrospectiveOutput output = getAllRetrospective();
-		List<GetAllRetrospectiveDTO> retrospectiveList = output.getRetrospectiveList();
+		List<RetrospectiveModel> retrospectiveList = output.getRetrospectiveList();
 		
 		for(int i=0; i<retrospectiveList.size(); i++) {
 			assertEquals(i+1, retrospectiveList.get(i).getOrderId());

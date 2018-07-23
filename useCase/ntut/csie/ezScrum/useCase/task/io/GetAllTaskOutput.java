@@ -5,6 +5,6 @@ import java.util.List;
 import ntut.csie.ezScrum.useCase.Output;
 
 public interface GetAllTaskOutput extends Output{
-	public List<GetAllTaskDTO> getTaskList();
-	public void setTaskList(List<GetAllTaskDTO> taskList);
+	public List<TaskModel> getTaskList();
+	public void setTaskList(List<TaskModel> taskList);
 }

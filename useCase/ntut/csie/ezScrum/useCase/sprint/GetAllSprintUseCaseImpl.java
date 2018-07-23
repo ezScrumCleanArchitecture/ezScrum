@@ -5,7 +5,7 @@ import java.util.List;
 
 import ntut.csie.ezScrum.model.sprint.Sprint;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
-import ntut.csie.ezScrum.useCase.sprint.io.GetAllSprintDTO;
+import ntut.csie.ezScrum.useCase.sprint.io.SprintModel;
 import ntut.csie.ezScrum.useCase.sprint.io.GetAllSprintInput;
 import ntut.csie.ezScrum.useCase.sprint.io.GetAllSprintOutput;
 
@@ -22,7 +22,7 @@ public class GetAllSprintUseCaseImpl implements GetAllSprintUseCase, GetAllSprin
 	@Override
 	public void execute(GetAllSprintInput input, GetAllSprintOutput output) {
 		String productId = input.getProductId();
-		List<GetAllSprintDTO> sprintList = new ArrayList<>();
+		List<SprintModel> sprintList = new ArrayList<>();
 		for(Sprint sprint : context.getSprints()) {
 			if(sprint.getProductId().equals(productId)) {
 				sprintList.add(convertSprintToDTO(sprint));
@@ -31,8 +31,8 @@ public class GetAllSprintUseCaseImpl implements GetAllSprintUseCase, GetAllSprin
 		output.setSprintList(sprintList);
 	}
 	
-	private GetAllSprintDTO convertSprintToDTO(Sprint sprint) {
-		GetAllSprintDTO dto = new GetAllSprintDTO();
+	private SprintModel convertSprintToDTO(Sprint sprint) {
+		SprintModel dto = new SprintModel();
 		dto.setSprintId(sprint.getSprintId());
 		dto.setOrderId(sprint.getOrderId());
 		dto.setGoal(sprint.getGoal());

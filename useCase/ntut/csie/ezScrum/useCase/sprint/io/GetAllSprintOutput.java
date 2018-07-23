@@ -5,6 +5,6 @@ import java.util.List;
 import ntut.csie.ezScrum.useCase.Output;
 
 public interface GetAllSprintOutput extends Output{
-	public List<GetAllSprintDTO> getSprintList();
-	public void setSprintList(List<GetAllSprintDTO> sprintList);
+	public List<SprintModel> getSprintList();
+	public void setSprintList(List<SprintModel> sprintList);
 }

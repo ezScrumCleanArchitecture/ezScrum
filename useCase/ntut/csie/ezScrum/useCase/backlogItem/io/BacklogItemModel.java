@@ -1,6 +1,6 @@
 package ntut.csie.ezScrum.useCase.backlogItem.io;
 
-public class GetAllBacklogItemDTO {
+public class BacklogItemModel {
 	private String backlogItemId;
 	private int orderId;
 	private String description;

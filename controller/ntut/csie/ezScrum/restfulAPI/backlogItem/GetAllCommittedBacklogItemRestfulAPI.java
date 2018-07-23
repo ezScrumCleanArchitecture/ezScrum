@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
 import ntut.csie.ezScrum.useCase.backlogItem.GetAllCommittedBacklogItemUseCase;
 import ntut.csie.ezScrum.useCase.backlogItem.GetAllCommittedBacklogItemUseCaseImpl;
-import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllCommittedBacklogItemDTO;
+import ntut.csie.ezScrum.useCase.backlogItem.io.CommittedBacklogItemModel;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllCommittedBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllCommittedBacklogItemOutput;
 
@@ -21,7 +21,7 @@ public class GetAllCommittedBacklogItemRestfulAPI implements GetAllCommittedBack
 	private ApplicationContext context = ApplicationContext.getInstance();
 	private GetAllCommittedBacklogItemUseCase getCommittedBacklogItemUseCase = new GetAllCommittedBacklogItemUseCaseImpl(context);
 	
-	private List<GetAllCommittedBacklogItemDTO> committedBacklogItemList;
+	private List<CommittedBacklogItemModel> committedBacklogItemList;
 
 	@GET
 	@Path("/sprint/{sprintId}/getAllCommittedBacklogItem")
@@ -40,12 +40,12 @@ public class GetAllCommittedBacklogItemRestfulAPI implements GetAllCommittedBack
 	}
 
 	@Override
-	public List<GetAllCommittedBacklogItemDTO> getCommittedBacklogItemList() {
+	public List<CommittedBacklogItemModel> getCommittedBacklogItemList() {
 		return committedBacklogItemList;
 	}
 
 	@Override
-	public void setCommittedBacklogItemList(List<GetAllCommittedBacklogItemDTO> committedBacklogItemList) {
+	public void setCommittedBacklogItemList(List<CommittedBacklogItemModel> committedBacklogItemList) {
 		this.committedBacklogItemList = committedBacklogItemList;
 	}
 }

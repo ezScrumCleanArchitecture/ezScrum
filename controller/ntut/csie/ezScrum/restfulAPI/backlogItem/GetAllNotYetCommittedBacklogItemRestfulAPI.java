@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
 import ntut.csie.ezScrum.useCase.backlogItem.GetAllNotYetCommittedBacklogItemUseCase;
 import ntut.csie.ezScrum.useCase.backlogItem.GetAllNotYetCommittedBacklogItemUseCaseImpl;
-import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItemDTO;
+import ntut.csie.ezScrum.useCase.backlogItem.io.NotYetCommittedBacklogItemModel;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItemOutput;
 
@@ -21,7 +21,7 @@ public class GetAllNotYetCommittedBacklogItemRestfulAPI implements GetAllNotYetC
 	private ApplicationContext context = ApplicationContext.getInstance();
 	private GetAllNotYetCommittedBacklogItemUseCase getNotYetCommittedBacklogItemUseCase = new GetAllNotYetCommittedBacklogItemUseCaseImpl(context);
 	
-	private List<GetAllNotYetCommittedBacklogItemDTO> notYetCommittedBacklogItemList;
+	private List<NotYetCommittedBacklogItemModel> notYetCommittedBacklogItemList;
 
 	@GET
 	@Path("/getAllNotYetCommittedBacklogItem")
@@ -37,13 +37,13 @@ public class GetAllNotYetCommittedBacklogItemRestfulAPI implements GetAllNotYetC
 	}
 
 	@Override
-	public List<GetAllNotYetCommittedBacklogItemDTO> getNotYetCommittedBacklogItemList() {
+	public List<NotYetCommittedBacklogItemModel> getNotYetCommittedBacklogItemList() {
 		return notYetCommittedBacklogItemList;
 	}
 
 	@Override
 	public void setNotYetCommittedBacklogItemList(
-			List<GetAllNotYetCommittedBacklogItemDTO> notYetCommittedBacklogItemList) {
+			List<NotYetCommittedBacklogItemModel> notYetCommittedBacklogItemList) {
 		this.notYetCommittedBacklogItemList = notYetCommittedBacklogItemList;
 	}
 }

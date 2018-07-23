@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import ntut.csie.ezScrum.useCase.ApplicationContext;
 import ntut.csie.ezScrum.useCase.retrospective.GetAllRetrospectiveUseCase;
 import ntut.csie.ezScrum.useCase.retrospective.GetAllRetrospectiveUseCaseImpl;
-import ntut.csie.ezScrum.useCase.retrospective.io.GetAllRetrospectiveDTO;
+import ntut.csie.ezScrum.useCase.retrospective.io.RetrospectiveModel;
 import ntut.csie.ezScrum.useCase.retrospective.io.GetAllRetrospectiveInput;
 import ntut.csie.ezScrum.useCase.retrospective.io.GetAllRetrospectiveOutput;
 
@@ -21,7 +21,7 @@ public class GetAllRetrospectiveRestfulAPI implements GetAllRetrospectiveOutput{
 	private ApplicationContext context = ApplicationContext.getInstance();
 	private GetAllRetrospectiveUseCase getAllRetrospectiveUseCase = new GetAllRetrospectiveUseCaseImpl(context);
 	
-	private List<GetAllRetrospectiveDTO> retrospectiveList;
+	private List<RetrospectiveModel> retrospectiveList;
 	
 	@GET
 	@Path("/getAllRetrospective")
@@ -38,12 +38,12 @@ public class GetAllRetrospectiveRestfulAPI implements GetAllRetrospectiveOutput{
 	}
 	
 	@Override
-	public List<GetAllRetrospectiveDTO> getRetrospectiveList() {
+	public List<RetrospectiveModel> getRetrospectiveList() {
 		return retrospectiveList;
 	}
 
 	@Override
-	public void setRetrospectiveList(List<GetAllRetrospectiveDTO> retrospectiveList) {
+	public void setRetrospectiveList(List<RetrospectiveModel> retrospectiveList) {
 		this.retrospectiveList = retrospectiveList;
 	}
 
