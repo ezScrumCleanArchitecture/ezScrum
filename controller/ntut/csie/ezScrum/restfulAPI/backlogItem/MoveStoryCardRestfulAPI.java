@@ -10,7 +10,9 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
+import ntut.csie.ezScrum.repository.backlogItem.BacklogItemRepository;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.backlogItem.MoveStoryCardUseCase;
 import ntut.csie.ezScrum.useCase.backlogItem.MoveStoryCardUseCaseImpl;
 import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardInput;
@@ -19,8 +21,8 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardOutput;
 @Path("/product/{productId}/backlogItem")
 public class MoveStoryCardRestfulAPI implements MoveStoryCardOutput{
 	
-	private ApplicationContext context = ApplicationContext.getInstance();
-	private MoveStoryCardUseCase moveStoryCardUseCase = new MoveStoryCardUseCaseImpl(context);
+	private Repository<BacklogItem> backlogItemRepository = new BacklogItemRepository();
+	private MoveStoryCardUseCase moveStoryCardUseCase = new MoveStoryCardUseCaseImpl(backlogItemRepository);
 	
 	private boolean moveSuccess;
 	private String errorMessage;

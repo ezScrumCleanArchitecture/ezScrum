@@ -8,7 +8,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.model.sprint.Sprint;
+import ntut.csie.ezScrum.repository.sprint.SprintRepository;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.sprint.GetAllSprintUseCase;
 import ntut.csie.ezScrum.useCase.sprint.GetAllSprintUseCaseImpl;
 import ntut.csie.ezScrum.useCase.sprint.io.SprintModel;
@@ -18,8 +20,8 @@ import ntut.csie.ezScrum.useCase.sprint.io.GetAllSprintOutput;
 @Path("/product/{productId}/sprint")
 public class GetAllSprintRestfulAPI implements GetAllSprintOutput{
 	
-	private ApplicationContext context = ApplicationContext.getInstance();
-	private GetAllSprintUseCase getAllSprintUseCase = new GetAllSprintUseCaseImpl(context);
+	private Repository<Sprint> sprintRepository = new SprintRepository();
+	private GetAllSprintUseCase getAllSprintUseCase = new GetAllSprintUseCaseImpl(sprintRepository);
 	
 	private List<SprintModel> sprintList;
 
@@ -46,4 +48,5 @@ public class GetAllSprintRestfulAPI implements GetAllSprintOutput{
 	public void setSprintList(List<SprintModel> sprintList) {
 		this.sprintList = sprintList;
 	}
+	
 }

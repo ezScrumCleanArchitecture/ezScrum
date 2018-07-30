@@ -12,6 +12,7 @@ import ntut.csie.ezScrum.useCase.ApplicationContext;
 import ntut.csie.ezScrum.useCase.product.ProductManagerUseCase;
 
 public class ProductUseCaseTest {
+	
 	private ApplicationContext context;
 
 	@Before
@@ -74,4 +75,5 @@ public class ProductUseCaseTest {
 			assertEquals("The name of product should not be null.", e.getMessage());
 		}
 	}
+	
 }

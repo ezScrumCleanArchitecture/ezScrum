@@ -4,28 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.backlogItem.io.NotYetCommittedBacklogItemModel;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItemOutput;
 
 public class GetAllNotYetCommittedBacklogItemUseCaseImpl implements GetAllNotYetCommittedBacklogItemUseCase, GetAllNotYetCommittedBacklogItemInput{
 
-	private ApplicationContext context;
+	private Repository<BacklogItem> backlogItemRepository;
 	
 	private String productId;
 
 	public GetAllNotYetCommittedBacklogItemUseCaseImpl() {};
 	
-	public GetAllNotYetCommittedBacklogItemUseCaseImpl(ApplicationContext context) {
-		this.context = context;
+	public GetAllNotYetCommittedBacklogItemUseCaseImpl(Repository<BacklogItem> backlogItemRepository) {
+		this.backlogItemRepository = backlogItemRepository;
 	}
 	
 	@Override
 	public void execute(GetAllNotYetCommittedBacklogItemInput input, GetAllNotYetCommittedBacklogItemOutput output) {
 		String productId = input.getProductId();
 		List<NotYetCommittedBacklogItemModel> notYetCommittedBacklogItemList = new ArrayList<>();
-		for(BacklogItem backlogItem : context.getBacklogItems()) {
+		for(BacklogItem backlogItem : backlogItemRepository.getAll()) {
 			if(backlogItem.getProductId().equals(productId)) {
 				if(backlogItem.getSprintId() == null) {
 					notYetCommittedBacklogItemList.add(convertBacklogItemToDTO(backlogItem));
@@ -58,4 +58,5 @@ public class GetAllNotYetCommittedBacklogItemUseCaseImpl implements GetAllNotYet
 	public void setProductId(String productId) {
 		this.productId = productId;
 	}
+	
 }

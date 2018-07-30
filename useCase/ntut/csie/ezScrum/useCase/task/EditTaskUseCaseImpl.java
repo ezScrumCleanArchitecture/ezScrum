@@ -1,12 +1,13 @@
 package ntut.csie.ezScrum.useCase.task;
 
 import ntut.csie.ezScrum.model.task.Task;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.task.io.EditTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.EditTaskOutput;
 
 public class EditTaskUseCaseImpl implements EditTaskUseCase, EditTaskInput{
-	private ApplicationContext context;
+	
+	private Repository<Task> taskRepository;
 	
 	private String taskId;
 	private String description;
@@ -17,14 +18,14 @@ public class EditTaskUseCaseImpl implements EditTaskUseCase, EditTaskInput{
 	
 	public EditTaskUseCaseImpl() {}
 	
-	public EditTaskUseCaseImpl(ApplicationContext context) {
-		this.context = context;
+	public EditTaskUseCaseImpl(Repository<Task> taskRepository) {
+		this.taskRepository = taskRepository;
 	}
 	
 	@Override
 	public void execute(EditTaskInput input, EditTaskOutput output) {
 		String taskId = input.getTaskId();
-		Task task = context.getTask(taskId);
+		Task task = taskRepository.get(taskId);
 		if(task == null) {
 			output.setEditSuccess(false);
 			output.setErrorMessage("Sorry, the task is not exist.");
@@ -34,7 +35,7 @@ public class EditTaskUseCaseImpl implements EditTaskUseCase, EditTaskInput{
 		task.setEstimate(input.getEstimate());
 		task.setRemains(input.getRemains());
 		task.setNotes(input.getNotes());
-		context.editTask(taskId, task);
+		taskRepository.update(task);
 		output.setEditSuccess(true);
 	}
 	
@@ -97,4 +98,5 @@ public class EditTaskUseCaseImpl implements EditTaskUseCase, EditTaskInput{
 	public void setBacklogItemId(String backlogItemId) {
 		this.backlogItemId = backlogItemId;
 	}
+	
 }

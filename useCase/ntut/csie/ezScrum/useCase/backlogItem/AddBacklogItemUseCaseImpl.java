@@ -2,13 +2,14 @@ package ntut.csie.ezScrum.useCase.backlogItem;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
 import ntut.csie.ezScrum.model.backlogItem.BacklogItemBuilder;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.backlogItem.io.AddBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.AddBacklogItemOutput;
 
 public class AddBacklogItemUseCaseImpl implements AddBacklogItemUseCase, AddBacklogItemInput{
 	
-	private ApplicationContext context;
+	private Repository<BacklogItem> backlogItemRepository;
+	
 	private String description;
 	private int estimate;
 	private int importance;
@@ -17,13 +18,13 @@ public class AddBacklogItemUseCaseImpl implements AddBacklogItemUseCase, AddBack
 
 	public AddBacklogItemUseCaseImpl() {}
 	
-	public AddBacklogItemUseCaseImpl(ApplicationContext context) {
-		this.context = context;
+	public AddBacklogItemUseCaseImpl(Repository<BacklogItem> backlogItemRepository) {
+		this.backlogItemRepository = backlogItemRepository;
 	}
 
 	@Override
 	public void execute(AddBacklogItemInput input, AddBacklogItemOutput output) {
-		int orderId =context.getNumberOfBacklogItems()+1;
+		int orderId = backlogItemRepository.getNumberOfItems() + 1;
 		BacklogItem backlogItem = null;
 		try {
 			backlogItem = BacklogItemBuilder.newInstance().
@@ -37,7 +38,7 @@ public class AddBacklogItemUseCaseImpl implements AddBacklogItemUseCase, AddBack
 		} catch (Exception e) {
 			System.out.print(e.getMessage());
 		}
-		context.addBacklogItem(backlogItem);
+		backlogItemRepository.add(backlogItem);
 		output.setBacklogItemId(backlogItem.getBacklogItemId());
 		output.setAddSuccess(true);
 	}

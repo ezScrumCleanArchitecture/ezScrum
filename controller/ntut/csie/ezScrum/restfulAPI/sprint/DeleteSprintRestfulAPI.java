@@ -7,7 +7,9 @@ import javax.ws.rs.PathParam;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.model.sprint.Sprint;
+import ntut.csie.ezScrum.repository.sprint.SprintRepository;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.sprint.DeleteSprintUseCase;
 import ntut.csie.ezScrum.useCase.sprint.DeleteSprintUseCaseImpl;
 import ntut.csie.ezScrum.useCase.sprint.io.DeleteSprintInput;
@@ -16,8 +18,8 @@ import ntut.csie.ezScrum.useCase.sprint.io.DeleteSprintOutput;
 @Path("/product/{productId}/sprint")
 public class DeleteSprintRestfulAPI implements DeleteSprintOutput{
 	
-	private ApplicationContext context = ApplicationContext.getInstance();
-	private DeleteSprintUseCase deleteSprintUseCase = new DeleteSprintUseCaseImpl(context);
+	private Repository<Sprint> sprintRepository = new SprintRepository();
+	private DeleteSprintUseCase deleteSprintUseCase = new DeleteSprintUseCaseImpl(sprintRepository);
 	
 	private boolean deleteSuccess;
 	private String errorMessage;
@@ -63,4 +65,5 @@ public class DeleteSprintRestfulAPI implements DeleteSprintOutput{
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
+	
 }

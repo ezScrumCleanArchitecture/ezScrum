@@ -1,13 +1,14 @@
 package ntut.csie.ezScrum.useCase.backlogItem;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.backlogItem.io.EditBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.EditBacklogItemOutput;
 
 public class EditBacklogItemUseCaseImpl implements EditBacklogItemUseCase, EditBacklogItemInput{
 
-	private ApplicationContext context;
+	private Repository<BacklogItem> backlogItemRepository;
+	
 	private String backlogItemId;
 	private String description;
 	private int estimate;
@@ -17,14 +18,14 @@ public class EditBacklogItemUseCaseImpl implements EditBacklogItemUseCase, EditB
 
 	public EditBacklogItemUseCaseImpl() {}
 	
-	public EditBacklogItemUseCaseImpl(ApplicationContext context) {
-		this.context = context;
+	public EditBacklogItemUseCaseImpl(Repository<BacklogItem> backlogItemRepository) {
+		this.backlogItemRepository = backlogItemRepository;
 	}
 	
 	@Override
 	public void execute(EditBacklogItemInput input, EditBacklogItemOutput output) {
 		String backlogItemId = input.getBacklogItemId();
-		BacklogItem backlogItem = context.getBacklogItem(backlogItemId);
+		BacklogItem backlogItem = backlogItemRepository.get(backlogItemId);
 		if(backlogItem == null) {
 			output.setEditSuccess(false);
 			output.setErrorMessage("Sorry, the backlog item is not exist.");
@@ -34,7 +35,7 @@ public class EditBacklogItemUseCaseImpl implements EditBacklogItemUseCase, EditB
 		backlogItem.setEstimate(input.getEstimate());
 		backlogItem.setImportance(input.getImportance());
 		backlogItem.setNotes(input.getNotes());
-		context.editBacklogItem(backlogItemId, backlogItem);
+		backlogItemRepository.update(backlogItem);
 		output.setEditSuccess(true);
 	}
 

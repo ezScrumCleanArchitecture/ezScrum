@@ -2,12 +2,13 @@ package ntut.csie.ezScrum.useCase.task;
 
 import ntut.csie.ezScrum.model.task.Task;
 import ntut.csie.ezScrum.model.task.TaskBuilder;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.task.io.AddTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.AddTaskOutput;
 
 public class AddTaskUseCaseImpl implements AddTaskUseCase, AddTaskInput{
-	private ApplicationContext context;
+	
+	private Repository<Task> taskRepository;
 	
 	private String description;
 	private int estimate;
@@ -16,13 +17,13 @@ public class AddTaskUseCaseImpl implements AddTaskUseCase, AddTaskInput{
 	
 	public AddTaskUseCaseImpl() {}
 	
-	public AddTaskUseCaseImpl(ApplicationContext context) {
-		this.context = context;
+	public AddTaskUseCaseImpl(Repository<Task> taskRepository) {
+		this.taskRepository = taskRepository;
 	}
 	
 	@Override
 	public void execute(AddTaskInput input, AddTaskOutput output) {
-		int orderId = context.getNumberOfTasks() + 1;
+		int orderId = taskRepository.getNumberOfItems() + 1;
 		Task task = null;
 		try {
 			task = TaskBuilder.newInstance().
@@ -35,7 +36,7 @@ public class AddTaskUseCaseImpl implements AddTaskUseCase, AddTaskInput{
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		context.addTask(task);
+		taskRepository.add(task);
 		output.setAddSuccess(true);
 	}
 	
@@ -78,4 +79,5 @@ public class AddTaskUseCaseImpl implements AddTaskUseCase, AddTaskInput{
 	public void setBacklogItemId(String backlogItemId) {
 		this.backlogItemId = backlogItemId;
 	}
+	
 }

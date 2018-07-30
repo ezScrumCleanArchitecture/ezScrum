@@ -1,29 +1,36 @@
 package ntut.csie.ezScrum.useCase.backlogItem;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.backlogItem.io.AssignBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.AssignBacklogItemOutput;
 
 public class AssignBacklogItemUseCaseImpl implements AssignBacklogItemUseCase, AssignBacklogItemInput{
 
-	private ApplicationContext context;
+	private Repository<BacklogItem> backlogItemRepository;
+	
 	private String sprintId;
 	private String backlogItemId;
 
 	public AssignBacklogItemUseCaseImpl() {}
 	
-	public AssignBacklogItemUseCaseImpl(ApplicationContext context) {
-		this.context = context;
+	public AssignBacklogItemUseCaseImpl(Repository<BacklogItem> backlogItemRepository) {
+		this.backlogItemRepository = backlogItemRepository;
 	}
 	
 	@Override
 	public void execute(AssignBacklogItemInput input, AssignBacklogItemOutput output) {
 		String sprintId = input.getSprintId();
 		String backlogItemId = input.getBacklogItemId();
-		BacklogItem backlogItem = context.getBacklogItem(backlogItemId);
+		BacklogItem backlogItem = backlogItemRepository.get(backlogItemId);
+		if(backlogItem == null) {
+			output.setAssignSuccess(false);
+			output.setErrorMessage("Sorry, the backlog item is not exist.");
+			return;
+		}
 		backlogItem.setSprintId(sprintId);
-		context.editBacklogItem(backlogItemId, backlogItem);
+		backlogItemRepository.update(backlogItem);
+		output.setAssignSuccess(true);
 	}
 
 	@Override

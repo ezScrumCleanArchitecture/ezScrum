@@ -4,27 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ntut.csie.ezScrum.model.task.Task;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.task.io.TaskModel;
 import ntut.csie.ezScrum.useCase.task.io.GetAllTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.GetAllTaskOutput;
 
 public class GetAllTaskUseCaseImpl implements GetAllTaskUseCase, GetAllTaskInput {
-	private ApplicationContext context;
+	
+	private Repository<Task> taskRepository;
 	
 	private String backlogItemId;
 	
 	public GetAllTaskUseCaseImpl() {}
 	
-	public GetAllTaskUseCaseImpl(ApplicationContext context) {
-		this.context = context;
+	public GetAllTaskUseCaseImpl(Repository<Task> taskRepository) {
+		this.taskRepository = taskRepository;
 	}
 	
 	@Override
 	public void execute(GetAllTaskInput input, GetAllTaskOutput output) {
 		String backlogItemId = input.getBacklogItemId();
 		List<TaskModel> taskList = new ArrayList<>();
-		for(Task task : context.getTasks()) {
+		for(Task task : taskRepository.getAll()) {
 			if(task.getBacklogItemId().equals(backlogItemId)) {
 				taskList.add(convertTaskToDTO(task));
 			}
@@ -55,4 +56,5 @@ public class GetAllTaskUseCaseImpl implements GetAllTaskUseCase, GetAllTaskInput
 	public void setBacklogItemId(String backlogItemId) {
 		this.backlogItemId = backlogItemId;
 	}
+	
 }

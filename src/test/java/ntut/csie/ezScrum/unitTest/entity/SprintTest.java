@@ -9,17 +9,21 @@ import org.junit.Test;
 import ntut.csie.ezScrum.model.product.Product;
 import ntut.csie.ezScrum.model.sprint.Sprint;
 import ntut.csie.ezScrum.unitTest.factory.TestFactory;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.unitTest.repository.FakeProductRepository;
+import ntut.csie.ezScrum.unitTest.repository.FakeSprintRepository;
 
 public class SprintTest {
-	private ApplicationContext context;
+	
+	private FakeProductRepository fakeProductRepository;
+	private FakeSprintRepository fakeSprintRepository;
 	private TestFactory testFactory;
 	
 	private Sprint sprint;
 	@Before
 	public void setUp() {
-		context = ApplicationContext.getInstance();
-		testFactory = new TestFactory();
+		fakeProductRepository = new FakeProductRepository();
+		fakeSprintRepository = new FakeSprintRepository();
+		testFactory = new TestFactory(fakeProductRepository, fakeSprintRepository, null, null, null);
 		
 		Product product = testFactory.getNewProduct();
 		String productId = product.getProductId();
@@ -34,8 +38,8 @@ public class SprintTest {
 	
 	@After
 	public void tearDown() {
-		context.clearProducts();
-		context.clearSprints();
+		fakeProductRepository.clearAll();
+		fakeSprintRepository.clearAll();
 	}
 	
 	@Test
@@ -59,4 +63,5 @@ public class SprintTest {
 	public void Should_ReturnTrue_When_SprintIsOverdue() {
 		assertTrue(sprint.isSprintOverdue());
 	}
+	
 }

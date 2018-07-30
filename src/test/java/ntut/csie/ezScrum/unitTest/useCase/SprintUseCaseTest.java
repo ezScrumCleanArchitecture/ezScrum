@@ -19,7 +19,8 @@ import ntut.csie.ezScrum.restfulAPI.sprint.DeleteSprintRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.sprint.EditSprintRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.sprint.GetAllSprintRestfulAPI;
 import ntut.csie.ezScrum.unitTest.factory.TestFactory;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.unitTest.repository.FakeProductRepository;
+import ntut.csie.ezScrum.unitTest.repository.FakeSprintRepository;
 import ntut.csie.ezScrum.useCase.sprint.AddSprintUseCase;
 import ntut.csie.ezScrum.useCase.sprint.AddSprintUseCaseImpl;
 import ntut.csie.ezScrum.useCase.sprint.DeleteSprintUseCase;
@@ -41,22 +42,24 @@ import ntut.csie.ezScrum.useCase.sprint.io.GetAllSprintOutput;
 
 public class SprintUseCaseTest {
 	
-	private ApplicationContext context;
+	private FakeProductRepository fakeProductRepository;
+	private FakeSprintRepository fakeSprintRepository;
 	private TestFactory testFactory;
 	private String productId;
 
 	@Before
 	public void setUp() {
-		context = ApplicationContext.getInstance();
-		testFactory = new TestFactory();
+		fakeProductRepository = new FakeProductRepository();
+		fakeSprintRepository = new FakeSprintRepository();
+		testFactory = new TestFactory(fakeProductRepository, fakeSprintRepository, null, null, null);
 		Product product = testFactory.getNewProduct();
 		productId = product.getProductId();
 	}
 	
 	@After
 	public void tearDown() {
-		context.clearProducts();
-		context.clearSprints();
+		fakeProductRepository.clearAll();
+		fakeSprintRepository.clearAll();
 	}
 	
 	@Test
@@ -77,7 +80,6 @@ public class SprintUseCaseTest {
 	@Test
 	public void Should_Success_When_AddSprintWithAllParamemter() {
 		String goal = "Implement the function of creating sprint.";
-		int teamSize = 3;
 		String startDate = "2018-04-09";
 		int interval = 2;
 		String endDate = "2018-04-22";
@@ -85,7 +87,7 @@ public class SprintUseCaseTest {
 		String demoPlace = "1622";
 		String daily = "10:00 1321";
 		
-		AddSprintOutput output = addNewSprintWithAllParamemter(goal, interval, teamSize,
+		AddSprintOutput output = addNewSprintWithAllParamemter(goal, interval,
 				startDate, endDate, demoDate, demoPlace, daily);
 		
 		boolean isAddSuccess = output.isAddSuccess();
@@ -102,7 +104,7 @@ public class SprintUseCaseTest {
 		
 		AddSprintOutput output = new AddSprintRestfulAPI();
 		
-		AddSprintUseCase addSprintUseCase = new AddSprintUseCaseImpl(context);
+		AddSprintUseCase addSprintUseCase = new AddSprintUseCaseImpl(fakeSprintRepository);
 		addSprintUseCase.execute(input, output);
 		
 		String expectedException = "The goal of the sprint should not be null.\n" +
@@ -154,7 +156,6 @@ public class SprintUseCaseTest {
 		String sprintId = sprint.getSprintId();
 		
 		String editedGoal = "Implement the function of editing sprint.";
-		int editedTeamSize = 2;
 		String editedStartDate = "2018-04-09";
 		int editedInterval = 3;
 		String editedEndDate = "2018-04-29";
@@ -162,7 +163,7 @@ public class SprintUseCaseTest {
 		String editedDemoPlace = "03F Room";
 		String editedDaily = "15:00 1323";
 		
-		EditSprintOutput output = editSprint(sprintId, editedGoal, editedInterval, editedTeamSize,
+		EditSprintOutput output = editSprint(sprintId, editedGoal, editedInterval,
 			editedStartDate, editedEndDate, editedDemoDate, editedDemoPlace, editedDaily);
 		
 		boolean isEditSuccess = output.isEditSuccess();
@@ -172,7 +173,6 @@ public class SprintUseCaseTest {
 	@Test
 	public void Should_ReturnErrorMessage_When_EditSprint() {
 		String editedGoal = "Implement the function of editing sprint.";
-		int editedTeamSize = 2;
 		String editedStartDate = "2018-04-09";
 		int editedInterval = 3;
 		String editedEndDate = "2018-04-29";
@@ -180,7 +180,7 @@ public class SprintUseCaseTest {
 		String editedDemoPlace = "03F Room";
 		String editedDaily = "15:00 1323";
 		
-		EditSprintOutput output = editSprint(null, editedGoal, editedInterval, editedTeamSize,
+		EditSprintOutput output = editSprint(null, editedGoal, editedInterval,
 				editedStartDate, editedEndDate, editedDemoDate, editedDemoPlace, editedDaily);
 		
 		
@@ -312,18 +312,17 @@ public class SprintUseCaseTest {
 		
 		AddSprintOutput output = new AddSprintRestfulAPI();
 		
-		AddSprintUseCase addSprintUseCase = new AddSprintUseCaseImpl(context);
+		AddSprintUseCase addSprintUseCase = new AddSprintUseCaseImpl(fakeSprintRepository);
 		addSprintUseCase.execute(input, output);
 		
 		return output;
 	}
 	
-	private AddSprintOutput addNewSprintWithAllParamemter(String goal, int interval, int teamSize,
+	private AddSprintOutput addNewSprintWithAllParamemter(String goal, int interval,
 			String startDate, String endDate, String demoDate, String demoPlace, String daily) {
 		AddSprintInput input = new AddSprintUseCaseImpl();
 		input.setGoal(goal);
 		input.setInterval(interval);
-		input.setTeamSize(teamSize);
 		input.setStartDate(startDate);
 		input.setEndDate(endDate);
 		input.setDemoDate(demoDate);
@@ -333,7 +332,7 @@ public class SprintUseCaseTest {
 		
 		AddSprintOutput output = new AddSprintRestfulAPI();
 		
-		AddSprintUseCase addSprintUseCase = new AddSprintUseCaseImpl(context);
+		AddSprintUseCase addSprintUseCase = new AddSprintUseCaseImpl(fakeSprintRepository);
 		addSprintUseCase.execute(input, output);
 		
 		return output;
@@ -345,19 +344,18 @@ public class SprintUseCaseTest {
 		
 		GetAllSprintOutput output = new GetAllSprintRestfulAPI();
 		
-		GetAllSprintUseCase getAllSprintUseCase = new GetAllSprintUseCaseImpl(context);
+		GetAllSprintUseCase getAllSprintUseCase = new GetAllSprintUseCaseImpl(fakeSprintRepository);
 		getAllSprintUseCase.execute(input, output);
 		
 		return output;
 	}
 	
-	private EditSprintOutput editSprint(String sprintId, String editedGoal, int editedInterval, int editedTeamSize,
+	private EditSprintOutput editSprint(String sprintId, String editedGoal, int editedInterval,
 			String editedStartDate, String editedEndDate, String editedDemoDate, String editedDemoPlace, String editedDaily) {
 		EditSprintInput input = new EditSprintUseCaseImpl();
 		input.setSprintId(sprintId);
 		input.setGoal(editedGoal);
 		input.setInterval(editedInterval);
-		input.setTeamSize(editedTeamSize);
 		input.setStartDate(editedStartDate);
 		input.setEndDate(editedEndDate);
 		input.setDemoDate(editedDemoDate);
@@ -367,7 +365,7 @@ public class SprintUseCaseTest {
 		
 		EditSprintOutput output = new EditSprintRestfulAPI();
 		
-		EditSprintUseCase editSprintUseCase = new EditSprintUseCaseImpl(context);
+		EditSprintUseCase editSprintUseCase = new EditSprintUseCaseImpl(fakeSprintRepository);
 		editSprintUseCase.execute(input, output);
 		
 		return output;
@@ -379,9 +377,10 @@ public class SprintUseCaseTest {
 		
 		DeleteSprintOutput output = new DeleteSprintRestfulAPI();
 		
-		DeleteSprintUseCase deleteSprintUseCase = new DeleteSprintUseCaseImpl(context);
+		DeleteSprintUseCase deleteSprintUseCase = new DeleteSprintUseCaseImpl(fakeSprintRepository);
 		deleteSprintUseCase.execute(input, output);
 		
 		return output;
 	}
+	
 }

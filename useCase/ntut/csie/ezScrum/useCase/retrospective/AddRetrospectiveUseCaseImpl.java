@@ -2,12 +2,13 @@ package ntut.csie.ezScrum.useCase.retrospective;
 
 import ntut.csie.ezScrum.model.retrospective.Retrospective;
 import ntut.csie.ezScrum.model.retrospective.RetrospectiveBuilder;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.retrospective.io.AddRetrospectiveInput;
 import ntut.csie.ezScrum.useCase.retrospective.io.AddRetrospectiveOutput;
 
 public class AddRetrospectiveUseCaseImpl implements AddRetrospectiveUseCase, AddRetrospectiveInput{
-	private ApplicationContext context;
+	
+	private Repository<Retrospective> retrospectiveRepository;
 	
 	private String description;
 	private String productId;
@@ -15,13 +16,13 @@ public class AddRetrospectiveUseCaseImpl implements AddRetrospectiveUseCase, Add
 	
 	public AddRetrospectiveUseCaseImpl() {}
 	
-	public AddRetrospectiveUseCaseImpl(ApplicationContext context) {
-		this.context = context;
+	public AddRetrospectiveUseCaseImpl(Repository<Retrospective> retrospectiveRepository) {
+		this.retrospectiveRepository = retrospectiveRepository;
 	}
 	
 	@Override
 	public void execute(AddRetrospectiveInput input, AddRetrospectiveOutput output) {
-		int orderId = context.getNumberOfRetrospectives() + 1;
+		int orderId = retrospectiveRepository.getNumberOfItems() + 1;
 		Retrospective retrospective = null;
 		try {
 			retrospective = RetrospectiveBuilder.newInstance().
@@ -33,7 +34,7 @@ public class AddRetrospectiveUseCaseImpl implements AddRetrospectiveUseCase, Add
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		context.addRetrospective(retrospective);
+		retrospectiveRepository.add(retrospective);
 		output.setAddSuccess(true);
 	}
 	

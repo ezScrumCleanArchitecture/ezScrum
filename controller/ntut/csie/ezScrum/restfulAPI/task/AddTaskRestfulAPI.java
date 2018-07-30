@@ -10,7 +10,9 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.model.task.Task;
+import ntut.csie.ezScrum.repository.task.TaskRepository;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.task.AddTaskUseCase;
 import ntut.csie.ezScrum.useCase.task.AddTaskUseCaseImpl;
 import ntut.csie.ezScrum.useCase.task.io.AddTaskInput;
@@ -19,8 +21,8 @@ import ntut.csie.ezScrum.useCase.task.io.AddTaskOutput;
 @Path("/backlogItem/{backlogItemId}/task")
 public class AddTaskRestfulAPI implements AddTaskOutput{
 	
-	private ApplicationContext context = ApplicationContext.getInstance();
-	private AddTaskUseCase addTaskUseCase = new AddTaskUseCaseImpl(context);
+	private Repository<Task> taskRepository = new TaskRepository();
+	private AddTaskUseCase addTaskUseCase = new AddTaskUseCaseImpl(taskRepository);
 	
 	private boolean addSuccess;
 	
@@ -64,4 +66,5 @@ public class AddTaskRestfulAPI implements AddTaskOutput{
 	public void setAddSuccess(boolean addSuccess) {
 		this.addSuccess = addSuccess;
 	}
+	
 }

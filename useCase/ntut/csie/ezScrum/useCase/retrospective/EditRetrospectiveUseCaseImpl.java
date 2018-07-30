@@ -1,12 +1,13 @@
 package ntut.csie.ezScrum.useCase.retrospective;
 
 import ntut.csie.ezScrum.model.retrospective.Retrospective;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.retrospective.io.EditRetrospectiveInput;
 import ntut.csie.ezScrum.useCase.retrospective.io.EditRetrospectiveOutput;
 
 public class EditRetrospectiveUseCaseImpl implements EditRetrospectiveUseCase, EditRetrospectiveInput{
-	private ApplicationContext context;
+	
+	private Repository<Retrospective> retrospectiveRepository;
 	
 	private String retrospectiveId;
 	private String description;
@@ -15,14 +16,14 @@ public class EditRetrospectiveUseCaseImpl implements EditRetrospectiveUseCase, E
 	
 	public EditRetrospectiveUseCaseImpl () {}
 	
-	public EditRetrospectiveUseCaseImpl (ApplicationContext context) {
-		this.context = context;
+	public EditRetrospectiveUseCaseImpl (Repository<Retrospective> retrospectiveRepository) {
+		this.retrospectiveRepository = retrospectiveRepository;
 	}
 	
 	@Override
 	public void execute(EditRetrospectiveInput input, EditRetrospectiveOutput output) {
 		String retrospectiveId = input.getRetrospectiveId();
-		Retrospective retrospective = context.getRetrospective(retrospectiveId);
+		Retrospective retrospective = retrospectiveRepository.get(retrospectiveId);
 		if(retrospective == null) {
 			output.setEditSuccess(false);
 			output.setErrorMessage("Sorry, the retrospective is not exist.");
@@ -30,7 +31,7 @@ public class EditRetrospectiveUseCaseImpl implements EditRetrospectiveUseCase, E
 		}
 		retrospective.setDescription(input.getDescription());
 		retrospective.setSprintId(input.getSprintId());
-		context.editRetrospective(retrospectiveId, retrospective);
+		retrospectiveRepository.update(retrospective);
 		output.setEditSuccess(true);
 	}
 	

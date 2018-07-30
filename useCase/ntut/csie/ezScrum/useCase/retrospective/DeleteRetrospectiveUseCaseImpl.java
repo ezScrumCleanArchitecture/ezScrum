@@ -1,38 +1,39 @@
 package ntut.csie.ezScrum.useCase.retrospective;
 
 import ntut.csie.ezScrum.model.retrospective.Retrospective;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.retrospective.io.DeleteRetrospectiveInput;
 import ntut.csie.ezScrum.useCase.retrospective.io.DeleteRetrospectiveOutput;
 
 public class DeleteRetrospectiveUseCaseImpl implements DeleteRetrospectiveUseCase, DeleteRetrospectiveInput{
-	private ApplicationContext context;
+	
+	private Repository<Retrospective> retrospectiveRepository;
 	
 	private String retrospectiveId;
 	
 	public DeleteRetrospectiveUseCaseImpl() {}
 	
-	public DeleteRetrospectiveUseCaseImpl(ApplicationContext context) {
-		this.context = context;
+	public DeleteRetrospectiveUseCaseImpl(Repository<Retrospective> retrospectiveRepository) {
+		this.retrospectiveRepository = retrospectiveRepository;
 	}
 	
 	@Override
 	public void execute(DeleteRetrospectiveInput input, DeleteRetrospectiveOutput output) {
 		String retrospectiveId = input.getRetrospectiveId();
-		Retrospective retrospective = context.getRetrospective(retrospectiveId);
+		Retrospective retrospective = retrospectiveRepository.get(retrospectiveId);
 		if(retrospective == null) {
 			output.setDeleteSuccess(false);
 			output.setErrorMessage("Sorry, the retrospective is not exist.");
 			return;
 		}
 		int orderId = retrospective.getOrderId();
-		int numberOfRetrospectives = context.getNumberOfRetrospectives();
-		Retrospective[] retrospectives = context.getRetrospectives().toArray(new Retrospective[numberOfRetrospectives]);
+		int numberOfRetrospectives = retrospectiveRepository.getNumberOfItems();
+		Retrospective[] retrospectives = retrospectiveRepository.getAll().toArray(new Retrospective[numberOfRetrospectives]);
 		for(int i = orderId; i < numberOfRetrospectives; i++) {
 			retrospectives[i].setOrderId(i);
-			context.editRetrospective(retrospectives[i].getRetrospectiveId(), retrospectives[i]);
+			retrospectiveRepository.update(retrospectives[i]);
 		}
-		context.deleteRetrospective(retrospectiveId);;
+		retrospectiveRepository.remove(retrospective);
 		output.setDeleteSuccess(true);
 	}
 	

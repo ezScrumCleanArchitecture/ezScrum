@@ -9,7 +9,6 @@ public class SprintBuilder {
 	private int orderId;
 	private String goal;
 	private int interval;
-	private int teamSize;
 	private String startDate;
 	private String endDate;
 	private String demoDate;
@@ -34,11 +33,6 @@ public class SprintBuilder {
 	
 	public SprintBuilder interval(int interval) {
 		this.interval = interval;
-		return this;
-	}
-	
-	public SprintBuilder teamSize(int teamSize) {
-		this.teamSize = teamSize;
 		return this;
 	}
 	
@@ -92,7 +86,7 @@ public class SprintBuilder {
 		}
 		Calendar calendar = Calendar.getInstance();
 		createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
-		Sprint sprint = new Sprint(goal, interval, teamSize, startDate, demoDate, productId, createTime);
+		Sprint sprint = new Sprint(goal, interval, startDate, demoDate, productId, createTime);
 		sprint.setSprintId(sprintId);
 		sprint.setOrderId(orderId);
 		sprint.setEndDate(endDate);

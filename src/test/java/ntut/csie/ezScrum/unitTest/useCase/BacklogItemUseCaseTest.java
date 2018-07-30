@@ -24,7 +24,9 @@ import ntut.csie.ezScrum.restfulAPI.backlogItem.GetAllCommittedBacklogItemRestfu
 import ntut.csie.ezScrum.restfulAPI.backlogItem.GetAllNotYetCommittedBacklogItemRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.backlogItem.MoveStoryCardRestfulAPI;
 import ntut.csie.ezScrum.unitTest.factory.TestFactory;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.unitTest.repository.FakeBacklogItemRepository;
+import ntut.csie.ezScrum.unitTest.repository.FakeProductRepository;
+import ntut.csie.ezScrum.unitTest.repository.FakeSprintRepository;
 import ntut.csie.ezScrum.useCase.backlogItem.AddBacklogItemUseCase;
 import ntut.csie.ezScrum.useCase.backlogItem.AddBacklogItemUseCaseImpl;
 import ntut.csie.ezScrum.useCase.backlogItem.AssignBacklogItemUseCase;
@@ -62,15 +64,20 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardOutput;
 
 public class BacklogItemUseCaseTest {
-	private ApplicationContext context;
+	
+	private FakeProductRepository fakeProductRepository;
+	private FakeSprintRepository fakeSprintRepository;
+	private FakeBacklogItemRepository fakeBacklogItemRepository;
 
 	private TestFactory testFactory;
 	private String productId;
 
 	@Before
 	public void setUp() {
-		context = ApplicationContext.getInstance();
-		testFactory = new TestFactory();
+		fakeProductRepository = new FakeProductRepository();
+		fakeSprintRepository = new FakeSprintRepository();
+		fakeBacklogItemRepository = new FakeBacklogItemRepository();
+		testFactory = new TestFactory(fakeProductRepository, fakeSprintRepository, fakeBacklogItemRepository, null, null);
 
 		Product product = testFactory.getNewProduct();
 		productId = product.getProductId();
@@ -78,9 +85,9 @@ public class BacklogItemUseCaseTest {
 	
 	@After
 	public void tearDown() {
-		context.clearProducts();
-		context.clearSprints();
-		context.clearBacklogItems();
+		fakeProductRepository.clearAll();
+		fakeSprintRepository.clearAll();
+		fakeBacklogItemRepository.clearAll();
 	}
 
 	@Test
@@ -117,7 +124,7 @@ public class BacklogItemUseCaseTest {
 		
 		AddBacklogItemOutput output = new AddBacklogItemRestfulAPI();
 		
-		AddBacklogItemUseCase addBacklogItemUseCase = new AddBacklogItemUseCaseImpl(context);
+		AddBacklogItemUseCase addBacklogItemUseCase = new AddBacklogItemUseCaseImpl(fakeBacklogItemRepository);
 		addBacklogItemUseCase.execute(input, output);
 		
 		
@@ -304,7 +311,7 @@ public class BacklogItemUseCaseTest {
 
 		AddBacklogItemOutput output = new AddBacklogItemRestfulAPI();
 		
-		AddBacklogItemUseCase addBacklogItemUseCase = new AddBacklogItemUseCaseImpl(context);
+		AddBacklogItemUseCase addBacklogItemUseCase = new AddBacklogItemUseCaseImpl(fakeBacklogItemRepository);
 		addBacklogItemUseCase.execute(input, output);
 		
 		return output;
@@ -321,7 +328,7 @@ public class BacklogItemUseCaseTest {
 
 		AddBacklogItemOutput output = new AddBacklogItemRestfulAPI();
 		
-		AddBacklogItemUseCase addBacklogItemUseCase = new AddBacklogItemUseCaseImpl(context);
+		AddBacklogItemUseCase addBacklogItemUseCase = new AddBacklogItemUseCaseImpl(fakeBacklogItemRepository);
 		addBacklogItemUseCase.execute(input, output);
 		
 		return output;
@@ -333,21 +340,23 @@ public class BacklogItemUseCaseTest {
 		
 		GetAllBacklogItemOutput output = new GetAllBacklogItemRestfulAPI();
 		
-		GetAllBacklogItemUseCase getAllBacklogItemUseCase = new GetAllBacklogItemUseCaseImpl(context);
+		GetAllBacklogItemUseCase getAllBacklogItemUseCase = new GetAllBacklogItemUseCaseImpl(fakeBacklogItemRepository, fakeSprintRepository);
 		getAllBacklogItemUseCase.execute(input, output);
 		
 		return output;
 	}
 	
-	private void assignBacklogItem(String backlogItemId, String sprintId) {
-		AssignBacklogItemInput input = new AssignBacklogItemUseCaseImpl(context);
+	private AssignBacklogItemOutput assignBacklogItem(String backlogItemId, String sprintId) {
+		AssignBacklogItemInput input = new AssignBacklogItemUseCaseImpl(fakeBacklogItemRepository);
 		input.setBacklogItemId(backlogItemId);
 		input.setSprintId(sprintId);
 		
 		AssignBacklogItemOutput output = new AssignBacklogItemRestfulAPI();
 		
-		AssignBacklogItemUseCase assignBacklogItemUseCase = new AssignBacklogItemUseCaseImpl(context);
+		AssignBacklogItemUseCase assignBacklogItemUseCase = new AssignBacklogItemUseCaseImpl(fakeBacklogItemRepository);
 		assignBacklogItemUseCase.execute(input, output);
+		
+		return output;
 	}
 	
 	private EditBacklogItemOutput editBacklogItem(String backlogItemId, String editedDescription, int editedEstimate,
@@ -361,7 +370,7 @@ public class BacklogItemUseCaseTest {
 		
 		EditBacklogItemOutput output = new EditBacklogItemRestfulAPI();
 		
-		EditBacklogItemUseCase editBacklogItemUseCase = new EditBacklogItemUseCaseImpl(context);
+		EditBacklogItemUseCase editBacklogItemUseCase = new EditBacklogItemUseCaseImpl(fakeBacklogItemRepository);
 		editBacklogItemUseCase.execute(input, output);
 		
 		return output;
@@ -373,7 +382,7 @@ public class BacklogItemUseCaseTest {
 		
 		DeleteBacklogItemOutput output = new DeleteBacklogItemRestfulAPI();
 		
-		DeleteBacklogItemUseCase deleteBacklogItemUseCase = new DeleteBacklogItemUseCaseImpl(context);
+		DeleteBacklogItemUseCase deleteBacklogItemUseCase = new DeleteBacklogItemUseCaseImpl(fakeBacklogItemRepository);
 		deleteBacklogItemUseCase.execute(input, output);
 		
 		return output;
@@ -385,7 +394,7 @@ public class BacklogItemUseCaseTest {
 		
 		GetAllNotYetCommittedBacklogItemOutput output = new GetAllNotYetCommittedBacklogItemRestfulAPI();
 		
-		GetAllNotYetCommittedBacklogItemUseCase getAllNotYetCommittedBacklogItemUseCase = new GetAllNotYetCommittedBacklogItemUseCaseImpl(context);
+		GetAllNotYetCommittedBacklogItemUseCase getAllNotYetCommittedBacklogItemUseCase = new GetAllNotYetCommittedBacklogItemUseCaseImpl(fakeBacklogItemRepository);
 		getAllNotYetCommittedBacklogItemUseCase.execute(input, output);
 		
 		return output;
@@ -398,7 +407,7 @@ public class BacklogItemUseCaseTest {
 		
 		GetAllCommittedBacklogItemOutput output = new GetAllCommittedBacklogItemRestfulAPI();
 		
-		GetAllCommittedBacklogItemUseCase getAllCommittedBacklogItemUseCase = new GetAllCommittedBacklogItemUseCaseImpl(context);
+		GetAllCommittedBacklogItemUseCase getAllCommittedBacklogItemUseCase = new GetAllCommittedBacklogItemUseCaseImpl(fakeBacklogItemRepository, fakeSprintRepository);
 		getAllCommittedBacklogItemUseCase.execute(input, output);
 		
 		return output;
@@ -411,9 +420,10 @@ public class BacklogItemUseCaseTest {
 		
 		MoveStoryCardOutput output = new MoveStoryCardRestfulAPI();
 		
-		MoveStoryCardUseCase moveStoryCardUseCase = new MoveStoryCardUseCaseImpl(context);
+		MoveStoryCardUseCase moveStoryCardUseCase = new MoveStoryCardUseCaseImpl(fakeBacklogItemRepository);
 		moveStoryCardUseCase.execute(input, output);
 		
 		return output;
 	}
+	
 }

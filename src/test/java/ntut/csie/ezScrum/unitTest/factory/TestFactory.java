@@ -10,10 +10,29 @@ import ntut.csie.ezScrum.model.sprint.Sprint;
 import ntut.csie.ezScrum.model.sprint.SprintBuilder;
 import ntut.csie.ezScrum.model.task.Task;
 import ntut.csie.ezScrum.model.task.TaskBuilder;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.unitTest.repository.FakeBacklogItemRepository;
+import ntut.csie.ezScrum.unitTest.repository.FakeProductRepository;
+import ntut.csie.ezScrum.unitTest.repository.FakeRetrospectiveRepository;
+import ntut.csie.ezScrum.unitTest.repository.FakeSprintRepository;
+import ntut.csie.ezScrum.unitTest.repository.FakeTaskRepository;
 
 public class TestFactory {
-	private ApplicationContext context = ApplicationContext.getInstance();
+	
+	private FakeProductRepository fakeProductRepository;
+	private FakeSprintRepository fakeSprintRepository;
+	private FakeBacklogItemRepository fakeBacklogItemRepository;
+	private FakeTaskRepository fakeTaskRepository;
+	private FakeRetrospectiveRepository fakeRetrospectiveRepository;
+	
+	public TestFactory(FakeProductRepository fakeProductRepository, FakeSprintRepository fakeSprintRepository,
+			FakeBacklogItemRepository fakeBacklogItemRepository, FakeTaskRepository fakeTaskRepository,
+			FakeRetrospectiveRepository fakeRetrospectiveRepository) {
+		this.fakeProductRepository = fakeProductRepository;
+		this.fakeSprintRepository = fakeSprintRepository;
+		this.fakeBacklogItemRepository = fakeBacklogItemRepository;
+		this.fakeTaskRepository = fakeTaskRepository;
+		this.fakeRetrospectiveRepository = fakeRetrospectiveRepository;
+	}
 	
 	public Product getNewProduct() {
 		Product product = null;
@@ -25,12 +44,12 @@ public class TestFactory {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		context.addProduct(product);
+		fakeProductRepository.add(product);
 		return product;
 	}
 	
 	public BacklogItem getNewBacklogItem(String productId, String description) {
-		int orderId =context.getNumberOfBacklogItems()+1;
+		int orderId = fakeBacklogItemRepository.getNumberOfItems() + 1;
 		BacklogItem backlogItem = null;
 		try {
 			backlogItem = BacklogItemBuilder.newInstance().
@@ -44,12 +63,12 @@ public class TestFactory {
 		} catch (Exception e) {
 			System.out.print(e.getMessage());
 		}
-		context.addBacklogItem(backlogItem);
+		fakeBacklogItemRepository.add(backlogItem);
 		return backlogItem;
 	}
 	
 	public Sprint getNewSprint(String productId, String goal, int interval, String startDate, String endDate, String demoDate) {
-		int orderId = context.getNumberOfSprints() + 1;
+		int orderId = fakeSprintRepository.getNumberOfItems() + 1;
 		Sprint sprint = null;
 		try {
 			sprint = SprintBuilder.newInstance().
@@ -65,12 +84,12 @@ public class TestFactory {
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
-		context.addSprint(sprint);
+		fakeSprintRepository.add(sprint);
 		return sprint;
 	}
 	
 	public Task getNewTask(String backlogItemId, String description) {
-		int orderId = context.getNumberOfTasks() + 1;
+		int orderId = fakeTaskRepository.getNumberOfItems() + 1;
 		Task task = null;
 		try {
 			task = TaskBuilder.newInstance().
@@ -83,12 +102,12 @@ public class TestFactory {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		context.addTask(task);
+		fakeTaskRepository.add(task);
 		return task;
 	}
 	
 	public Retrospective getNewRetrospective(String productId, String sprintId, String description) {
-		int orderId = context.getNumberOfRetrospectives() + 1;
+		int orderId = fakeRetrospectiveRepository.getNumberOfItems() + 1;
 		Retrospective retrospective = null;
 		try {
 			retrospective = RetrospectiveBuilder.newInstance().
@@ -100,7 +119,8 @@ public class TestFactory {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		context.addRetrospective(retrospective);
+		fakeRetrospectiveRepository.add(retrospective);
 		return retrospective;
 	}
+	
 }

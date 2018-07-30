@@ -5,29 +5,23 @@ import java.util.List;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
 import ntut.csie.ezScrum.model.sprint.Sprint;
-import ntut.csie.ezScrum.repository.backlogItem.GetBacklogItemsByProductId;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
 import ntut.csie.ezScrum.useCase.Repository;
-import ntut.csie.ezScrum.useCase.SqlSpecification;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllBacklogItemOutput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.BacklogItemModel;
 
 public class GetAllBacklogItemUseCaseImpl implements GetAllBacklogItemUseCase, GetAllBacklogItemInput{
 
-	private ApplicationContext context;
-	private Repository<BacklogItem> repository;
+	private Repository<BacklogItem> backlogItemRepository;
+	private Repository<Sprint> sprintRepository;
 	
 	private String productId;
 
 	public GetAllBacklogItemUseCaseImpl() {};
 	
-	public GetAllBacklogItemUseCaseImpl(ApplicationContext context) {
-		this.context = context;
-	}
-	
-	public GetAllBacklogItemUseCaseImpl(Repository<BacklogItem> repository) {
-		this.repository = repository;
+	public GetAllBacklogItemUseCaseImpl(Repository<BacklogItem> backlogItemRepository, Repository<Sprint> sprintRepository) {
+		this.backlogItemRepository = backlogItemRepository;
+		this.sprintRepository = sprintRepository;
 	}
 	
 	@Override
@@ -35,8 +29,7 @@ public class GetAllBacklogItemUseCaseImpl implements GetAllBacklogItemUseCase, G
 		String productId = input.getProductId();
 		List<BacklogItemModel> backlogItemList = new ArrayList<>();
 		
-		SqlSpecification getBacklogItemsByProductId = new GetBacklogItemsByProductId(productId);
-		for(BacklogItem backlogItem : repository.query(getBacklogItemsByProductId)) {
+		for(BacklogItem backlogItem : backlogItemRepository.getAll()) {
 			if(backlogItem.getProductId().equals(productId)) {
 				backlogItemList.add(convertBacklogItemToDTO(backlogItem));
 			}
@@ -52,7 +45,7 @@ public class GetAllBacklogItemUseCaseImpl implements GetAllBacklogItemUseCase, G
 		dto.setEstimate(backlogItem.getEstimate());
 		dto.setImportance(backlogItem.getImportance());
 		dto.setProductId(backlogItem.getProductId());
-		Sprint sprint = context.getSprint(backlogItem.getSprintId());
+		Sprint sprint = sprintRepository.get(backlogItem.getSprintId());
 		if(sprint != null) {
 			dto.setSprintOrderId(sprint.getOrderId());
 		}
@@ -72,4 +65,5 @@ public class GetAllBacklogItemUseCaseImpl implements GetAllBacklogItemUseCase, G
 	public void setProductId(String productId) {
 		this.productId = productId;
 	}
+	
 }

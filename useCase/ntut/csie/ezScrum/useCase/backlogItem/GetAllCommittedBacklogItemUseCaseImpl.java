@@ -7,22 +7,24 @@ import java.util.List;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
 import ntut.csie.ezScrum.model.sprint.Sprint;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.backlogItem.io.CommittedBacklogItemModel;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllCommittedBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllCommittedBacklogItemOutput;
 
 public class GetAllCommittedBacklogItemUseCaseImpl implements GetAllCommittedBacklogItemUseCase, GetAllCommittedBacklogItemInput{
 	
-	private ApplicationContext context;
+	private Repository<BacklogItem> backlogItemRepository;
+	private Repository<Sprint> sprintRepository;
 	
 	private String productId;
 	private String sprintId;
 	
 	public GetAllCommittedBacklogItemUseCaseImpl() {};
 
-	public GetAllCommittedBacklogItemUseCaseImpl(ApplicationContext context) {
-		this.context = context;
+	public GetAllCommittedBacklogItemUseCaseImpl(Repository<BacklogItem> backlogItemRepository, Repository<Sprint> sprintRepository) {
+		this.backlogItemRepository = backlogItemRepository;
+		this.sprintRepository = sprintRepository;
 	}
 
 	@Override
@@ -30,7 +32,7 @@ public class GetAllCommittedBacklogItemUseCaseImpl implements GetAllCommittedBac
 		String productId = input.getProductId();
 		String sprintId = input.getSprintId();
 		List<CommittedBacklogItemModel> committedBacklogItemList = new ArrayList<>();
-		for(BacklogItem backlogItem : context.getBacklogItems()) {
+		for(BacklogItem backlogItem : backlogItemRepository.getAll()) {
 			if(backlogItem.getProductId().equals(productId)) {
 				if(backlogItem.getSprintId() != null) {
 					if(backlogItem.getSprintId().equals(sprintId)) {
@@ -56,7 +58,7 @@ public class GetAllCommittedBacklogItemUseCaseImpl implements GetAllCommittedBac
 		dto.setDescription(backlogItem.getDescription());
 		dto.setEstimate(backlogItem.getEstimate());
 		dto.setImportance(backlogItem.getImportance());
-		Sprint sprint = context.getSprint(backlogItem.getSprintId());
+		Sprint sprint = sprintRepository.get(backlogItem.getSprintId());
 		dto.setSprintOrderId(sprint.getOrderId());
 		dto.setStatus(backlogItem.getStatus());
 		dto.setNotes(backlogItem.getNotes());
@@ -84,4 +86,5 @@ public class GetAllCommittedBacklogItemUseCaseImpl implements GetAllCommittedBac
 	public void setSprintId(String sprintId) {
 		this.sprintId = sprintId;
 	}
+	
 }

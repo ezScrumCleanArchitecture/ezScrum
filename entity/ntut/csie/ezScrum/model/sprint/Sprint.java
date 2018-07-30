@@ -10,7 +10,6 @@ public class Sprint {
 	private int orderId;
 	private String goal;
 	private int interval;
-	private int teamSize;
 	private String startDate;
 	private String endDate;
 	private String demoDate;
@@ -22,11 +21,10 @@ public class Sprint {
 	
 	public Sprint() {}
 	
-	public Sprint(String goal, int interval, int teamSize, String startDate,
+	public Sprint(String goal, int interval, String startDate,
 			String demoDate, String productId, String createTime) {
 		this.goal = goal;
 		this.interval = interval;
-		this.teamSize = teamSize;
 		this.startDate = startDate;
 		this.demoDate = demoDate;
 		this.productId = productId;
@@ -99,14 +97,6 @@ public class Sprint {
 	
 	public void setInterval(int interval) {
 		this.interval = interval;
-	}
-	
-	public int getTeamSize() {
-		return teamSize;
-	}
-	
-	public void setTeamSize(int teamSize) {
-		this.teamSize = teamSize;
 	}
 	
 	public String getStartDate() {

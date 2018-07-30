@@ -4,16 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ntut.csie.ezScrum.model.sprint.Sprint;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.repository.sprint.SprintRepository;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.sprint.io.EditSprintInput;
 import ntut.csie.ezScrum.useCase.sprint.io.EditSprintOutput;
 
 public class EditSprintUseCaseImpl implements EditSprintUseCase, EditSprintInput{
-	private ApplicationContext context;
+	
+	private Repository<Sprint> sprintRepository = new SprintRepository();
+	
 	private String sprintId;
 	private String goal;
 	private int interval;
-	private int teamSize;
 	private String startDate;
 	private String endDate;
 	private String demoDate;
@@ -23,14 +25,14 @@ public class EditSprintUseCaseImpl implements EditSprintUseCase, EditSprintInput
 	
 	public EditSprintUseCaseImpl() {}
 	
-	public EditSprintUseCaseImpl(ApplicationContext context) {
-		this.context = context;
+	public EditSprintUseCaseImpl(Repository<Sprint> sprintRepository) {
+		this.sprintRepository = sprintRepository;
 	}
 	
 	@Override
 	public void execute(EditSprintInput input, EditSprintOutput output) {
 		String sprintId = input.getSprintId();
-		Sprint sprint = context.getSprint(sprintId);
+		Sprint sprint = sprintRepository.get(sprintId);
 		if(sprint == null) {
 			output.setEditSuccess(false);
 			output.setOverlap(false);
@@ -40,7 +42,6 @@ public class EditSprintUseCaseImpl implements EditSprintUseCase, EditSprintInput
 		Sprint originalSprint = sprint;
 		sprint.setGoal(input.getGoal());
 		sprint.setInterval(input.getInterval());
-		sprint.setTeamSize(input.getTeamSize());
 		sprint.setStartDate(input.getStartDate());
 		sprint.setEndDate(input.getEndDate());
 		sprint.setDemoDate(input.getDemoDate());
@@ -52,7 +53,7 @@ public class EditSprintUseCaseImpl implements EditSprintUseCase, EditSprintInput
 			output.setErrorMessage("Sorry, the start date or end date is overlap with the other sprint.");
 			return;
 		}
-		context.editSprint(sprintId, sprint);
+		sprintRepository.update(sprint);
 		output.setOverlap(false);
 		output.setEditSuccess(true);
 	}
@@ -60,8 +61,8 @@ public class EditSprintUseCaseImpl implements EditSprintUseCase, EditSprintInput
 	private boolean isSprintOverlap(Sprint originalSprint, Sprint editedSprint) {
 		List<Sprint> sprintList = new ArrayList<>();
 		String productId = editedSprint.getProductId();
-		for(Sprint otherSprint : context.getSprints()) {
-			if((otherSprint.getProductId().equals(productId)) && (!originalSprint.equals(otherSprint))) {
+		for(Sprint otherSprint : sprintRepository.getAll()) {
+			if((otherSprint.getProductId().equals(productId)) && (!originalSprint.getSprintId().equals(otherSprint.getSprintId()))) {
 				sprintList.add(otherSprint);
 			}
 		}
@@ -103,16 +104,6 @@ public class EditSprintUseCaseImpl implements EditSprintUseCase, EditSprintInput
 	@Override
 	public void setInterval(int interval) {
 		this.interval = interval;
-	}
-	
-	@Override
-	public int getTeamSize() {
-		return teamSize;
-	}
-	
-	@Override
-	public void setTeamSize(int teamSize) {
-		this.teamSize = teamSize;
 	}
 	
 	@Override
@@ -174,4 +165,5 @@ public class EditSprintUseCaseImpl implements EditSprintUseCase, EditSprintInput
 	public void setProductId(String productId) {
 		this.productId = productId;
 	}
+	
 }

@@ -7,7 +7,9 @@ import javax.ws.rs.PathParam;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.model.task.Task;
+import ntut.csie.ezScrum.repository.task.TaskRepository;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.task.DeleteTaskUseCase;
 import ntut.csie.ezScrum.useCase.task.DeleteTaskUseCaseImpl;
 import ntut.csie.ezScrum.useCase.task.io.DeleteTaskInput;
@@ -16,8 +18,8 @@ import ntut.csie.ezScrum.useCase.task.io.DeleteTaskOutput;
 @Path("/backlogItem/{backlogItemId}/task")
 public class DeleteTaskRestfulAPI implements DeleteTaskOutput{
 	
-	private ApplicationContext context = ApplicationContext.getInstance();
-	private DeleteTaskUseCase deleteTaskUseCase = new DeleteTaskUseCaseImpl(context);
+	private Repository<Task> taskRepository = new TaskRepository();
+	private DeleteTaskUseCase deleteTaskUseCase = new DeleteTaskUseCaseImpl(taskRepository);
 	
 	private boolean deleteSuccess;
 	private String errorMessage;
@@ -63,4 +65,5 @@ public class DeleteTaskRestfulAPI implements DeleteTaskOutput{
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
+	
 }

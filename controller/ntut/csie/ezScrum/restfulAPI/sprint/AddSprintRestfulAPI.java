@@ -10,7 +10,9 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.model.sprint.Sprint;
+import ntut.csie.ezScrum.repository.sprint.SprintRepository;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.sprint.AddSprintUseCase;
 import ntut.csie.ezScrum.useCase.sprint.AddSprintUseCaseImpl;
 import ntut.csie.ezScrum.useCase.sprint.io.AddSprintInput;
@@ -18,9 +20,9 @@ import ntut.csie.ezScrum.useCase.sprint.io.AddSprintOutput;
 
 @Path("/product/{productId}/sprint")
 public class AddSprintRestfulAPI implements AddSprintOutput{
-
-	private ApplicationContext context = ApplicationContext.getInstance();
-	private AddSprintUseCase addSprintUseCase = new AddSprintUseCaseImpl(context);
+	
+	private Repository<Sprint> sprintRepository = new SprintRepository();
+	private AddSprintUseCase addSprintUseCase = new AddSprintUseCaseImpl(sprintRepository);
 	
 	private boolean addSuccess;
 	private String errorMessage;
@@ -33,7 +35,6 @@ public class AddSprintRestfulAPI implements AddSprintOutput{
 			String sprintInfo) {
 		String goal = "";
 		int interval = 0;
-		int teamSize = 0;
 		String startDate = "";
 		String endDate = "";
 		String demoDate = "";
@@ -43,7 +44,6 @@ public class AddSprintRestfulAPI implements AddSprintOutput{
 			JSONObject sprintJSON = new JSONObject(sprintInfo);
 			goal = sprintJSON.getString("goal");
 			interval = sprintJSON.getInt("interval");
-			teamSize = sprintJSON.getInt("teamSize");
 			startDate = sprintJSON.getString("startDate");
 			endDate = sprintJSON.getString("endDate");
 			demoDate = sprintJSON.getString("demoDate");
@@ -56,7 +56,6 @@ public class AddSprintRestfulAPI implements AddSprintOutput{
 		AddSprintInput input = new AddSprintUseCaseImpl();
 		input.setGoal(goal);
 		input.setInterval(interval);
-		input.setTeamSize(teamSize);
 		input.setStartDate(startDate);
 		input.setEndDate(endDate);
 		input.setDemoDate(demoDate);

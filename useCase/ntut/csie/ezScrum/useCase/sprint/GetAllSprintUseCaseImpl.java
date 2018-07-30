@@ -4,26 +4,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ntut.csie.ezScrum.model.sprint.Sprint;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.repository.sprint.SprintRepository;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.sprint.io.SprintModel;
 import ntut.csie.ezScrum.useCase.sprint.io.GetAllSprintInput;
 import ntut.csie.ezScrum.useCase.sprint.io.GetAllSprintOutput;
 
 public class GetAllSprintUseCaseImpl implements GetAllSprintUseCase, GetAllSprintInput{
-	private ApplicationContext context;
+	
+	private Repository<Sprint> sprintRepository = new SprintRepository();
+	
 	private String productId;
 	
 	public GetAllSprintUseCaseImpl() {}
 	
-	public GetAllSprintUseCaseImpl(ApplicationContext context) {
-		this.context = context;
+	public GetAllSprintUseCaseImpl(Repository<Sprint> sprintRepository) {
+		this.sprintRepository = sprintRepository;
 	}
 	
 	@Override
 	public void execute(GetAllSprintInput input, GetAllSprintOutput output) {
 		String productId = input.getProductId();
 		List<SprintModel> sprintList = new ArrayList<>();
-		for(Sprint sprint : context.getSprints()) {
+		for(Sprint sprint : sprintRepository.getAll()) {
 			if(sprint.getProductId().equals(productId)) {
 				sprintList.add(convertSprintToDTO(sprint));
 			}
@@ -41,7 +44,6 @@ public class GetAllSprintUseCaseImpl implements GetAllSprintUseCase, GetAllSprin
 		dto.setEndDate(sprint.getEndDate());
 		dto.setDemoDate(sprint.getDemoDate());
 		dto.setDemoPlace(sprint.getDemoPlace());
-		dto.setTeamSize(sprint.getTeamSize());
 		dto.setDaily(sprint.getDaily());
 		dto.setProductId(sprint.getProductId());
 		dto.setSprintOverdue(sprint.isSprintOverdue());
@@ -59,4 +61,5 @@ public class GetAllSprintUseCaseImpl implements GetAllSprintUseCase, GetAllSprin
 	public void setProductId(String productId) {
 		this.productId = productId;
 	}
+	
 }

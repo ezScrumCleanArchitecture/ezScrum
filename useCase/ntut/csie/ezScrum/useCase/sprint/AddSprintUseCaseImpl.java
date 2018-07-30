@@ -5,15 +5,17 @@ import java.util.List;
 
 import ntut.csie.ezScrum.model.sprint.Sprint;
 import ntut.csie.ezScrum.model.sprint.SprintBuilder;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.repository.sprint.SprintRepository;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.sprint.io.AddSprintInput;
 import ntut.csie.ezScrum.useCase.sprint.io.AddSprintOutput;
 
 public class AddSprintUseCaseImpl implements AddSprintUseCase, AddSprintInput {
-	private ApplicationContext context;
+	
+	private Repository<Sprint> sprintRepository = new SprintRepository();
+	
 	private String goal;
 	private int interval;
-	private int teamSize;
 	private String startDate;
 	private String endDate;
 	private String demoDate;
@@ -23,20 +25,19 @@ public class AddSprintUseCaseImpl implements AddSprintUseCase, AddSprintInput {
 	
 	public AddSprintUseCaseImpl() {}
 	
-	public AddSprintUseCaseImpl(ApplicationContext context) {
-		this.context = context;
+	public AddSprintUseCaseImpl(Repository<Sprint> sprintRepository) {
+		this.sprintRepository = sprintRepository;
 	}
 	
 	@Override
 	public void execute(AddSprintInput input, AddSprintOutput output) {
-		int orderId = context.getNumberOfSprints() + 1;
+		int orderId = sprintRepository.getNumberOfItems() + 1;
 		Sprint sprint = null;
 		try {
 			sprint = SprintBuilder.newInstance().
 					orderId(orderId).
 					goal(input.getGoal()).
 					interval(input.getInterval()).
-					teamSize(input.getTeamSize()).
 					startDate(input.getStartDate()).
 					endDate(input.getEndDate()).
 					demoDate(input.getDemoDate()).
@@ -52,14 +53,14 @@ public class AddSprintUseCaseImpl implements AddSprintUseCase, AddSprintInput {
 			output.setErrorMessage("Sorry, the Start Date or End Date is overlap with the other Sprint.");
 			return;
 		}
-		context.addSprint(sprint);
+		sprintRepository.add(sprint);
 		output.setAddSuccess(true);
 	}
 	
 	private boolean isSprintOverlap(Sprint thisSprint) {
 		List<Sprint> sprintList = new ArrayList<>();
 		String productId = thisSprint.getProductId();
-		for(Sprint otherSprint : context.getSprints()) {
+		for(Sprint otherSprint : sprintRepository.getAll()) {
 			if(otherSprint.getProductId().equals(productId)) {
 				sprintList.add(otherSprint);
 			}
@@ -92,16 +93,6 @@ public class AddSprintUseCaseImpl implements AddSprintUseCase, AddSprintInput {
 	@Override
 	public void setInterval(int interval) {
 		this.interval = interval;
-	}
-	
-	@Override
-	public int getTeamSize() {
-		return teamSize;
-	}
-	
-	@Override
-	public void setTeamSize(int teamSize) {
-		this.teamSize = teamSize;
 	}
 	
 	@Override
@@ -163,4 +154,5 @@ public class AddSprintUseCaseImpl implements AddSprintUseCase, AddSprintInput {
 	public void setProductId(String productId) {
 		this.productId = productId;
 	}
+	
 }

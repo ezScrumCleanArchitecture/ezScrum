@@ -8,7 +8,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
+import ntut.csie.ezScrum.repository.backlogItem.BacklogItemRepository;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.backlogItem.GetAllNotYetCommittedBacklogItemUseCase;
 import ntut.csie.ezScrum.useCase.backlogItem.GetAllNotYetCommittedBacklogItemUseCaseImpl;
 import ntut.csie.ezScrum.useCase.backlogItem.io.NotYetCommittedBacklogItemModel;
@@ -18,8 +20,8 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItem
 @Path("/product/{productId}/backlogItem")
 public class GetAllNotYetCommittedBacklogItemRestfulAPI implements GetAllNotYetCommittedBacklogItemOutput{
 	
-	private ApplicationContext context = ApplicationContext.getInstance();
-	private GetAllNotYetCommittedBacklogItemUseCase getNotYetCommittedBacklogItemUseCase = new GetAllNotYetCommittedBacklogItemUseCaseImpl(context);
+	private Repository<BacklogItem> backlogItemRepository = new BacklogItemRepository();
+	private GetAllNotYetCommittedBacklogItemUseCase getNotYetCommittedBacklogItemUseCase = new GetAllNotYetCommittedBacklogItemUseCaseImpl(backlogItemRepository);
 	
 	private List<NotYetCommittedBacklogItemModel> notYetCommittedBacklogItemList;
 
@@ -46,4 +48,5 @@ public class GetAllNotYetCommittedBacklogItemRestfulAPI implements GetAllNotYetC
 			List<NotYetCommittedBacklogItemModel> notYetCommittedBacklogItemList) {
 		this.notYetCommittedBacklogItemList = notYetCommittedBacklogItemList;
 	}
+	
 }

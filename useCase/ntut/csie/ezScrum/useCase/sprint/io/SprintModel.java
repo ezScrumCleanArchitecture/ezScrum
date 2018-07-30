@@ -5,7 +5,6 @@ public class SprintModel {
 	private int orderId;
 	private String goal;
 	private int interval;
-	private int teamSize;
 	private String startDate;
 	private String endDate;
 	private String demoDate;
@@ -39,12 +38,6 @@ public class SprintModel {
 	}
 	public void setInterval(int interval) {
 		this.interval = interval;
-	}
-	public int getTeamSize() {
-		return teamSize;
-	}
-	public void setTeamSize(int teamSize) {
-		this.teamSize = teamSize;
 	}
 	public String getStartDate() {
 		return startDate;

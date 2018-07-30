@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.repository.backlogItem;
 
 public class BacklogItemData {
+	
 	private String backlogItemId;
 	private int orderId;
 	private String description;
@@ -100,4 +101,5 @@ public class BacklogItemData {
 	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
 	}
+	
 }

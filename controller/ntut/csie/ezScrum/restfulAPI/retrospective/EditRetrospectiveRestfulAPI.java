@@ -10,7 +10,9 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.model.retrospective.Retrospective;
+import ntut.csie.ezScrum.repository.retrospective.RetrospectiveRepository;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.retrospective.EditRetrospectiveUseCase;
 import ntut.csie.ezScrum.useCase.retrospective.EditRetrospectiveUseCaseImpl;
 import ntut.csie.ezScrum.useCase.retrospective.io.EditRetrospectiveInput;
@@ -19,8 +21,8 @@ import ntut.csie.ezScrum.useCase.retrospective.io.EditRetrospectiveOutput;
 @Path("/product/{productId}/retrospective")
 public class EditRetrospectiveRestfulAPI implements EditRetrospectiveOutput{
 	
-	private ApplicationContext context = ApplicationContext.getInstance();
-	private EditRetrospectiveUseCase editRetrospectiveUseCase = new EditRetrospectiveUseCaseImpl(context);
+	private Repository<Retrospective> retrospectiveRepository = new RetrospectiveRepository();
+	private EditRetrospectiveUseCase editRetrospectiveUseCase = new EditRetrospectiveUseCaseImpl(retrospectiveRepository);
 	
 	private boolean editSuccess;
 	private String errorMessage;

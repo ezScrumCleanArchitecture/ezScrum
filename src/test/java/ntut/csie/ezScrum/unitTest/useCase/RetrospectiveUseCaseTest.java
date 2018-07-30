@@ -20,7 +20,9 @@ import ntut.csie.ezScrum.restfulAPI.retrospective.DeleteRetrospectiveRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.retrospective.EditRetrospectiveRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.retrospective.GetAllRetrospectiveRestfulAPI;
 import ntut.csie.ezScrum.unitTest.factory.TestFactory;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.unitTest.repository.FakeProductRepository;
+import ntut.csie.ezScrum.unitTest.repository.FakeRetrospectiveRepository;
+import ntut.csie.ezScrum.unitTest.repository.FakeSprintRepository;
 import ntut.csie.ezScrum.useCase.retrospective.AddRetrospectiveUseCase;
 import ntut.csie.ezScrum.useCase.retrospective.AddRetrospectiveUseCaseImpl;
 import ntut.csie.ezScrum.useCase.retrospective.DeleteRetrospectiveUseCase;
@@ -40,7 +42,9 @@ import ntut.csie.ezScrum.useCase.retrospective.io.GetAllRetrospectiveInput;
 import ntut.csie.ezScrum.useCase.retrospective.io.GetAllRetrospectiveOutput;
 
 public class RetrospectiveUseCaseTest {
-	private ApplicationContext context;
+	private FakeProductRepository fakeProductRepository;
+	private FakeSprintRepository fakeSprintRepository;
+	private FakeRetrospectiveRepository fakeRetrospectiveRepository;
 	
 	private TestFactory testFactory;
 	private String productId;
@@ -49,8 +53,10 @@ public class RetrospectiveUseCaseTest {
 
 	@Before
 	public void setUp() {
-		context = ApplicationContext.getInstance();
-		testFactory = new TestFactory();
+		fakeProductRepository = new FakeProductRepository();
+		fakeSprintRepository = new FakeSprintRepository();
+		fakeRetrospectiveRepository = new FakeRetrospectiveRepository();
+		testFactory = new TestFactory(fakeProductRepository, fakeSprintRepository, null, null, fakeRetrospectiveRepository);
 		
 		Product product = testFactory.getNewProduct();
 		productId = product.getProductId();
@@ -73,9 +79,9 @@ public class RetrospectiveUseCaseTest {
 	
 	@After
 	public void tearDown() {
-		context.clearProducts();
-		context.clearSprints();
-		context.clearRetrospectives();
+		fakeProductRepository.clearAll();
+		fakeSprintRepository.clearAll();
+		fakeRetrospectiveRepository.clearAll();
 	}
 	
 	@Test
@@ -98,7 +104,7 @@ public class RetrospectiveUseCaseTest {
 		
 		AddRetrospectiveOutput output = new AddRetrospectiveRestfulAPI();
 		
-		AddRetrospectiveUseCase addRetrospectiveUseCase = new AddRetrospectiveUseCaseImpl(context);
+		AddRetrospectiveUseCase addRetrospectiveUseCase = new AddRetrospectiveUseCaseImpl(fakeRetrospectiveRepository);
 		addRetrospectiveUseCase.execute(input, output);
 
 		String expectedException = "The description of the retrospective should not be null.";
@@ -116,7 +122,7 @@ public class RetrospectiveUseCaseTest {
 		
 		AddRetrospectiveOutput output = new AddRetrospectiveRestfulAPI();
 		
-		AddRetrospectiveUseCase addRetrospectiveUseCase = new AddRetrospectiveUseCaseImpl(context);
+		AddRetrospectiveUseCase addRetrospectiveUseCase = new AddRetrospectiveUseCaseImpl(fakeRetrospectiveRepository);
 		addRetrospectiveUseCase.execute(input, output);
 
 		String expectedException = "The sprint of the retrospective should not be null.";
@@ -223,7 +229,7 @@ public class RetrospectiveUseCaseTest {
 		
 		AddRetrospectiveOutput output = new AddRetrospectiveRestfulAPI();
 		
-		AddRetrospectiveUseCase addRetrospectiveUseCase = new AddRetrospectiveUseCaseImpl(context);
+		AddRetrospectiveUseCase addRetrospectiveUseCase = new AddRetrospectiveUseCaseImpl(fakeRetrospectiveRepository);
 		addRetrospectiveUseCase.execute(input, output);
 		
 		return output;
@@ -235,7 +241,7 @@ public class RetrospectiveUseCaseTest {
 		
 		GetAllRetrospectiveOutput output = new GetAllRetrospectiveRestfulAPI();
 		
-		GetAllRetrospectiveUseCase getAllRetrospectiveUseCase = new GetAllRetrospectiveUseCaseImpl(context);
+		GetAllRetrospectiveUseCase getAllRetrospectiveUseCase = new GetAllRetrospectiveUseCaseImpl(fakeRetrospectiveRepository, fakeSprintRepository);
 		getAllRetrospectiveUseCase.execute(input, output);
 		
 		return output;
@@ -249,7 +255,7 @@ public class RetrospectiveUseCaseTest {
 		
 		EditRetrospectiveOutput output = new EditRetrospectiveRestfulAPI();
 		
-		EditRetrospectiveUseCase editRetrospectiveUseCase = new EditRetrospectiveUseCaseImpl(context);
+		EditRetrospectiveUseCase editRetrospectiveUseCase = new EditRetrospectiveUseCaseImpl(fakeRetrospectiveRepository);
 		editRetrospectiveUseCase.execute(input, output);
 		
 		return output;
@@ -261,7 +267,7 @@ public class RetrospectiveUseCaseTest {
 		
 		DeleteRetrospectiveOutput output = new DeleteRetrospectiveRestfulAPI();
 		
-		DeleteRetrospectiveUseCase deleteRetrospectiveUseCase = new DeleteRetrospectiveUseCaseImpl(context);
+		DeleteRetrospectiveUseCase deleteRetrospectiveUseCase = new DeleteRetrospectiveUseCaseImpl(fakeRetrospectiveRepository);
 		deleteRetrospectiveUseCase.execute(input, output);
 		
 		return output;

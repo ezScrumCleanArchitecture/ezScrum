@@ -9,11 +9,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
+import ntut.csie.ezScrum.model.sprint.Sprint;
 import ntut.csie.ezScrum.repository.backlogItem.BacklogItemRepository;
-import ntut.csie.ezScrum.repository.backlogItem.GetBacklogItemsByProductId;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.repository.sprint.SprintRepository;
 import ntut.csie.ezScrum.useCase.Repository;
-import ntut.csie.ezScrum.useCase.SqlSpecification;
 import ntut.csie.ezScrum.useCase.backlogItem.GetAllBacklogItemUseCase;
 import ntut.csie.ezScrum.useCase.backlogItem.GetAllBacklogItemUseCaseImpl;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllBacklogItemInput;
@@ -23,9 +22,9 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.BacklogItemModel;
 @Path("/product/{productId}/backlogItem")
 public class GetAllBacklogItemRestfulAPI implements GetAllBacklogItemOutput{
 	
-	private ApplicationContext context = ApplicationContext.getInstance();
-	private Repository<BacklogItem> repository = new BacklogItemRepository();
-	private GetAllBacklogItemUseCase getBacklogItemUseCase = new GetAllBacklogItemUseCaseImpl(repository);
+	private Repository<BacklogItem> backlogItemRepository = new BacklogItemRepository();
+	private Repository<Sprint> sprintRepository = new SprintRepository();
+	private GetAllBacklogItemUseCase getBacklogItemUseCase = new GetAllBacklogItemUseCaseImpl(backlogItemRepository, sprintRepository);
 	
 	private List<BacklogItemModel> backlogItemList;
 	
@@ -52,7 +51,5 @@ public class GetAllBacklogItemRestfulAPI implements GetAllBacklogItemOutput{
 	public void setBacklogItemList(List<BacklogItemModel> backlogItemList) {
 		this.backlogItemList = backlogItemList;
 	}
-	
-	
 	
 }

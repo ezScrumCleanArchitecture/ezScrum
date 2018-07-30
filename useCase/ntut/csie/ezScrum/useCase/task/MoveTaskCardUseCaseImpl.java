@@ -1,26 +1,27 @@
 package ntut.csie.ezScrum.useCase.task;
 
 import ntut.csie.ezScrum.model.task.Task;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardInput;
 import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardOutput;
 
 public class MoveTaskCardUseCaseImpl implements MoveTaskCardUseCase, MoveTaskCardInput {
-	private ApplicationContext context;
+	
+	private Repository<Task> taskRepository;
 	
 	private String taskId;
 	private String status;
 	
 	public MoveTaskCardUseCaseImpl() {}
 	
-	public MoveTaskCardUseCaseImpl(ApplicationContext context) {
-		this.context = context;
+	public MoveTaskCardUseCaseImpl(Repository<Task> taskRepository) {
+		this.taskRepository = taskRepository;
 	}
 	
 	@Override
 	public void execute(MoveTaskCardInput input, MoveTaskCardOutput output) {
 		String taskId = input.getTaskId();
-		Task task = context.getTask(taskId);
+		Task task = taskRepository.get(taskId);
 		if(task == null) {
 			output.setMoveSuccess(false);
 			output.setErrorMessage("Sorry, the task is not exist.");
@@ -31,7 +32,7 @@ public class MoveTaskCardUseCaseImpl implements MoveTaskCardUseCase, MoveTaskCar
 		if(status.equals("Done")) {
 			task.setRemains(0);
 		}
-		context.editTask(taskId, task);
+		taskRepository.update(task);
 		output.setMoveSuccess(true);
 	}
 	

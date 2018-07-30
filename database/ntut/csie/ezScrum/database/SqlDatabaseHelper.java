@@ -6,20 +6,50 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import ntut.csie.ezScrum.useCase.SqlSpecification;
-
 public class SqlDatabaseHelper {
+	
+	private static SqlDatabaseHelper instance = null;
 	private Properties properties;
-	private String baseDirPath = System.getProperty("user.dir");
+	private String baseDirPath = getBaseDirPath();
 	private String configFile = "mysqlDB.ini";
 	private String configFilePath = baseDirPath + File.separator + configFile;
 	private Connection connection;
-	private Statement statement;
+	
+	private SqlDatabaseHelper() {}
+	
+	public static synchronized SqlDatabaseHelper getInstance() {
+		if(instance == null) {
+			instance = new SqlDatabaseHelper();
+		}
+		return instance;
+	}
+	
+	private String getBaseDirPath() {
+		Properties properties = new Properties();
+		String pomPropertiesPath = System.getProperty("wtp.deploy") + File.separator
+				+ "ezScrum" + File.separator
+				+ "META-INF" + File.separator
+				+ "maven" + File.separator
+				+ "ntut.csie" + File.separator
+				+ "ezScrum" + File.separator
+				+ "pom.properties";
+		System.out.println("POM: " + pomPropertiesPath);
+		try {
+			properties.load(new FileInputStream(pomPropertiesPath));
+		}catch(FileNotFoundException e) {
+			//e.printStackTrace();
+			return System.getProperty("user.dir");
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		return properties.getProperty("m2e.projectLocation");
+	}
 	
 	public void connection() {
 		properties = new Properties();System.out.println(configFilePath);
@@ -54,20 +84,30 @@ public class SqlDatabaseHelper {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection("jdbc:mysql://"+serverUrl+":3306/"+databaseName, account, password);
-			statement = connection.createStatement();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public ResultSet getResultSet(SqlSpecification sqlSpecification) {
-		String query = sqlSpecification.toSqlQuery();
+	public PreparedStatement getPreparedStatement(String sql) {
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return preparedStatement;
+	}
+	
+	public ResultSet getResultSet(String query) {
 		ResultSet resultSet = null;
 		try {
+			Statement statement = connection.createStatement();
 			resultSet = statement.executeQuery(query);
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
 		return resultSet;
 	}
+	
 }

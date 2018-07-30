@@ -1,38 +1,39 @@
 package ntut.csie.ezScrum.useCase.task;
 
 import ntut.csie.ezScrum.model.task.Task;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.task.io.DeleteTaskInput;
 import ntut.csie.ezScrum.useCase.task.io.DeleteTaskOutput;
 
 public class DeleteTaskUseCaseImpl implements DeleteTaskUseCase, DeleteTaskInput {
-	private ApplicationContext context;
+	
+	private Repository<Task> taskRepository;
 	
 	private String taskId;	
 	
 	public DeleteTaskUseCaseImpl() {}
 	
-	public DeleteTaskUseCaseImpl(ApplicationContext context) {
-		this.context = context;
+	public DeleteTaskUseCaseImpl(Repository<Task> taskRepository) {
+		this.taskRepository = taskRepository;
 	}
 	
 	@Override
 	public void execute(DeleteTaskInput input, DeleteTaskOutput output) {
 		String taskId = input.getTaskId();
-		Task task = context.getTask(taskId);
+		Task task = taskRepository.get(taskId);
 		if(task == null) {
 			output.setDeleteSuccess(false);
 			output.setErrorMessage("Sorry, the task is not exist.");
 			return;
 		}
 		int orderId = task.getOrderId();
-		int numberOfTasks = context.getNumberOfTasks();
-		Task[] tasks = context.getTasks().toArray(new Task[numberOfTasks]);
+		int numberOfTasks = taskRepository.getNumberOfItems();
+		Task[] tasks = taskRepository.getAll().toArray(new Task[numberOfTasks]);
 		for(int i = orderId; i < numberOfTasks; i++) {
 			tasks[i].setOrderId(i);
-			context.editTask(tasks[i].getTaskId(), tasks[i]);
+			taskRepository.update(tasks[i]);
 		}
-		context.deleteTask(taskId);
+		taskRepository.remove(task);
 		output.setDeleteSuccess(true);
 	}
 	
@@ -45,4 +46,5 @@ public class DeleteTaskUseCaseImpl implements DeleteTaskUseCase, DeleteTaskInput
 	public void setTaskId(String taskId) {
 		this.taskId = taskId;
 	}
+	
 }

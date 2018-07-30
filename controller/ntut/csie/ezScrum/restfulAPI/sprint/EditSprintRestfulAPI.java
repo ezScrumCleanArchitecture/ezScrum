@@ -10,7 +10,9 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.model.sprint.Sprint;
+import ntut.csie.ezScrum.repository.sprint.SprintRepository;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.sprint.EditSprintUseCase;
 import ntut.csie.ezScrum.useCase.sprint.EditSprintUseCaseImpl;
 import ntut.csie.ezScrum.useCase.sprint.io.EditSprintInput;
@@ -19,8 +21,8 @@ import ntut.csie.ezScrum.useCase.sprint.io.EditSprintOutput;
 @Path("/product/{productId}/sprint")
 public class EditSprintRestfulAPI implements EditSprintOutput{
 	
-	private ApplicationContext context = ApplicationContext.getInstance();
-	private EditSprintUseCase editSprintUseCase = new EditSprintUseCaseImpl(context);
+	private Repository<Sprint> sprintRepository = new SprintRepository();
+	private EditSprintUseCase editSprintUseCase = new EditSprintUseCaseImpl(sprintRepository);
 	
 	private boolean editSuccess;
 	private boolean overlap;
@@ -35,7 +37,6 @@ public class EditSprintRestfulAPI implements EditSprintOutput{
 		String sprintId = "";
 		String goal = "";
 		int interval = 0;
-		int teamSize = 0;
 		String startDate = "";
 		String endDate = "";
 		String demoDate = "";
@@ -46,7 +47,6 @@ public class EditSprintRestfulAPI implements EditSprintOutput{
 			sprintId = sprintJSON.getString("sprintId");
 			goal = sprintJSON.getString("goal");
 			interval = sprintJSON.getInt("interval");
-			teamSize = sprintJSON.getInt("teamSize");
 			startDate = sprintJSON.getString("startDate");
 			endDate = sprintJSON.getString("endDate");
 			demoDate = sprintJSON.getString("demoDate");
@@ -60,7 +60,6 @@ public class EditSprintRestfulAPI implements EditSprintOutput{
 		input.setSprintId(sprintId);
 		input.setGoal(goal);
 		input.setInterval(interval);
-		input.setTeamSize(teamSize);
 		input.setStartDate(startDate);
 		input.setEndDate(endDate);
 		input.setDemoDate(demoDate);

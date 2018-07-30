@@ -6,5 +6,7 @@ public interface Repository<T> {
 	void add(T item);
 	void update(T item);
 	void remove(T item);
-	Collection<T> query(SqlSpecification sqlSpecification);
+	T get(String id);
+	Collection<T> getAll();
+	int getNumberOfItems();
 }

@@ -10,7 +10,9 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.model.task.Task;
+import ntut.csie.ezScrum.repository.task.TaskRepository;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.task.EditTaskUseCase;
 import ntut.csie.ezScrum.useCase.task.EditTaskUseCaseImpl;
 import ntut.csie.ezScrum.useCase.task.io.EditTaskInput;
@@ -19,8 +21,8 @@ import ntut.csie.ezScrum.useCase.task.io.EditTaskOutput;
 @Path("/backlogItem/{backlogItemId}/task")
 public class EditTaskRestfulAPI implements EditTaskOutput {
 	
-	private ApplicationContext context = ApplicationContext.getInstance();
-	private EditTaskUseCase editTaskUseCase = new EditTaskUseCaseImpl(context);
+	private Repository<Task> taskRepository = new TaskRepository();
+	private EditTaskUseCase editTaskUseCase = new EditTaskUseCaseImpl(taskRepository);
 	
 	private boolean editSuccess;
 	private String errorMessage;

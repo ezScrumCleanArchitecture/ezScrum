@@ -14,7 +14,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
+import ntut.csie.ezScrum.repository.backlogItem.BacklogItemRepository;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.backlogItem.AssignBacklogItemUseCase;
 import ntut.csie.ezScrum.useCase.backlogItem.AssignBacklogItemUseCaseImpl;
 import ntut.csie.ezScrum.useCase.backlogItem.io.AssignBacklogItemInput;
@@ -23,8 +25,11 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.AssignBacklogItemOutput;
 @Path("/product/{productId}/backlogItem")
 public class AssignBacklogItemRestfulAPI implements AssignBacklogItemOutput{
 	
-	private ApplicationContext context = ApplicationContext.getInstance();
-	private AssignBacklogItemUseCase assignBacklogItemUseCase = new AssignBacklogItemUseCaseImpl(context);
+	private Repository<BacklogItem> backlogItemRepository = new BacklogItemRepository();
+	private AssignBacklogItemUseCase assignBacklogItemUseCase = new AssignBacklogItemUseCaseImpl(backlogItemRepository);
+	
+	private boolean assignSuccess;
+	private String errorMessage;
 	
 	@POST
 	@Path("/assignBacklogItem")
@@ -54,4 +59,25 @@ public class AssignBacklogItemRestfulAPI implements AssignBacklogItemOutput{
 			assignBacklogItemUseCase.execute(input, output);
 		}
 	}
+
+	@Override
+	public boolean isAssignSuccess() {
+		return assignSuccess;
+	}
+
+	@Override
+	public void setAssignSuccess(boolean assignSuccess) {
+		this.assignSuccess = assignSuccess;
+	}
+
+	@Override
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	@Override
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+	
 }

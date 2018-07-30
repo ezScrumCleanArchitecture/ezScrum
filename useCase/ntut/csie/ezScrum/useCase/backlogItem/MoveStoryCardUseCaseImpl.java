@@ -1,35 +1,35 @@
 package ntut.csie.ezScrum.useCase.backlogItem;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
+import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardOutput;
 
 public class MoveStoryCardUseCaseImpl implements MoveStoryCardUseCase, MoveStoryCardInput{
 	
-	private ApplicationContext context;
+	private Repository<BacklogItem> backlogItemRepository;
 	
 	private String backlogItemId;
 	private String status;
 	
 	public MoveStoryCardUseCaseImpl() {}
 	
-	public MoveStoryCardUseCaseImpl(ApplicationContext context) {
-		this.context = context;
+	public MoveStoryCardUseCaseImpl(Repository<BacklogItem> backlogItemRepository) {
+		this.backlogItemRepository = backlogItemRepository;
 	}
 
 	@Override
 	public void execute(MoveStoryCardInput input, MoveStoryCardOutput output) {
 		String backlogItemId = input.getBacklogItemId();
 		String status = input.getStatus();
-		BacklogItem backlogItem = context.getBacklogItem(backlogItemId);
+		BacklogItem backlogItem = backlogItemRepository.get(backlogItemId);
 		if(backlogItem == null) {
 			output.setMoveSuccess(false);
 			output.setErrorMessage("Sorry, the backlog item is not exist.");
 			return;
 		}
 		backlogItem.setStatus(status);
-		context.editBacklogItem(backlogItemId, backlogItem);
+		backlogItemRepository.update(backlogItem);
 		output.setMoveSuccess(true);
 	}
 

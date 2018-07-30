@@ -16,18 +16,16 @@ import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
 import ntut.csie.ezScrum.model.product.Product;
 import ntut.csie.ezScrum.model.sprint.Sprint;
 import ntut.csie.ezScrum.model.task.Task;
-import ntut.csie.ezScrum.restfulAPI.sprint.AddSprintRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.task.AddTaskRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.task.DeleteTaskRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.task.EditTaskRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.task.GetAllTaskRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.task.MoveTaskCardRestfulAPI;
 import ntut.csie.ezScrum.unitTest.factory.TestFactory;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
-import ntut.csie.ezScrum.useCase.sprint.AddSprintUseCase;
-import ntut.csie.ezScrum.useCase.sprint.AddSprintUseCaseImpl;
-import ntut.csie.ezScrum.useCase.sprint.io.AddSprintInput;
-import ntut.csie.ezScrum.useCase.sprint.io.AddSprintOutput;
+import ntut.csie.ezScrum.unitTest.repository.FakeBacklogItemRepository;
+import ntut.csie.ezScrum.unitTest.repository.FakeProductRepository;
+import ntut.csie.ezScrum.unitTest.repository.FakeSprintRepository;
+import ntut.csie.ezScrum.unitTest.repository.FakeTaskRepository;
 import ntut.csie.ezScrum.useCase.task.AddTaskUseCase;
 import ntut.csie.ezScrum.useCase.task.AddTaskUseCaseImpl;
 import ntut.csie.ezScrum.useCase.task.DeleteTaskUseCase;
@@ -51,7 +49,11 @@ import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardOutput;
 import ntut.csie.ezScrum.useCase.task.io.GetAllTaskOutput;
 
 public class TaskUseCaseTest {
-	private ApplicationContext context;
+	
+	private FakeProductRepository fakeProductRepository;
+	private FakeSprintRepository fakeSprintRepository;
+	private FakeBacklogItemRepository fakeBacklogItemRepository;
+	private FakeTaskRepository fakeTaskRepository;
 	private TestFactory testFactory;
 	private String productId;
 	private String backlogItemId;
@@ -59,8 +61,11 @@ public class TaskUseCaseTest {
 
 	@Before
 	public void setUp() {
-		context = ApplicationContext.getInstance();
-		testFactory = new TestFactory();
+		fakeProductRepository = new FakeProductRepository();
+		fakeSprintRepository = new FakeSprintRepository();
+		fakeBacklogItemRepository = new FakeBacklogItemRepository();
+		fakeTaskRepository = new FakeTaskRepository();
+		testFactory = new TestFactory(fakeProductRepository, fakeSprintRepository, fakeBacklogItemRepository, fakeTaskRepository, null);
 		
 		Product product = testFactory.getNewProduct();
 		productId = product.getProductId();
@@ -82,10 +87,10 @@ public class TaskUseCaseTest {
 	
 	@After
 	public void tearDown() {
-		context.clearProducts();
-		context.clearBacklogItems();
-		context.clearSprints();
-		context.clearTasks();
+		fakeProductRepository.clearAll();
+		fakeSprintRepository.clearAll();
+		fakeBacklogItemRepository.clearAll();
+		fakeTaskRepository.clearAll();
 	}
 	
 	@Test
@@ -115,12 +120,12 @@ public class TaskUseCaseTest {
 		PrintStream printStream = new PrintStream(stream);
 		System.setOut(printStream);
 		
-		AddSprintInput input = new AddSprintUseCaseImpl();
+		AddTaskInput input = new AddTaskUseCaseImpl();
 		
-		AddSprintOutput output = new AddSprintRestfulAPI();
+		AddTaskOutput output = new AddTaskRestfulAPI();
 		
-		AddSprintUseCase addSprintUseCase = new AddSprintUseCaseImpl(context);
-		addSprintUseCase.execute(input, output);
+		AddTaskUseCase addTaskUseCase = new AddTaskUseCaseImpl(fakeTaskRepository);
+		addTaskUseCase.execute(input, output);
 		
 		String expectedException = "The description of the task should not be null.";
 		assertEquals(expectedException, stream.toString());
@@ -247,7 +252,7 @@ public class TaskUseCaseTest {
 
 		AddTaskOutput output = new AddTaskRestfulAPI();
 		
-		AddTaskUseCase addTaskUseCase = new AddTaskUseCaseImpl(context);
+		AddTaskUseCase addTaskUseCase = new AddTaskUseCaseImpl(fakeTaskRepository);
 		addTaskUseCase.execute(input, output);
 		
 		return output;
@@ -262,7 +267,7 @@ public class TaskUseCaseTest {
 
 		AddTaskOutput output = new AddTaskRestfulAPI();
 		
-		AddTaskUseCase addTaskUseCase = new AddTaskUseCaseImpl(context);
+		AddTaskUseCase addTaskUseCase = new AddTaskUseCaseImpl(fakeTaskRepository);
 		addTaskUseCase.execute(input, output);
 		
 		return output;
@@ -274,7 +279,7 @@ public class TaskUseCaseTest {
 		
 		GetAllTaskOutput output = new GetAllTaskRestfulAPI();
 		
-		GetAllTaskUseCase getAllTaskUseCase = new GetAllTaskUseCaseImpl(context);
+		GetAllTaskUseCase getAllTaskUseCase = new GetAllTaskUseCaseImpl(fakeTaskRepository);
 		getAllTaskUseCase.execute(input, output);
 		
 		return output;
@@ -290,7 +295,7 @@ public class TaskUseCaseTest {
 		
 		EditTaskOutput output = new EditTaskRestfulAPI();
 		
-		EditTaskUseCase editTaskUseCase = new EditTaskUseCaseImpl(context);
+		EditTaskUseCase editTaskUseCase = new EditTaskUseCaseImpl(fakeTaskRepository);
 		editTaskUseCase.execute(input, output);
 		
 		return output;
@@ -302,7 +307,7 @@ public class TaskUseCaseTest {
 		
 		DeleteTaskOutput output = new DeleteTaskRestfulAPI();
 		
-		DeleteTaskUseCase deleteTaskUseCase = new DeleteTaskUseCaseImpl(context);
+		DeleteTaskUseCase deleteTaskUseCase = new DeleteTaskUseCaseImpl(fakeTaskRepository);
 		deleteTaskUseCase.execute(input, output);
 		
 		return output;
@@ -315,9 +320,10 @@ public class TaskUseCaseTest {
 		
 		MoveTaskCardOutput output = new MoveTaskCardRestfulAPI();
 		
-		MoveTaskCardUseCase moveTaskCardUseCase = new MoveTaskCardUseCaseImpl(context);
+		MoveTaskCardUseCase moveTaskCardUseCase = new MoveTaskCardUseCaseImpl(fakeTaskRepository);
 		moveTaskCardUseCase.execute(input, output);
 		
 		return output;
 	}
+	
 }

@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.repository.backlogItem;
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
 
 public class BacklogItemMapper {
+	
 	public BacklogItem transformToBacklogItem(BacklogItemData data) {
 		BacklogItem backlogItem = new BacklogItem();
 		backlogItem.setBacklogItemId(data.getBacklogItemId());
@@ -18,4 +19,21 @@ public class BacklogItemMapper {
 		backlogItem.setUpdateTime(data.getUpdateTime());
 		return backlogItem;
 	}
+	
+	public BacklogItemData transformToBacklogItemData(BacklogItem backlogItem) {
+		BacklogItemData data = new BacklogItemData();
+		data.setBacklogItemId(backlogItem.getBacklogItemId());
+		data.setOrderId(backlogItem.getOrderId());
+		data.setDescription(backlogItem.getDescription());
+		data.setStatus(backlogItem.getStatus());
+		data.setEstimate(backlogItem.getEstimate());
+		data.setImportance(backlogItem.getImportance());
+		data.setNotes(backlogItem.getNotes());
+		data.setProductId(backlogItem.getProductId());
+		data.setSprintId(backlogItem.getSprintId());
+		data.setCreateTime(backlogItem.getCreateTime());
+		data.setUpdateTime(backlogItem.getUpdateTime());
+		return data;
+	}
+	
 }

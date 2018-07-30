@@ -7,8 +7,6 @@ public interface AddSprintInput extends Input{
 	public void setGoal(String goal);
 	public int getInterval();
 	public void setInterval(int interval);
-	public int getTeamSize();
-	public void setTeamSize(int teamSize);
 	public String getStartDate();
 	public void setStartDate(String startDate);
 	public String getEndDate();
