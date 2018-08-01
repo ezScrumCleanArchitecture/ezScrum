@@ -24,7 +24,7 @@ public class GetAllCommittedBacklogItemRestfulAPI implements GetAllCommittedBack
 	
 	private Repository<BacklogItem> backlogItemRepository = new BacklogItemRepository();
 	private Repository<Sprint> sprintRepository = new SprintRepository();
-	private GetAllCommittedBacklogItemUseCase getCommittedBacklogItemUseCase = new GetAllCommittedBacklogItemUseCaseImpl(backlogItemRepository, sprintRepository);
+	private GetAllCommittedBacklogItemUseCase getAllCommittedBacklogItemUseCase = new GetAllCommittedBacklogItemUseCaseImpl(backlogItemRepository, sprintRepository);
 	
 	private List<CommittedBacklogItemModel> committedBacklogItemList;
 
@@ -39,7 +39,7 @@ public class GetAllCommittedBacklogItemRestfulAPI implements GetAllCommittedBack
 		
 		GetAllCommittedBacklogItemOutput output = this;
 		
-		getCommittedBacklogItemUseCase.execute(input, output);
+		getAllCommittedBacklogItemUseCase.execute(input, output);
 		
 		return output;
 	}

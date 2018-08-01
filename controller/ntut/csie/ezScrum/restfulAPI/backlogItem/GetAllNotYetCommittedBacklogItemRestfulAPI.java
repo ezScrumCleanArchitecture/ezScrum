@@ -21,7 +21,7 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItem
 public class GetAllNotYetCommittedBacklogItemRestfulAPI implements GetAllNotYetCommittedBacklogItemOutput{
 	
 	private Repository<BacklogItem> backlogItemRepository = new BacklogItemRepository();
-	private GetAllNotYetCommittedBacklogItemUseCase getNotYetCommittedBacklogItemUseCase = new GetAllNotYetCommittedBacklogItemUseCaseImpl(backlogItemRepository);
+	private GetAllNotYetCommittedBacklogItemUseCase getAllNotYetCommittedBacklogItemUseCase = new GetAllNotYetCommittedBacklogItemUseCaseImpl(backlogItemRepository);
 	
 	private List<NotYetCommittedBacklogItemModel> notYetCommittedBacklogItemList;
 
@@ -33,7 +33,7 @@ public class GetAllNotYetCommittedBacklogItemRestfulAPI implements GetAllNotYetC
 		input.setProductId(productId);
 		
 		GetAllNotYetCommittedBacklogItemOutput output = this;
-		getNotYetCommittedBacklogItemUseCase.execute(input, output);
+		getAllNotYetCommittedBacklogItemUseCase.execute(input, output);
 		
 		return output;
 	}

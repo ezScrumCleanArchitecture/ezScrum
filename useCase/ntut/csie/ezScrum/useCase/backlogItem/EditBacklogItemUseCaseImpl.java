@@ -1,6 +1,10 @@
 package ntut.csie.ezScrum.useCase.backlogItem;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
+import ntut.csie.ezScrum.model.history.History;
+import ntut.csie.ezScrum.model.history.HistoryBuilder;
+import ntut.csie.ezScrum.model.history.IssueType;
+import ntut.csie.ezScrum.model.history.Type;
 import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.backlogItem.io.EditBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.EditBacklogItemOutput;
@@ -8,6 +12,7 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.EditBacklogItemOutput;
 public class EditBacklogItemUseCaseImpl implements EditBacklogItemUseCase, EditBacklogItemInput{
 
 	private Repository<BacklogItem> backlogItemRepository;
+	private Repository<History> historyRepository;
 	
 	private String backlogItemId;
 	private String description;
@@ -18,8 +23,9 @@ public class EditBacklogItemUseCaseImpl implements EditBacklogItemUseCase, EditB
 
 	public EditBacklogItemUseCaseImpl() {}
 	
-	public EditBacklogItemUseCaseImpl(Repository<BacklogItem> backlogItemRepository) {
+	public EditBacklogItemUseCaseImpl(Repository<BacklogItem> backlogItemRepository, Repository<History> historyRepository) {
 		this.backlogItemRepository = backlogItemRepository;
+		this.historyRepository = historyRepository;
 	}
 	
 	@Override
@@ -31,10 +37,32 @@ public class EditBacklogItemUseCaseImpl implements EditBacklogItemUseCase, EditB
 			output.setErrorMessage("Sorry, the backlog item is not exist.");
 			return;
 		}
-		backlogItem.setDescription(input.getDescription());
-		backlogItem.setEstimate(input.getEstimate());
-		backlogItem.setImportance(input.getImportance());
-		backlogItem.setNotes(input.getNotes());
+		String originalDescription = backlogItem.getDescription();
+		int originalEstimate = backlogItem.getEstimate();
+		int orignalImportance = backlogItem.getImportance();
+		String originalNotes = backlogItem.getNotes();
+		
+		String editedDescription = input.getDescription();
+		int editedEstimate = input.getEstimate();
+		int editedImportance = input.getImportance();
+		String editedNotes = input.getNotes();
+		
+		if(!originalDescription.equals(editedDescription)) {
+			backlogItem.setDescription(editedDescription);
+			recordHistory(backlogItem.getBacklogItemId(), Type.editDescription, "\"" + originalDescription + "\"", "\"" + editedDescription + "\"");
+		}
+		if(originalEstimate != editedEstimate) {
+			backlogItem.setEstimate(editedEstimate);
+			recordHistory(backlogItem.getBacklogItemId(), Type.editEstimate, String.valueOf(originalEstimate), String.valueOf(editedEstimate));
+		}
+		if(orignalImportance != editedImportance) {
+			backlogItem.setImportance(input.getImportance());
+			recordHistory(backlogItem.getBacklogItemId(), Type.editImportance, String.valueOf(orignalImportance), String.valueOf(editedImportance));
+		}
+		if(!originalNotes.equals(editedNotes)) {
+			backlogItem.setNotes(input.getNotes());
+			recordHistory(backlogItem.getBacklogItemId(), Type.editNotes, "\"" + originalNotes + "\"", "\"" + editedNotes + "\"");
+		}
 		backlogItemRepository.update(backlogItem);
 		output.setEditSuccess(true);
 	}
@@ -99,6 +127,20 @@ public class EditBacklogItemUseCaseImpl implements EditBacklogItemUseCase, EditB
 		this.productId = productId;
 	}
 
-
+	private void recordHistory(String backlogItemId, String type, String oldValue, String newValue) {
+		History history = null;
+		try {
+			history = HistoryBuilder.newInstance().
+					issueId(backlogItemId).
+					issueType(IssueType.backlogItem).
+					type(type).
+					oldValue(oldValue).
+					newValue(newValue).
+					build();
+		}catch (Exception e) {
+			System.out.print(e.getMessage());
+		}
+		historyRepository.add(history);
+	}
 
 }

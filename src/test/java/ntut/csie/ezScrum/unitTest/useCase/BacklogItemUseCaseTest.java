@@ -13,6 +13,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
+import ntut.csie.ezScrum.model.history.IssueType;
+import ntut.csie.ezScrum.model.history.Type;
 import ntut.csie.ezScrum.model.product.Product;
 import ntut.csie.ezScrum.model.sprint.Sprint;
 import ntut.csie.ezScrum.restfulAPI.backlogItem.AddBacklogItemRestfulAPI;
@@ -23,10 +25,13 @@ import ntut.csie.ezScrum.restfulAPI.backlogItem.GetAllBacklogItemRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.backlogItem.GetAllCommittedBacklogItemRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.backlogItem.GetAllNotYetCommittedBacklogItemRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.backlogItem.MoveStoryCardRestfulAPI;
+import ntut.csie.ezScrum.restfulAPI.history.GetAllHistoryRestfulAPI;
 import ntut.csie.ezScrum.unitTest.factory.TestFactory;
 import ntut.csie.ezScrum.unitTest.repository.FakeBacklogItemRepository;
+import ntut.csie.ezScrum.unitTest.repository.FakeHistoryRepository;
 import ntut.csie.ezScrum.unitTest.repository.FakeProductRepository;
 import ntut.csie.ezScrum.unitTest.repository.FakeSprintRepository;
+import ntut.csie.ezScrum.unitTest.repository.FakeTaskRepository;
 import ntut.csie.ezScrum.useCase.backlogItem.AddBacklogItemUseCase;
 import ntut.csie.ezScrum.useCase.backlogItem.AddBacklogItemUseCaseImpl;
 import ntut.csie.ezScrum.useCase.backlogItem.AssignBacklogItemUseCase;
@@ -58,6 +63,11 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.CommittedBacklogItemModel;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllCommittedBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllCommittedBacklogItemOutput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.NotYetCommittedBacklogItemModel;
+import ntut.csie.ezScrum.useCase.history.GetAllHistoryUseCase;
+import ntut.csie.ezScrum.useCase.history.GetAllHistoryUseCaseImpl;
+import ntut.csie.ezScrum.useCase.history.io.GetAllHistoryInput;
+import ntut.csie.ezScrum.useCase.history.io.GetAllHistoryOutput;
+import ntut.csie.ezScrum.useCase.history.io.HistoryModel;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItemOutput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardInput;
@@ -68,6 +78,8 @@ public class BacklogItemUseCaseTest {
 	private FakeProductRepository fakeProductRepository;
 	private FakeSprintRepository fakeSprintRepository;
 	private FakeBacklogItemRepository fakeBacklogItemRepository;
+	private FakeTaskRepository fakeTaskRepository;
+	private FakeHistoryRepository fakeHistoryRepository;
 
 	private TestFactory testFactory;
 	private String productId;
@@ -77,7 +89,9 @@ public class BacklogItemUseCaseTest {
 		fakeProductRepository = new FakeProductRepository();
 		fakeSprintRepository = new FakeSprintRepository();
 		fakeBacklogItemRepository = new FakeBacklogItemRepository();
-		testFactory = new TestFactory(fakeProductRepository, fakeSprintRepository, fakeBacklogItemRepository, null, null);
+		fakeTaskRepository = new FakeTaskRepository();
+		fakeHistoryRepository = new FakeHistoryRepository();
+		testFactory = new TestFactory(fakeProductRepository, fakeSprintRepository, fakeBacklogItemRepository, fakeTaskRepository, null);
 
 		Product product = testFactory.getNewProduct();
 		productId = product.getProductId();
@@ -88,6 +102,7 @@ public class BacklogItemUseCaseTest {
 		fakeProductRepository.clearAll();
 		fakeSprintRepository.clearAll();
 		fakeBacklogItemRepository.clearAll();
+		fakeHistoryRepository.clearAll();
 	}
 
 	@Test
@@ -124,12 +139,30 @@ public class BacklogItemUseCaseTest {
 		
 		AddBacklogItemOutput output = new AddBacklogItemRestfulAPI();
 		
-		AddBacklogItemUseCase addBacklogItemUseCase = new AddBacklogItemUseCaseImpl(fakeBacklogItemRepository);
+		AddBacklogItemUseCase addBacklogItemUseCase = new AddBacklogItemUseCaseImpl(fakeBacklogItemRepository, fakeHistoryRepository);
 		addBacklogItemUseCase.execute(input, output);
 		
 		
 		String expectedException = "The description of the backlog item should not be null.";
 		assertEquals(expectedException, stream.toString());
+	}
+	
+	@Test
+	public void Should_HasCreateHistory_When_AddBacklogItem() {
+		String description = "As a ezScrum developer, I want to test addBacklogItem.";
+		
+		AddBacklogItemOutput addBacklogItemOutput = addNewBacklogItemWithRequiredParamemter(description);
+		
+		String backlogItemId = addBacklogItemOutput.getBacklogItemId();
+		
+		GetAllHistoryOutput getAllHistoryOutput = getAllHistory(backlogItemId);
+		List<HistoryModel> historyList = getAllHistoryOutput.getHistoryList();
+		
+		String expectedDescription = "Create " + IssueType.backlogItem;
+		int numberOfHistories = 1;
+		assertEquals(Type.create, historyList.get(0).getType());
+		assertEquals(expectedDescription, historyList.get(0).getDescription());
+		assertEquals(numberOfHistories, historyList.size());
 	}
 
 	@Test
@@ -147,6 +180,7 @@ public class BacklogItemUseCaseTest {
 		
 		GetAllBacklogItemOutput output = getAllBacklogItem();
 		List<BacklogItemModel> backlogItemList = output.getBacklogItemList();
+		
 		for(int i=0; i<backlogItemList.size(); i++) {
 			assertEquals(description[i], backlogItemList.get(i).getDescription());
 		}
@@ -170,6 +204,32 @@ public class BacklogItemUseCaseTest {
 		assignBacklogItem(backlogItemId, sprintId);
 		
 		assertEquals(sprintId, backlogItem.getSprintId());
+	}
+	
+	@Test
+	public void Should_HasAssignToSprintHistory_When_AssignBacklogItemToSprint() {
+		String description = "As a ezScrum developer, I want to test addBacklogItem.";
+		BacklogItem backlogItem = testFactory.getNewBacklogItem(productId, description);
+		String backlogItemId = backlogItem.getBacklogItemId();
+		
+		String goal = "This is the goal of this sprint.";
+		int interval = 2;
+		String startDate = "2018-05-05";
+		String endDate = "2018-05-19";
+		String demoDate = "2018-05-19";
+		Sprint sprint = testFactory.getNewSprint(productId, goal, interval, startDate, endDate, demoDate);
+		String sprintId = sprint.getSprintId();
+		
+		assignBacklogItem(backlogItemId, sprintId);
+		
+		GetAllHistoryOutput getAllHistoryOutput = getAllHistory(backlogItemId);
+		List<HistoryModel> historyList = getAllHistoryOutput.getHistoryList();
+		
+		String expectedDescription = "Assign to Sprint \"" + goal + "\"";
+		int numberOfHistories = 1;
+		assertEquals(Type.assignToSprint, historyList.get(0).getType());
+		assertEquals(expectedDescription, historyList.get(0).getDescription());
+		assertEquals(numberOfHistories, historyList.size());
 	}
 	
 	@Test
@@ -202,6 +262,38 @@ public class BacklogItemUseCaseTest {
 		String expectedErrorMessage = "Sorry, the backlog item is not exist.";
 		assertFalse(isEditSuccess);
 		assertEquals(expectedErrorMessage, output.getErrorMessage());
+	}
+	
+	@Test
+	public void Should_HasEditHistory_When_EditBacklogItem() {
+		String description = "As a ezScrum developer, I want to test addBacklogItem.";
+		BacklogItem backlogItem = testFactory.getNewBacklogItem(productId, description);
+		String backlogItemId = backlogItem.getBacklogItemId();
+		
+		String editedDescription = "As a user, I want to edit backlog item.";
+		int editedEstimate = 3;
+		int editedImportance = 95;
+		String editedNotes = "This is the notes about editing backlog item.";
+		
+		editBacklogItem(backlogItemId, editedDescription, editedEstimate, editedImportance, editedNotes);
+		
+		GetAllHistoryOutput getAllHistoryOutput = getAllHistory(backlogItemId);
+		List<HistoryModel> historyList = getAllHistoryOutput.getHistoryList();
+		
+		String expectedEditDescription = "\"" + description + "\" => \"" + editedDescription + "\"";
+		String expectedEditEstimate = "8 => " + editedEstimate;
+		String expectedEditImportance = "90 => " + editedImportance;
+		String expectedEditNotes = "\"The note of backlog item.\" => \"" + editedNotes + "\"";
+		int numberOfHistories = 4;
+		assertEquals(Type.editDescription, historyList.get(0).getType());
+		assertEquals(Type.editEstimate, historyList.get(1).getType());
+		assertEquals(Type.editImportance, historyList.get(2).getType());
+		assertEquals(Type.editNotes, historyList.get(3).getType());
+		assertEquals(expectedEditDescription, historyList.get(0).getDescription());
+		assertEquals(expectedEditEstimate, historyList.get(1).getDescription());
+		assertEquals(expectedEditImportance, historyList.get(2).getDescription());
+		assertEquals(expectedEditNotes, historyList.get(3).getDescription());
+		assertEquals(numberOfHistories, historyList.size());
 	}
 	
 	@Test
@@ -243,9 +335,27 @@ public class BacklogItemUseCaseTest {
 		
 		GetAllBacklogItemOutput output = getAllBacklogItem();
 		List<BacklogItemModel> backlogItemList = output.getBacklogItemList();
+		
 		for(int i=0; i<backlogItemList.size(); i++) {
 			assertEquals(i+1, backlogItemList.get(i).getOrderId());
 		}
+	}
+	
+	@Test
+	public void Should_HasNotHistory_When_DeleteBacklogItem() {
+		String description = "As a ezScrum developer, I want to test addBacklogItem.";
+		
+		AddBacklogItemOutput addBacklogItemOutput = addNewBacklogItemWithRequiredParamemter(description);
+		
+		String backlogItemId = addBacklogItemOutput.getBacklogItemId();
+		
+		deleteBacklogItem(backlogItemId);
+		
+		GetAllHistoryOutput getAllHistoryOutput = getAllHistory(backlogItemId);
+		List<HistoryModel> historyList = getAllHistoryOutput.getHistoryList();
+		
+		int numberOfHistories = 0;
+		assertEquals(numberOfHistories, historyList.size());
 	}
 	
 	@Test
@@ -286,6 +396,40 @@ public class BacklogItemUseCaseTest {
 	}
 	
 	@Test
+	public void Should_OrderByImportance_When_GetAllCommittedBacklogItem() {
+		String[] description = {"As a ezScrum developer, I want to get the first backlog item.",
+				"As a ezScrum developer, I want to get the second backlog item.",
+				"As a ezScrum developer, I want to get the third backlog item."
+		};
+		int[] estimate = {3, 8, 5};
+		int[] importance = {85, 80, 90};
+		int numberOfBacklogItems = description.length;
+		String[] backlogItemIds = new String[numberOfBacklogItems];
+		for(int i=0; i<numberOfBacklogItems; i++) {
+			AddBacklogItemOutput addBacklogItemOutput = addNewBacklogItemWithAllParamemter(description[i], estimate[i], importance[i], "");
+			backlogItemIds[i] = addBacklogItemOutput.getBacklogItemId();
+		}
+		
+		String goal = "This is the goal of this sprint.";
+		int interval = 2;
+		String startDate = "2018-05-05";
+		String endDate = "2018-05-19";
+		String demoDate = "2018-05-19";
+		Sprint sprint = testFactory.getNewSprint(productId, goal, interval, startDate, endDate, demoDate);
+		String sprintId = sprint.getSprintId();
+		for(int i=0; i<numberOfBacklogItems; i++) {
+			assignBacklogItem(backlogItemIds[i], sprintId);
+		}
+		
+		GetAllCommittedBacklogItemOutput getAllCommittedBacklogItemOutput = getAllCommittedBacklogItem(sprintId);
+		List<CommittedBacklogItemModel> committedBacklogItemList = getAllCommittedBacklogItemOutput.getCommittedBacklogItemList();
+		
+		assertEquals(backlogItemIds[2], committedBacklogItemList.get(0).getBacklogItemId());
+		assertEquals(backlogItemIds[0], committedBacklogItemList.get(1).getBacklogItemId());
+		assertEquals(backlogItemIds[1], committedBacklogItemList.get(2).getBacklogItemId());
+	}
+	
+	@Test
 	public void Should_Success_When_MoveStoryCard() {
 		String description = "As a ezScrum developer, I want to test addBacklogItem.";
 		String[] status = {"To do", "Done"};
@@ -304,6 +448,31 @@ public class BacklogItemUseCaseTest {
 		assertTrue(isMoveSuccess2);
 	}
 	
+	@Test
+	public void Should_HasChangeStatusHistory_When_MoveStoryCard() {
+		String description = "As a ezScrum developer, I want to test addBacklogItem.";
+		String[] status = {"To do", "Done"};
+		
+		BacklogItem backlogItem = testFactory.getNewBacklogItem(productId, description);
+		String backlogItemId = backlogItem.getBacklogItemId();
+		
+		moveStoryCard(backlogItemId, status[1]);
+		moveStoryCard(backlogItemId, status[0]);
+		
+		GetAllHistoryOutput getAllHistoryOutput = getAllHistory(backlogItemId);
+		List<HistoryModel> historyList = getAllHistoryOutput.getHistoryList();
+		
+		String expectedDoneDescription = status[0] + " => " + status[1];
+		String expectedToDoDescription = status[1] + " => " + status[0];
+		int numberOfHistories = 2;
+		assertEquals(Type.changeStatus, historyList.get(0).getType());
+		assertEquals(Type.changeStatus, historyList.get(1).getType());
+		assertEquals(expectedDoneDescription, historyList.get(0).getDescription());
+		assertEquals(expectedToDoDescription, historyList.get(1).getDescription());
+		assertEquals(numberOfHistories, historyList.size());
+	}
+	
+	
 	private AddBacklogItemOutput addNewBacklogItemWithRequiredParamemter(String description) {
 		AddBacklogItemInput input = new AddBacklogItemUseCaseImpl();
 		input.setDescription(description);
@@ -311,7 +480,7 @@ public class BacklogItemUseCaseTest {
 
 		AddBacklogItemOutput output = new AddBacklogItemRestfulAPI();
 		
-		AddBacklogItemUseCase addBacklogItemUseCase = new AddBacklogItemUseCaseImpl(fakeBacklogItemRepository);
+		AddBacklogItemUseCase addBacklogItemUseCase = new AddBacklogItemUseCaseImpl(fakeBacklogItemRepository, fakeHistoryRepository);
 		addBacklogItemUseCase.execute(input, output);
 		
 		return output;
@@ -328,7 +497,7 @@ public class BacklogItemUseCaseTest {
 
 		AddBacklogItemOutput output = new AddBacklogItemRestfulAPI();
 		
-		AddBacklogItemUseCase addBacklogItemUseCase = new AddBacklogItemUseCaseImpl(fakeBacklogItemRepository);
+		AddBacklogItemUseCase addBacklogItemUseCase = new AddBacklogItemUseCaseImpl(fakeBacklogItemRepository, fakeHistoryRepository);
 		addBacklogItemUseCase.execute(input, output);
 		
 		return output;
@@ -347,13 +516,13 @@ public class BacklogItemUseCaseTest {
 	}
 	
 	private AssignBacklogItemOutput assignBacklogItem(String backlogItemId, String sprintId) {
-		AssignBacklogItemInput input = new AssignBacklogItemUseCaseImpl(fakeBacklogItemRepository);
+		AssignBacklogItemInput input = new AssignBacklogItemUseCaseImpl(fakeBacklogItemRepository, fakeSprintRepository, fakeHistoryRepository);
 		input.setBacklogItemId(backlogItemId);
 		input.setSprintId(sprintId);
 		
 		AssignBacklogItemOutput output = new AssignBacklogItemRestfulAPI();
 		
-		AssignBacklogItemUseCase assignBacklogItemUseCase = new AssignBacklogItemUseCaseImpl(fakeBacklogItemRepository);
+		AssignBacklogItemUseCase assignBacklogItemUseCase = new AssignBacklogItemUseCaseImpl(fakeBacklogItemRepository, fakeSprintRepository, fakeHistoryRepository);
 		assignBacklogItemUseCase.execute(input, output);
 		
 		return output;
@@ -370,7 +539,7 @@ public class BacklogItemUseCaseTest {
 		
 		EditBacklogItemOutput output = new EditBacklogItemRestfulAPI();
 		
-		EditBacklogItemUseCase editBacklogItemUseCase = new EditBacklogItemUseCaseImpl(fakeBacklogItemRepository);
+		EditBacklogItemUseCase editBacklogItemUseCase = new EditBacklogItemUseCaseImpl(fakeBacklogItemRepository, fakeHistoryRepository);
 		editBacklogItemUseCase.execute(input, output);
 		
 		return output;
@@ -382,7 +551,7 @@ public class BacklogItemUseCaseTest {
 		
 		DeleteBacklogItemOutput output = new DeleteBacklogItemRestfulAPI();
 		
-		DeleteBacklogItemUseCase deleteBacklogItemUseCase = new DeleteBacklogItemUseCaseImpl(fakeBacklogItemRepository);
+		DeleteBacklogItemUseCase deleteBacklogItemUseCase = new DeleteBacklogItemUseCaseImpl(fakeBacklogItemRepository, fakeTaskRepository, fakeHistoryRepository);
 		deleteBacklogItemUseCase.execute(input, output);
 		
 		return output;
@@ -420,8 +589,20 @@ public class BacklogItemUseCaseTest {
 		
 		MoveStoryCardOutput output = new MoveStoryCardRestfulAPI();
 		
-		MoveStoryCardUseCase moveStoryCardUseCase = new MoveStoryCardUseCaseImpl(fakeBacklogItemRepository);
+		MoveStoryCardUseCase moveStoryCardUseCase = new MoveStoryCardUseCaseImpl(fakeBacklogItemRepository, fakeHistoryRepository);
 		moveStoryCardUseCase.execute(input, output);
+		
+		return output;
+	}
+	
+	private GetAllHistoryOutput getAllHistory(String issueId) {
+		GetAllHistoryInput input = new GetAllHistoryUseCaseImpl();
+		input.setIssueId(issueId);
+		
+		GetAllHistoryOutput output = new GetAllHistoryRestfulAPI();
+		
+		GetAllHistoryUseCase getAllHistoryUseCase = new GetAllHistoryUseCaseImpl(fakeHistoryRepository);
+		getAllHistoryUseCase.execute(input, output);
 		
 		return output;
 	}

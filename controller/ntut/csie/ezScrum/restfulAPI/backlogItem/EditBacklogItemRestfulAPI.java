@@ -11,7 +11,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
+import ntut.csie.ezScrum.model.history.History;
 import ntut.csie.ezScrum.repository.backlogItem.BacklogItemRepository;
+import ntut.csie.ezScrum.repository.history.HistoryRepository;
 import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.backlogItem.EditBacklogItemUseCase;
 import ntut.csie.ezScrum.useCase.backlogItem.EditBacklogItemUseCaseImpl;
@@ -22,7 +24,8 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.EditBacklogItemOutput;
 public class EditBacklogItemRestfulAPI implements EditBacklogItemOutput{
 	
 	private Repository<BacklogItem> backlogItemRepository = new BacklogItemRepository();
-	private EditBacklogItemUseCase editBacklogItemUseCase = new EditBacklogItemUseCaseImpl(backlogItemRepository);
+	private Repository<History> historyRepository = new HistoryRepository();
+	private EditBacklogItemUseCase editBacklogItemUseCase = new EditBacklogItemUseCaseImpl(backlogItemRepository, historyRepository);
 	
 	private boolean editSuccess;
 	private String errorMessage;

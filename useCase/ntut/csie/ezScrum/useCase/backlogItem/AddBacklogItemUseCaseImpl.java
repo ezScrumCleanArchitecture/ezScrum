@@ -2,6 +2,10 @@ package ntut.csie.ezScrum.useCase.backlogItem;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
 import ntut.csie.ezScrum.model.backlogItem.BacklogItemBuilder;
+import ntut.csie.ezScrum.model.history.History;
+import ntut.csie.ezScrum.model.history.HistoryBuilder;
+import ntut.csie.ezScrum.model.history.IssueType;
+import ntut.csie.ezScrum.model.history.Type;
 import ntut.csie.ezScrum.useCase.Repository;
 import ntut.csie.ezScrum.useCase.backlogItem.io.AddBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.AddBacklogItemOutput;
@@ -9,6 +13,7 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.AddBacklogItemOutput;
 public class AddBacklogItemUseCaseImpl implements AddBacklogItemUseCase, AddBacklogItemInput{
 	
 	private Repository<BacklogItem> backlogItemRepository;
+	private Repository<History> historyRepository;
 	
 	private String description;
 	private int estimate;
@@ -18,8 +23,9 @@ public class AddBacklogItemUseCaseImpl implements AddBacklogItemUseCase, AddBack
 
 	public AddBacklogItemUseCaseImpl() {}
 	
-	public AddBacklogItemUseCaseImpl(Repository<BacklogItem> backlogItemRepository) {
+	public AddBacklogItemUseCaseImpl(Repository<BacklogItem> backlogItemRepository, Repository<History> historyRepository) {
 		this.backlogItemRepository = backlogItemRepository;
+		this.historyRepository = historyRepository;
 	}
 
 	@Override
@@ -41,6 +47,17 @@ public class AddBacklogItemUseCaseImpl implements AddBacklogItemUseCase, AddBack
 		backlogItemRepository.add(backlogItem);
 		output.setBacklogItemId(backlogItem.getBacklogItemId());
 		output.setAddSuccess(true);
+		History history = null;
+		try {
+			history = HistoryBuilder.newInstance().
+					issueId(backlogItem.getBacklogItemId()).
+					issueType(IssueType.backlogItem).
+					type(Type.create).
+					build();
+		}catch (Exception e) {
+			System.out.print(e.getMessage());
+		}
+		historyRepository.add(history);
 	}
 
 	@Override

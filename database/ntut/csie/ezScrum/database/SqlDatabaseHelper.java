@@ -43,7 +43,6 @@ public class SqlDatabaseHelper {
 		try {
 			properties.load(new FileInputStream(pomPropertiesPath));
 		}catch(FileNotFoundException e) {
-			//e.printStackTrace();
 			return System.getProperty("user.dir");
 		}catch(IOException e) {
 			e.printStackTrace();

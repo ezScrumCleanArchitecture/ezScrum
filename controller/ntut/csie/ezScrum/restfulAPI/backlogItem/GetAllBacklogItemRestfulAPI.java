@@ -24,7 +24,7 @@ public class GetAllBacklogItemRestfulAPI implements GetAllBacklogItemOutput{
 	
 	private Repository<BacklogItem> backlogItemRepository = new BacklogItemRepository();
 	private Repository<Sprint> sprintRepository = new SprintRepository();
-	private GetAllBacklogItemUseCase getBacklogItemUseCase = new GetAllBacklogItemUseCaseImpl(backlogItemRepository, sprintRepository);
+	private GetAllBacklogItemUseCase getAllBacklogItemUseCase = new GetAllBacklogItemUseCaseImpl(backlogItemRepository, sprintRepository);
 	
 	private List<BacklogItemModel> backlogItemList;
 	
@@ -37,7 +37,7 @@ public class GetAllBacklogItemRestfulAPI implements GetAllBacklogItemOutput{
 		
 		GetAllBacklogItemOutput output = this;
 		
-		getBacklogItemUseCase.execute(input, output);
+		getAllBacklogItemUseCase.execute(input, output);
 		
 		return output;
 	}
