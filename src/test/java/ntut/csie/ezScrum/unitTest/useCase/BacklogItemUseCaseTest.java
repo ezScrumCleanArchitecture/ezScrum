@@ -17,6 +17,7 @@ import ntut.csie.ezScrum.model.history.IssueType;
 import ntut.csie.ezScrum.model.history.Type;
 import ntut.csie.ezScrum.model.product.Product;
 import ntut.csie.ezScrum.model.sprint.Sprint;
+import ntut.csie.ezScrum.model.task.Task;
 import ntut.csie.ezScrum.restfulAPI.backlogItem.AddBacklogItemRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.backlogItem.AssignBacklogItemRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.backlogItem.DeleteBacklogItemRestfulAPI;
@@ -26,6 +27,8 @@ import ntut.csie.ezScrum.restfulAPI.backlogItem.GetAllCommittedBacklogItemRestfu
 import ntut.csie.ezScrum.restfulAPI.backlogItem.GetAllNotYetCommittedBacklogItemRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.backlogItem.MoveStoryCardRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.history.GetAllHistoryRestfulAPI;
+import ntut.csie.ezScrum.restfulAPI.task.AddTaskRestfulAPI;
+import ntut.csie.ezScrum.restfulAPI.task.DeleteTaskRestfulAPI;
 import ntut.csie.ezScrum.unitTest.factory.TestFactory;
 import ntut.csie.ezScrum.unitTest.repository.FakeBacklogItemRepository;
 import ntut.csie.ezScrum.unitTest.repository.FakeHistoryRepository;
@@ -68,6 +71,14 @@ import ntut.csie.ezScrum.useCase.history.GetAllHistoryUseCaseImpl;
 import ntut.csie.ezScrum.useCase.history.io.GetAllHistoryInput;
 import ntut.csie.ezScrum.useCase.history.io.GetAllHistoryOutput;
 import ntut.csie.ezScrum.useCase.history.io.HistoryModel;
+import ntut.csie.ezScrum.useCase.task.AddTaskUseCase;
+import ntut.csie.ezScrum.useCase.task.AddTaskUseCaseImpl;
+import ntut.csie.ezScrum.useCase.task.DeleteTaskUseCase;
+import ntut.csie.ezScrum.useCase.task.DeleteTaskUseCaseImpl;
+import ntut.csie.ezScrum.useCase.task.io.AddTaskInput;
+import ntut.csie.ezScrum.useCase.task.io.AddTaskOutput;
+import ntut.csie.ezScrum.useCase.task.io.DeleteTaskInput;
+import ntut.csie.ezScrum.useCase.task.io.DeleteTaskOutput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItemInput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllNotYetCommittedBacklogItemOutput;
 import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardInput;
@@ -152,7 +163,6 @@ public class BacklogItemUseCaseTest {
 		String description = "As a ezScrum developer, I want to test addBacklogItem.";
 		
 		AddBacklogItemOutput addBacklogItemOutput = addNewBacklogItemWithRequiredParamemter(description);
-		
 		String backlogItemId = addBacklogItemOutput.getBacklogItemId();
 		
 		GetAllHistoryOutput getAllHistoryOutput = getAllHistory(backlogItemId);
@@ -472,6 +482,48 @@ public class BacklogItemUseCaseTest {
 		assertEquals(numberOfHistories, historyList.size());
 	}
 	
+	@Test
+	public void Should_HasAddTaskHistory_When_AddTask() {
+		String backlogItemDescription = "As a ezScrum developer, I want to test addBacklogItem.";
+		String taskDescription = "Write Unit Test to test adding task.";
+		
+		BacklogItem backlogItem = testFactory.getNewBacklogItem(productId, backlogItemDescription);
+		String backlogItemId = backlogItem.getBacklogItemId();
+		
+		addTask(backlogItemId, taskDescription);
+		
+		GetAllHistoryOutput getAllHistoryOutput = getAllHistory(backlogItemId);
+		List<HistoryModel> historyList = getAllHistoryOutput.getHistoryList();
+		
+		String expectedDescription = "Add Task \"" + taskDescription + "\"";
+		int numberOfHistories = 1;
+		assertEquals(Type.addTask, historyList.get(0).getType());
+		assertEquals(expectedDescription, historyList.get(0).getDescription());
+		assertEquals(numberOfHistories, historyList.size());
+	}
+	
+	@Test
+	public void Should_HasRemoveTaskHistory_When_DeleteTask() {
+		String backlogItemDescription = "As a ezScrum developer, I want to test addBacklogItem.";
+		String taskDescription = "Write Unit Test to test adding task.";
+		
+		BacklogItem backlogItem = testFactory.getNewBacklogItem(productId, backlogItemDescription);
+		String backlogItemId = backlogItem.getBacklogItemId();
+		
+		Task task = testFactory.getNewTask(backlogItemId, taskDescription);
+		String taskId = task.getTaskId();
+		
+		deleteTask(taskId);
+		
+		GetAllHistoryOutput getAllHistoryOutput = getAllHistory(backlogItemId);
+		List<HistoryModel> historyList = getAllHistoryOutput.getHistoryList();
+		
+		String expectedDescription = "Remove Task \"" + taskDescription + "\"";
+		int numberOfHistories = 1;
+		assertEquals(Type.removeTask, historyList.get(0).getType());
+		assertEquals(expectedDescription, historyList.get(0).getDescription());
+		assertEquals(numberOfHistories, historyList.size());
+	}
 	
 	private AddBacklogItemOutput addNewBacklogItemWithRequiredParamemter(String description) {
 		AddBacklogItemInput input = new AddBacklogItemUseCaseImpl();
@@ -591,6 +643,31 @@ public class BacklogItemUseCaseTest {
 		
 		MoveStoryCardUseCase moveStoryCardUseCase = new MoveStoryCardUseCaseImpl(fakeBacklogItemRepository, fakeHistoryRepository);
 		moveStoryCardUseCase.execute(input, output);
+		
+		return output;
+	}
+	
+	private AddTaskOutput addTask(String backlogItemId, String description) {
+		AddTaskInput input = new AddTaskUseCaseImpl();
+		input.setDescription(description);
+		input.setBacklogItemId(backlogItemId);
+
+		AddTaskOutput output = new AddTaskRestfulAPI();
+		
+		AddTaskUseCase addTaskUseCase = new AddTaskUseCaseImpl(fakeTaskRepository, fakeHistoryRepository);
+		addTaskUseCase.execute(input, output);
+		
+		return output;
+	}
+	
+	private DeleteTaskOutput deleteTask(String taskId) {
+		DeleteTaskInput input = new DeleteTaskUseCaseImpl();
+		input.setTaskId(taskId);
+		
+		DeleteTaskOutput output = new DeleteTaskRestfulAPI();
+		
+		DeleteTaskUseCase deleteTaskUseCase = new DeleteTaskUseCaseImpl(fakeTaskRepository, fakeHistoryRepository);
+		deleteTaskUseCase.execute(input, output);
 		
 		return output;
 	}

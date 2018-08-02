@@ -13,9 +13,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
+import ntut.csie.ezScrum.model.history.IssueType;
+import ntut.csie.ezScrum.model.history.Type;
 import ntut.csie.ezScrum.model.product.Product;
 import ntut.csie.ezScrum.model.sprint.Sprint;
 import ntut.csie.ezScrum.model.task.Task;
+import ntut.csie.ezScrum.restfulAPI.history.GetAllHistoryRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.task.AddTaskRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.task.DeleteTaskRestfulAPI;
 import ntut.csie.ezScrum.restfulAPI.task.EditTaskRestfulAPI;
@@ -27,6 +30,11 @@ import ntut.csie.ezScrum.unitTest.repository.FakeHistoryRepository;
 import ntut.csie.ezScrum.unitTest.repository.FakeProductRepository;
 import ntut.csie.ezScrum.unitTest.repository.FakeSprintRepository;
 import ntut.csie.ezScrum.unitTest.repository.FakeTaskRepository;
+import ntut.csie.ezScrum.useCase.history.GetAllHistoryUseCase;
+import ntut.csie.ezScrum.useCase.history.GetAllHistoryUseCaseImpl;
+import ntut.csie.ezScrum.useCase.history.io.GetAllHistoryInput;
+import ntut.csie.ezScrum.useCase.history.io.GetAllHistoryOutput;
+import ntut.csie.ezScrum.useCase.history.io.HistoryModel;
 import ntut.csie.ezScrum.useCase.task.AddTaskUseCase;
 import ntut.csie.ezScrum.useCase.task.AddTaskUseCaseImpl;
 import ntut.csie.ezScrum.useCase.task.DeleteTaskUseCase;
@@ -135,6 +143,26 @@ public class TaskUseCaseTest {
 	}
 	
 	@Test
+	public void Should_HasCreateHistory_When_AddTask() {
+		String description = "Write Unit Test to test adding task.";
+		
+		addNewTaskWithRequiredParamemter(description);
+		
+		GetAllTaskOutput output = getAllTask();
+		List<TaskModel> taskList = output.getTaskList();
+		String taskId = taskList.get(0).getTaskId();
+		
+		GetAllHistoryOutput getAllHistoryOutput = getAllHistory(taskId);
+		List<HistoryModel> historyList = getAllHistoryOutput.getHistoryList();
+		
+		String expectedDescription = "Create " + IssueType.task;
+		int numberOfHistories = 1;
+		assertEquals(Type.create, historyList.get(0).getType());
+		assertEquals(expectedDescription, historyList.get(0).getDescription());
+		assertEquals(numberOfHistories, historyList.size());
+	}
+	
+	@Test
 	public void Should_ReturnTaskList_When_GetAllTask() {
 		String[] description = {"Write Unit Test to test adding task.", "Create task use case.", "Fix Bug of adding task."};
 		
@@ -162,9 +190,10 @@ public class TaskUseCaseTest {
 		
 		String editedDescription = "Write Unit Test to test editing task.";
 		int editedEstimate = 8;
-		String editedNotes = "Please use factory pattern to edit task test data.";
+		int editedRemains = 5;
+		String editedNotes = "his is the notes about editing backlog item.";
 		
-		EditTaskOutput output = editTask(taskId, editedDescription, editedEstimate, editedNotes);
+		EditTaskOutput output = editTask(taskId, editedDescription, editedEstimate, editedRemains, editedNotes);
 		
 		boolean isEditSuccess = output.isEditSuccess();
 		assertTrue(isEditSuccess);
@@ -174,14 +203,47 @@ public class TaskUseCaseTest {
 	public void Should_ReturnErrorMessage_When_EditNotExistTask() {
 		String editedDescription = "As a user, I want to edit backlog item.";
 		int editedEstimate = 8;
+		int editedRemains = 5;
 		String editedNotes = "This is the notes about editing backlog item.";
 		
-		EditTaskOutput output = editTask(null, editedDescription, editedEstimate, editedNotes);
+		EditTaskOutput output = editTask(null, editedDescription, editedEstimate, editedRemains, editedNotes);
 		
 		boolean isEditSuccess = output.isEditSuccess();
 		String expectedErrorMessage = "Sorry, the task is not exist.";
 		assertFalse(isEditSuccess);
 		assertEquals(expectedErrorMessage, output.getErrorMessage());
+	}
+	
+	@Test
+	public void Should_HasEditHistory_When_EditTask() {
+		String description = "Write Unit Test to test adding task.";
+		Task task = testFactory.getNewTask(backlogItemId, description);
+		String taskId = task.getTaskId();
+		
+		String editedDescription = "Write Unit Test to test editing task.";
+		int editedEstimate = 8;
+		int editedRemains = 13;
+		String editedNotes = "his is the notes about editing backlog item.";
+		
+		editTask(taskId, editedDescription, editedEstimate, editedRemains, editedNotes);
+		
+		GetAllHistoryOutput getAllHistoryOutput = getAllHistory(taskId);
+		List<HistoryModel> historyList = getAllHistoryOutput.getHistoryList();
+		
+		String expectedEditDescription = "\"" + description + "\" => \"" + editedDescription + "\"";
+		String expectedEditEstimate = "5 => " + editedEstimate;
+		String expectedEditRemains = "5 => " + editedRemains;
+		String expectedEditNotes = "\"Please use factory pattern to add task test data.\" => \"" + editedNotes + "\"";
+		int numberOfHistories = 4;
+		assertEquals(Type.editDescription, historyList.get(0).getType());
+		assertEquals(Type.editEstimate, historyList.get(1).getType());
+		assertEquals(Type.editRemains, historyList.get(2).getType());
+		assertEquals(Type.editNotes, historyList.get(3).getType());
+		assertEquals(expectedEditDescription, historyList.get(0).getDescription());
+		assertEquals(expectedEditEstimate, historyList.get(1).getDescription());
+		assertEquals(expectedEditRemains, historyList.get(2).getDescription());
+		assertEquals(expectedEditNotes, historyList.get(3).getDescription());
+		assertEquals(numberOfHistories, historyList.size());
 	}
 	
 	@Test
@@ -229,6 +291,25 @@ public class TaskUseCaseTest {
 	}
 	
 	@Test
+	public void Should_HasNotHistory_When_DeleteTask() {
+		String description = "Write Unit Test to test adding task.";
+		
+		addNewTaskWithRequiredParamemter(description);
+		
+		GetAllTaskOutput output = getAllTask();
+		List<TaskModel> taskList = output.getTaskList();
+		String taskId = taskList.get(0).getTaskId();
+		
+		deleteTask(taskId);
+		
+		GetAllHistoryOutput getAllHistoryOutput = getAllHistory(taskId);
+		List<HistoryModel> historyList = getAllHistoryOutput.getHistoryList();
+		
+		int numberOfHistories = 0;
+		assertEquals(numberOfHistories, historyList.size());
+	}
+	
+	@Test
 	public void Should_ChangeTaskStatus_When_MoveTaskCard() {
 		String description = "Write Unit Test to test adding task.";
 		String[] status = {"To do", "Doing", "Done"};
@@ -243,9 +324,44 @@ public class TaskUseCaseTest {
 		boolean isMoveSuccess2 = output2.isMoveSuccess();
 		assertTrue(isMoveSuccess2);
 		
-		MoveTaskCardOutput output3 = moveTaskCard(taskId, status[0]);
+		MoveTaskCardOutput output3 = moveTaskCard(taskId, status[1]);
 		boolean isMoveSuccess3 = output3.isMoveSuccess();
 		assertTrue(isMoveSuccess3);
+		
+		MoveTaskCardOutput output4 = moveTaskCard(taskId, status[0]);
+		boolean isMoveSuccess4 = output4.isMoveSuccess();
+		assertTrue(isMoveSuccess4);
+	}
+	
+	@Test
+	public void Should_HasChangeStatusHistory_When_MoveTaskCard() {
+		String description = "Write Unit Test to test adding task.";
+		String[] status = {"To do", "Doing", "Done"};
+		Task task = testFactory.getNewTask(backlogItemId, description);
+		String taskId = task.getTaskId();
+		
+		moveTaskCard(taskId, status[1]);
+		moveTaskCard(taskId, status[2]);
+		moveTaskCard(taskId, status[1]);
+		moveTaskCard(taskId, status[0]);
+		
+		GetAllHistoryOutput getAllHistoryOutput = getAllHistory(taskId);
+		List<HistoryModel> historyList = getAllHistoryOutput.getHistoryList();
+		
+		String expectedToDo_DoingDescription = status[0] + " => " + status[1];
+		String expectedDoneDescription = status[1] + " => " + status[2];
+		String expectedDone_DoingDescription = status[2] + " => " + status[1];
+		String expectedToDoDescription = status[1] + " => " + status[0];
+		int numberOfHistories = 4;
+		assertEquals(Type.changeStatus, historyList.get(0).getType());
+		assertEquals(Type.changeStatus, historyList.get(1).getType());
+		assertEquals(Type.changeStatus, historyList.get(2).getType());
+		assertEquals(Type.changeStatus, historyList.get(3).getType());
+		assertEquals(expectedToDo_DoingDescription, historyList.get(0).getDescription());
+		assertEquals(expectedDoneDescription, historyList.get(1).getDescription());
+		assertEquals(expectedDone_DoingDescription, historyList.get(2).getDescription());
+		assertEquals(expectedToDoDescription, historyList.get(3).getDescription());
+		assertEquals(numberOfHistories, historyList.size());
 	}
 	
 	private AddTaskOutput addNewTaskWithRequiredParamemter(String description) {
@@ -289,11 +405,12 @@ public class TaskUseCaseTest {
 	}
 	
 	private EditTaskOutput editTask(String taskId, String editedDescription,
-			int editedEstimate, String editedNotes) {
+			int editedEstimate, int editedRemains, String editedNotes) {
 		EditTaskInput input = new EditTaskUseCaseImpl();
 		input.setTaskId(taskId);
 		input.setDescription(editedDescription);
 		input.setEstimate(editedEstimate);
+		input.setRemains(editedRemains);
 		input.setNotes(editedNotes);
 		
 		EditTaskOutput output = new EditTaskRestfulAPI();
@@ -325,6 +442,18 @@ public class TaskUseCaseTest {
 		
 		MoveTaskCardUseCase moveTaskCardUseCase = new MoveTaskCardUseCaseImpl(fakeTaskRepository, fakeHistoryRepository);
 		moveTaskCardUseCase.execute(input, output);
+		
+		return output;
+	}
+	
+	private GetAllHistoryOutput getAllHistory(String issueId) {
+		GetAllHistoryInput input = new GetAllHistoryUseCaseImpl();
+		input.setIssueId(issueId);
+		
+		GetAllHistoryOutput output = new GetAllHistoryRestfulAPI();
+		
+		GetAllHistoryUseCase getAllHistoryUseCase = new GetAllHistoryUseCaseImpl(fakeHistoryRepository);
+		getAllHistoryUseCase.execute(input, output);
 		
 		return output;
 	}

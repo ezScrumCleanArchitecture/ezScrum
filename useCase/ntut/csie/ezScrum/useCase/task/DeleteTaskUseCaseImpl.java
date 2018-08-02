@@ -55,7 +55,18 @@ public class DeleteTaskUseCaseImpl implements DeleteTaskUseCase, DeleteTaskInput
 		}
 		historyRepository.add(backlogItemHistory);
 		
-		for(History history : historyRepository.getAll()) {
+		int numberOfHistories = historyRepository.getNumberOfItems();
+		History[] histories = historyRepository.getAll().toArray(new History[numberOfHistories]);
+		/*
+		 * Because historyRepository.getAll() returns the collection of the history from the map, 
+		 * if we run the loop to remove the history in the collection of the history,
+		 * it will change the size of the collection.
+		 * Then, it will throw a ConcurrentModificationException.
+		 * We convert the collection to the array here.
+		 * The purpose is we can run the loop in the local array of the history not the collection of the history.
+		 * It will avoid a ConcurrentModificationException.
+		 */
+		for(History history : histories) {
 			if(history.getIssueId().equals(taskId)) {
 				historyRepository.remove(history);
 			}

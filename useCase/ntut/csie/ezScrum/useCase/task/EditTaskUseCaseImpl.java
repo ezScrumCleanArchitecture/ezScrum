@@ -49,7 +49,7 @@ public class EditTaskUseCaseImpl implements EditTaskUseCase, EditTaskInput{
 		
 		if(!originalDescription.equals(editedDescription)) {
 			task.setDescription(input.getDescription());
-			recordHistory(task.getTaskId(), Type.editDescription, originalDescription, editedDescription);
+			recordHistory(task.getTaskId(), Type.editDescription, "\"" + originalDescription + "\"", "\"" + editedDescription + "\"");
 		}
 		if(originalEstimate != editedEstimate) {
 			task.setEstimate(input.getEstimate());
@@ -61,7 +61,7 @@ public class EditTaskUseCaseImpl implements EditTaskUseCase, EditTaskInput{
 		}
 		if(!originalNotes.equals(editedNotes)) {
 			task.setNotes(input.getNotes());
-			recordHistory(task.getTaskId(), Type.editNotes, String.valueOf(originalNotes), String.valueOf(editedNotes));
+			recordHistory(task.getTaskId(), Type.editNotes, "\""+ String.valueOf(originalNotes) + "\"", "\"" + String.valueOf(editedNotes) + "\"");
 		}
 		
 		taskRepository.update(task);
