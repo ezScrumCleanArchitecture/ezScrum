@@ -11,55 +11,47 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import ntut.csie.ezScrum.ApplicationContext;
-import ntut.csie.ezScrum.useCase.backlogItem.MoveStoryCardUseCase;
-import ntut.csie.ezScrum.useCase.backlogItem.MoveStoryCardUseCaseImpl;
-import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardInput;
-import ntut.csie.ezScrum.useCase.backlogItem.io.MoveStoryCardOutput;
+import ntut.csie.ezScrum.useCase.backlogItem.DropBacklogItemUseCase;
+import ntut.csie.ezScrum.useCase.backlogItem.DropBacklogItemUseCaseImpl;
+import ntut.csie.ezScrum.useCase.backlogItem.io.DropBacklogItemInput;
+import ntut.csie.ezScrum.useCase.backlogItem.io.DropBacklogItemOutput;
 
 @Path("/product/{productId}/backlogItem")
-public class MoveStoryCardRestfulAPI implements MoveStoryCardOutput{
-	
+public class DropBacklogItemRestfulAPI implements DropBacklogItemOutput{
+
 	private ApplicationContext applicationContext = ApplicationContext.getInstance();
-	private MoveStoryCardUseCase moveStoryCardUseCase = applicationContext.newMoveStoryCardUseCase();
+	private DropBacklogItemUseCase dropBacklogItemUseCase = applicationContext.newDropBacklogItemUseCase();
 	
-	private boolean moveSuccess;
+	private boolean dropSuccess;
 	private String errorMessage;
 	
 	@POST
-	@Path("/moveStoryCard")
+	@Path("/dropBacklogItem")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public MoveStoryCardOutput moveStoryCard(@PathParam("productId") String productId, 
+	public void dropBacklogItem(@PathParam("productId") String productId,
 			String backlogItemInfo) {
 		String backlogItemId = "";
-		String status = "";
 		try {
 			JSONObject backlogItemJSON = new JSONObject(backlogItemInfo);
 			backlogItemId = backlogItemJSON.getString("backlogItemId");
-			status = backlogItemJSON.getString("status");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
-		MoveStoryCardInput input = new MoveStoryCardUseCaseImpl();
+		DropBacklogItemInput input = new DropBacklogItemUseCaseImpl();
+		DropBacklogItemOutput output = this;
 		input.setBacklogItemId(backlogItemId);
-		input.setStatus(status);
-		
-		MoveStoryCardOutput output = this;
-		
-		moveStoryCardUseCase.execute(input, output);
-		
-		return output;
+		dropBacklogItemUseCase.execute(input, output);
+	}
+	
+	@Override
+	public boolean isDropSuccess() {
+		return dropSuccess;
 	}
 
 	@Override
-	public boolean isMoveSuccess() {
-		return moveSuccess;
-	}
-
-	@Override
-	public void setMoveSuccess(boolean moveSuccess) {
-		this.moveSuccess = moveSuccess;
+	public void setDropSuccess(boolean dropSuccess) {
+		this.dropSuccess = dropSuccess;
 	}
 
 	@Override

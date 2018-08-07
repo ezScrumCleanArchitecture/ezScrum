@@ -1,11 +1,11 @@
 package ntut.csie.ezScrum.useCase.product;
 
+import ntut.csie.ezScrum.ApplicationContext;
 import ntut.csie.ezScrum.model.product.Product;
-import ntut.csie.ezScrum.useCase.ApplicationContext;
 
 public class ProductManagerUseCase {
 	
-	private ApplicationContext context;
+	/*private ApplicationContext context;
 	
 	public ProductManagerUseCase(ApplicationContext context) {
 		this.context = context;
@@ -14,6 +14,6 @@ public class ProductManagerUseCase {
 	public String addProduct(Product product) {
 		context.addProduct(product);
 		return product.getProductId();
-	}
+	}*/
 
 }

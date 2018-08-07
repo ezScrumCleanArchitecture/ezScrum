@@ -7,39 +7,38 @@ import ntut.csie.ezScrum.model.history.IssueType;
 import ntut.csie.ezScrum.model.history.Type;
 import ntut.csie.ezScrum.model.sprint.Sprint;
 import ntut.csie.ezScrum.useCase.Repository;
-import ntut.csie.ezScrum.useCase.backlogItem.io.AssignBacklogItemInput;
-import ntut.csie.ezScrum.useCase.backlogItem.io.AssignBacklogItemOutput;
+import ntut.csie.ezScrum.useCase.backlogItem.io.DropBacklogItemInput;
+import ntut.csie.ezScrum.useCase.backlogItem.io.DropBacklogItemOutput;
 
-public class AssignBacklogItemUseCaseImpl implements AssignBacklogItemUseCase, AssignBacklogItemInput{
+public class DropBacklogItemUseCaseImpl implements DropBacklogItemUseCase, DropBacklogItemInput{
 
 	private Repository<BacklogItem> backlogItemRepository;
 	private Repository<Sprint> sprintRepository;
 	private Repository<History> historyRepository;
 	
-	private String sprintId;
 	private String backlogItemId;
-
-	public AssignBacklogItemUseCaseImpl() {}
 	
-	public AssignBacklogItemUseCaseImpl(Repository<BacklogItem> backlogItemRepository, Repository<Sprint> sprintRepository, Repository<History> historyRepository) {
+	public DropBacklogItemUseCaseImpl() {}
+	
+	public DropBacklogItemUseCaseImpl(Repository<BacklogItem> backlogItemRepository, Repository<Sprint> sprintRepository, Repository<History> historyRepository) {
 		this.backlogItemRepository = backlogItemRepository;
 		this.sprintRepository = sprintRepository;
 		this.historyRepository = historyRepository;
 	}
 	
 	@Override
-	public void execute(AssignBacklogItemInput input, AssignBacklogItemOutput output) {
-		String sprintId = input.getSprintId();
+	public void execute(DropBacklogItemInput input, DropBacklogItemOutput output) {
 		String backlogItemId = input.getBacklogItemId();
 		BacklogItem backlogItem = backlogItemRepository.get(backlogItemId);
 		if(backlogItem == null) {
-			output.setAssignSuccess(false);
+			output.setDropSuccess(false);
 			output.setErrorMessage("Sorry, the backlog item is not exist.");
 			return;
 		}
+		String sprintId = backlogItem.getSprintId();
 		Sprint sprint = sprintRepository.get(sprintId);
 		if(sprint == null) {
-			output.setAssignSuccess(false);
+			output.setDropSuccess(false);
 			output.setErrorMessage("Sorry, the sprint is not exist.");
 			return;
 		}
@@ -49,26 +48,16 @@ public class AssignBacklogItemUseCaseImpl implements AssignBacklogItemUseCase, A
 			history = HistoryBuilder.newInstance().
 					issueId(backlogItem.getBacklogItemId()).
 					issueType(IssueType.backlogItem).
-					type(Type.assignToSprint).
+					type(Type.dropFromSprint).
 					newValue("\"" + sprintGoal + "\"").
 					build();
 		}catch (Exception e) {
 			System.out.print(e.getMessage());
 		}
 		historyRepository.add(history);
-		backlogItem.setSprintId(sprintId);
+		backlogItem.setSprintId(null);
 		backlogItemRepository.update(backlogItem);
-		output.setAssignSuccess(true);
-	}
-
-	@Override
-	public String getSprintId() {
-		return sprintId;
-	}
-
-	@Override
-	public void setSprintId(String sprintId) {
-		this.sprintId= sprintId;
+		output.setDropSuccess(true);
 	}
 
 	@Override

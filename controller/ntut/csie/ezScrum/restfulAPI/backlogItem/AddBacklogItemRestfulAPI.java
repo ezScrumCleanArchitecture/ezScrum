@@ -10,11 +10,7 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
-import ntut.csie.ezScrum.model.history.History;
-import ntut.csie.ezScrum.repository.backlogItem.BacklogItemRepository;
-import ntut.csie.ezScrum.repository.history.HistoryRepository;
-import ntut.csie.ezScrum.useCase.Repository;
+import ntut.csie.ezScrum.ApplicationContext;
 import ntut.csie.ezScrum.useCase.backlogItem.AddBacklogItemUseCase;
 import ntut.csie.ezScrum.useCase.backlogItem.AddBacklogItemUseCaseImpl;
 import ntut.csie.ezScrum.useCase.backlogItem.io.AddBacklogItemInput;
@@ -23,9 +19,8 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.AddBacklogItemOutput;
 @Path("/product/{productId}/backlogItem")
 public class AddBacklogItemRestfulAPI implements AddBacklogItemOutput{
 	
-	private Repository<BacklogItem> backlogItemRepository = new BacklogItemRepository();
-	private Repository<History> historyRepository = new HistoryRepository();
-	private AddBacklogItemUseCase addBacklogItemUseCase = new AddBacklogItemUseCaseImpl(backlogItemRepository, historyRepository);
+	private ApplicationContext applicationContext = ApplicationContext.getInstance();
+	private AddBacklogItemUseCase addBacklogItemUseCase = applicationContext.newAddBacklogItemUseCase();
 	
 	private String backlogItemId;
 	private boolean addSuccess;

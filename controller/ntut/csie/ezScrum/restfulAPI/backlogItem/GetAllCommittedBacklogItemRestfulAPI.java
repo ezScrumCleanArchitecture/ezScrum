@@ -8,11 +8,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
-import ntut.csie.ezScrum.model.sprint.Sprint;
-import ntut.csie.ezScrum.repository.backlogItem.BacklogItemRepository;
-import ntut.csie.ezScrum.repository.sprint.SprintRepository;
-import ntut.csie.ezScrum.useCase.Repository;
+import ntut.csie.ezScrum.ApplicationContext;
 import ntut.csie.ezScrum.useCase.backlogItem.GetAllCommittedBacklogItemUseCase;
 import ntut.csie.ezScrum.useCase.backlogItem.GetAllCommittedBacklogItemUseCaseImpl;
 import ntut.csie.ezScrum.useCase.backlogItem.io.CommittedBacklogItemModel;
@@ -22,9 +18,8 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.GetAllCommittedBacklogItemOutput
 @Path("/product/{productId}/backlogItem")
 public class GetAllCommittedBacklogItemRestfulAPI implements GetAllCommittedBacklogItemOutput{
 	
-	private Repository<BacklogItem> backlogItemRepository = new BacklogItemRepository();
-	private Repository<Sprint> sprintRepository = new SprintRepository();
-	private GetAllCommittedBacklogItemUseCase getAllCommittedBacklogItemUseCase = new GetAllCommittedBacklogItemUseCaseImpl(backlogItemRepository, sprintRepository);
+	private ApplicationContext applicationContext = ApplicationContext.getInstance();
+	private GetAllCommittedBacklogItemUseCase getAllCommittedBacklogItemUseCase = applicationContext.newGetAllCommittedBacklogItemUseCase();
 	
 	private List<CommittedBacklogItemModel> committedBacklogItemList;
 

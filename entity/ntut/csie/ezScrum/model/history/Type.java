@@ -9,6 +9,7 @@ public class Type {
 	public static String changeStatus = "change status";
 	public static String handler = "handler";
 	public static String assignToSprint = "assign to sprint";
+	public static String dropFromSprint = "drop from sprint";
 	public static String addTask = "add task";
 	public static String removeTask = "remove task";
 	public static String editNotes = "edit notes";

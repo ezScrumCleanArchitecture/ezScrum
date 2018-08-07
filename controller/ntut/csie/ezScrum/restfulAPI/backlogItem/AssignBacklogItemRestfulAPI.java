@@ -14,13 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
-import ntut.csie.ezScrum.model.history.History;
-import ntut.csie.ezScrum.model.sprint.Sprint;
-import ntut.csie.ezScrum.repository.backlogItem.BacklogItemRepository;
-import ntut.csie.ezScrum.repository.history.HistoryRepository;
-import ntut.csie.ezScrum.repository.sprint.SprintRepository;
-import ntut.csie.ezScrum.useCase.Repository;
+import ntut.csie.ezScrum.ApplicationContext;
 import ntut.csie.ezScrum.useCase.backlogItem.AssignBacklogItemUseCase;
 import ntut.csie.ezScrum.useCase.backlogItem.AssignBacklogItemUseCaseImpl;
 import ntut.csie.ezScrum.useCase.backlogItem.io.AssignBacklogItemInput;
@@ -29,10 +23,8 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.AssignBacklogItemOutput;
 @Path("/product/{productId}/backlogItem")
 public class AssignBacklogItemRestfulAPI implements AssignBacklogItemOutput{
 	
-	private Repository<BacklogItem> backlogItemRepository = new BacklogItemRepository();
-	private Repository<Sprint> sprintRepository = new SprintRepository();
-	private Repository<History> historyRepository = new HistoryRepository();
-	private AssignBacklogItemUseCase assignBacklogItemUseCase = new AssignBacklogItemUseCaseImpl(backlogItemRepository, sprintRepository, historyRepository);
+	private ApplicationContext applicationContext = ApplicationContext.getInstance();
+	private AssignBacklogItemUseCase assignBacklogItemUseCase = applicationContext.newAssignBacklogItemUseCase();
 	
 	private boolean assignSuccess;
 	private String errorMessage;

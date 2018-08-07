@@ -10,9 +10,7 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.model.sprint.Sprint;
-import ntut.csie.ezScrum.repository.sprint.SprintRepository;
-import ntut.csie.ezScrum.useCase.Repository;
+import ntut.csie.ezScrum.ApplicationContext;
 import ntut.csie.ezScrum.useCase.sprint.AddSprintUseCase;
 import ntut.csie.ezScrum.useCase.sprint.AddSprintUseCaseImpl;
 import ntut.csie.ezScrum.useCase.sprint.io.AddSprintInput;
@@ -21,8 +19,8 @@ import ntut.csie.ezScrum.useCase.sprint.io.AddSprintOutput;
 @Path("/product/{productId}/sprint")
 public class AddSprintRestfulAPI implements AddSprintOutput{
 	
-	private Repository<Sprint> sprintRepository = new SprintRepository();
-	private AddSprintUseCase addSprintUseCase = new AddSprintUseCaseImpl(sprintRepository);
+	private ApplicationContext applicationContext = ApplicationContext.getInstance();
+	private AddSprintUseCase addSprintUseCase = applicationContext.newAddSprintUseCase();
 	
 	private boolean addSuccess;
 	private String errorMessage;

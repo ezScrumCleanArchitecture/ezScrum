@@ -7,13 +7,7 @@ import javax.ws.rs.PathParam;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.model.backlogItem.BacklogItem;
-import ntut.csie.ezScrum.model.history.History;
-import ntut.csie.ezScrum.model.task.Task;
-import ntut.csie.ezScrum.repository.backlogItem.BacklogItemRepository;
-import ntut.csie.ezScrum.repository.history.HistoryRepository;
-import ntut.csie.ezScrum.repository.task.TaskRepository;
-import ntut.csie.ezScrum.useCase.Repository;
+import ntut.csie.ezScrum.ApplicationContext;
 import ntut.csie.ezScrum.useCase.backlogItem.DeleteBacklogItemUseCase;
 import ntut.csie.ezScrum.useCase.backlogItem.DeleteBacklogItemUseCaseImpl;
 import ntut.csie.ezScrum.useCase.backlogItem.io.DeleteBacklogItemInput;
@@ -22,10 +16,8 @@ import ntut.csie.ezScrum.useCase.backlogItem.io.DeleteBacklogItemOutput;
 @Path("/product/{productId}/backlogItem")
 public class DeleteBacklogItemRestfulAPI implements DeleteBacklogItemOutput{
 	
-	private Repository<BacklogItem> backlogItemRepository = new BacklogItemRepository();
-	private Repository<Task> taskRepository = new TaskRepository();
-	private Repository<History> historyRepository = new HistoryRepository();
-	private DeleteBacklogItemUseCase deleteBacklogItemUseCase = new DeleteBacklogItemUseCaseImpl(backlogItemRepository, taskRepository, historyRepository);
+	private ApplicationContext applicationContext = ApplicationContext.getInstance();
+	private DeleteBacklogItemUseCase deleteBacklogItemUseCase = applicationContext.newDeleteBacklogItemUseCase();
 	
 	private boolean deleteSuccess;
 	private String errorMessage;

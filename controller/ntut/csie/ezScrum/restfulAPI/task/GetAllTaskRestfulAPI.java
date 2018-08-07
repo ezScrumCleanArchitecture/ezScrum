@@ -8,9 +8,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import ntut.csie.ezScrum.model.task.Task;
-import ntut.csie.ezScrum.repository.task.TaskRepository;
-import ntut.csie.ezScrum.useCase.Repository;
+import ntut.csie.ezScrum.ApplicationContext;
 import ntut.csie.ezScrum.useCase.task.GetAllTaskUseCase;
 import ntut.csie.ezScrum.useCase.task.GetAllTaskUseCaseImpl;
 import ntut.csie.ezScrum.useCase.task.io.TaskModel;
@@ -20,8 +18,8 @@ import ntut.csie.ezScrum.useCase.task.io.GetAllTaskOutput;
 @Path("/backlogItem/{backlogItemId}/task")
 public class GetAllTaskRestfulAPI implements GetAllTaskOutput{
 	
-	private Repository<Task> taskRepository = new TaskRepository();
-	private GetAllTaskUseCase getAllTaskUseCase = new GetAllTaskUseCaseImpl(taskRepository);
+	private ApplicationContext applicationContext = ApplicationContext.getInstance();
+	private GetAllTaskUseCase getAllTaskUseCase = applicationContext.newGetAllTaskUseCase();
 	
 	private List<TaskModel> taskList;
 	

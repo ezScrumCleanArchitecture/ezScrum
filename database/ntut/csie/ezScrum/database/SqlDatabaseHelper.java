@@ -39,7 +39,6 @@ public class SqlDatabaseHelper {
 				+ "ntut.csie" + File.separator
 				+ "ezScrum" + File.separator
 				+ "pom.properties";
-		System.out.println("POM: " + pomPropertiesPath);
 		try {
 			properties.load(new FileInputStream(pomPropertiesPath));
 		}catch(FileNotFoundException e) {
@@ -51,7 +50,7 @@ public class SqlDatabaseHelper {
 	}
 	
 	public void connection() {
-		properties = new Properties();System.out.println(configFilePath);
+		properties = new Properties();
 		try {
 			properties.load(new FileInputStream(configFilePath));
 		}catch(FileNotFoundException e) {

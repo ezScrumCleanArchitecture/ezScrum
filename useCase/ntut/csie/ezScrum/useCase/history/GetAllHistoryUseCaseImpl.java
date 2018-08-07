@@ -78,6 +78,8 @@ public class GetAllHistoryUseCaseImpl implements GetAllHistoryUseCase, GetAllHis
 			dto.setDescription(oldValue + " => " + newValue);
 		}else if(type.equals(Type.assignToSprint)) {
 			dto.setDescription("Assign to Sprint " + newValue);
+		}else if(type.equals(Type.dropFromSprint)) {
+			dto.setDescription("Drop from Sprint " + newValue);
 		}else if(type.equals(Type.changeStatus)) {
 			dto.setDescription(oldValue + " => " + newValue);
 		}else if(type.equals(Type.addTask)) {

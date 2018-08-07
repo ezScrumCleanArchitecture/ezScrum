@@ -10,9 +10,7 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.model.sprint.Sprint;
-import ntut.csie.ezScrum.repository.sprint.SprintRepository;
-import ntut.csie.ezScrum.useCase.Repository;
+import ntut.csie.ezScrum.ApplicationContext;
 import ntut.csie.ezScrum.useCase.sprint.EditSprintUseCase;
 import ntut.csie.ezScrum.useCase.sprint.EditSprintUseCaseImpl;
 import ntut.csie.ezScrum.useCase.sprint.io.EditSprintInput;
@@ -21,8 +19,8 @@ import ntut.csie.ezScrum.useCase.sprint.io.EditSprintOutput;
 @Path("/product/{productId}/sprint")
 public class EditSprintRestfulAPI implements EditSprintOutput{
 	
-	private Repository<Sprint> sprintRepository = new SprintRepository();
-	private EditSprintUseCase editSprintUseCase = new EditSprintUseCaseImpl(sprintRepository);
+	private ApplicationContext applicationContext = ApplicationContext.getInstance();
+	private EditSprintUseCase editSprintUseCase = applicationContext.newEditSprintUseCase();
 	
 	private boolean editSuccess;
 	private boolean overlap;

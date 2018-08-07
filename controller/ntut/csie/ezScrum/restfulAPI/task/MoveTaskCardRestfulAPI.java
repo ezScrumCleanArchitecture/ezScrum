@@ -10,11 +10,7 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ntut.csie.ezScrum.model.history.History;
-import ntut.csie.ezScrum.model.task.Task;
-import ntut.csie.ezScrum.repository.history.HistoryRepository;
-import ntut.csie.ezScrum.repository.task.TaskRepository;
-import ntut.csie.ezScrum.useCase.Repository;
+import ntut.csie.ezScrum.ApplicationContext;
 import ntut.csie.ezScrum.useCase.task.MoveTaskCardUseCase;
 import ntut.csie.ezScrum.useCase.task.MoveTaskCardUseCaseImpl;
 import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardInput;
@@ -23,9 +19,8 @@ import ntut.csie.ezScrum.useCase.task.io.MoveTaskCardOutput;
 @Path("/backlogItem/{backlogItemId}/task")
 public class MoveTaskCardRestfulAPI implements MoveTaskCardOutput{
 	
-	private Repository<Task> taskRepository = new TaskRepository();
-	private Repository<History> historyRepository =new HistoryRepository();
-	private MoveTaskCardUseCase moveTaskUseCase = new MoveTaskCardUseCaseImpl(taskRepository,historyRepository);
+	private ApplicationContext applicationContext = ApplicationContext.getInstance();
+	private MoveTaskCardUseCase moveTaskUseCase = applicationContext.newMoveTaskCardUseCase();
 	
 	private boolean moveSuccess;
 	private String errorMessage;
